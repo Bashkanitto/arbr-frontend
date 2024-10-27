@@ -1,0 +1,21 @@
+.content-layout {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 110px 0 0 0;
+
+	.header {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		justify-content: space-between;
+		gap: 20px;
+		width: calc(100% - 382px);
+		height: 85px;
+		position: fixed;
+		top: 35px;
+		left: 347px;
+		z-index: 70;
+	}
+}

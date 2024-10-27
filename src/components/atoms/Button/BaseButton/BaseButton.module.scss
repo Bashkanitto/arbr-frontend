@@ -1,0 +1,23 @@
+.base-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 48px;
+	padding: 15px 36px;
+	border-radius: 15px;
+
+	&[data-color='primary'] {
+		background: #6f73f3;
+		color: #fff;
+		&:hover {
+			background: #6f73f3c1;
+		}
+	}
+	&[data-color='secondary'] {
+		background: #f0f3ff;
+		color: #6f73f3;
+		&:hover {
+			background: #f0f3ffc1;
+		}
+	}
+}

@@ -1,0 +1,19 @@
+.content-user-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 30px;
+	height: 100%;
+	border-radius: 30px;
+	background: #fff;
+	/* overflow: hidden; */
+
+	.left {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.user-info {
+		flex-direction: row-reverse;
+	}
+}

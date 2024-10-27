@@ -1,0 +1,23 @@
+.tabs {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+	&-list {
+		gap: 30px;
+
+		&::before {
+			display: none;
+		}
+	}
+	&-tab {
+		font-size: 15px;
+		font-weight: 500;
+		padding: 3px;
+		padding-bottom: 5px;
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+			border: none;
+		}
+	}
+}

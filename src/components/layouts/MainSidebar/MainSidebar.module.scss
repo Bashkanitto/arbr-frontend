@@ -1,0 +1,29 @@
+.main-sidebar {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 292px;
+	height: calc(100% - 70px);
+	position: fixed;
+	top: 35px;
+	left: 35px;
+	z-index: 80;
+	padding: 30px 0 10px 0;
+	border-radius: 30px;
+	background: #fff;
+
+	.top {
+		display: flex;
+		flex-direction: column;
+		gap: 39px;
+	}
+	.top > .title {
+		font-size: 30px;
+		font-weight: 400;
+		line-height: 40.98px;
+		color: #000;
+		padding: 0 30px;
+		margin: 0;
+	}
+}

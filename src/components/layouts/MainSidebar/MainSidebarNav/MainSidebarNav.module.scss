@@ -1,0 +1,35 @@
+.main-sidebar-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	padding: 0 10px;
+
+	.nav-item {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 15px;
+		padding: 15px 20px;
+		border-radius: 15px;
+		transition: all 0.3s ease-in-out;
+		text-decoration: none;
+
+		.icon,
+		.title {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: #737684;
+		}
+	}
+	.nav-item:hover {
+		background: #f4f5f7;
+	}
+	.nav-item[data-active='true'] {
+		background: #f0f3ff;
+		.icon,
+		.title {
+			color: #6f73f3;
+		}
+	}
+}

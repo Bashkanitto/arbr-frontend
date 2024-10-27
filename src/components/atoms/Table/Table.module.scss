@@ -1,0 +1,29 @@
+.table {
+	border-radius: 30px;
+
+	&-thead {
+		background: none;
+	}
+	&-th {
+		font-size: 15px;
+		font-weight: 400;
+		color: #737684;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		&:first-child {
+			padding: 21px 10px 21px 21px;
+		}
+		&:last-child {
+			padding: 21px 21px 21px 10px;
+		}
+	}
+	&-td {
+		&:first-child {
+			padding: 21px 10px 21px 21px;
+		}
+		&:last-child {
+			padding: 21px 21px 21px 10px;
+		}
+	}
+}

@@ -1,0 +1,26 @@
+.managers-page-tabs {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	padding: 30px;
+	border-radius: 30px;
+	background: #fff;
+
+	.tab {
+		flex: 1;
+	}
+	.tab > .panel {
+		display: flex;
+		gap: 20px;
+	}
+	.cards {
+		display: flex;
+		gap: 20px;
+	}
+	.cards > .card {
+		flex: 1;
+		height: 438px;
+		background: #737684;
+	}
+}

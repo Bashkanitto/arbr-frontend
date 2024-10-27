@@ -1,0 +1,19 @@
+.select {
+	font-size: 15px;
+
+	&-input {
+		height: 48px;
+		padding: 15px;
+		border: none;
+		border-radius: 15px;
+		background: #f4f5f7;
+		font-size: 15;
+		font-weight: 400;
+	}
+	&-dropdown {
+		border-radius: 15px;
+	}
+	&-option {
+		border-radius: 10px;
+	}
+}
