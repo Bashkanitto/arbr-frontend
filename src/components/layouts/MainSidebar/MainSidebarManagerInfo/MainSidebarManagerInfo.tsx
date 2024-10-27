@@ -1,5 +1,5 @@
 import { PhoneIcon } from '../../../../assets/icons'
-import { UserInfo } from '../../../molecules/UserInfo'
+import { UserInfo } from '../../../molecules'
 import styles from './MainSidebarManagerInfo.module.scss'
 
 export const MainSidebarManagerInfo = () => {
