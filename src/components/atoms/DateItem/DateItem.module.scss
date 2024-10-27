@@ -14,6 +14,18 @@
 		background: #f0f3ff;
 		color: #6f73f3;
 	}
+	&[data-color='success'] {
+		color: #3e9970;
+		background: #eaf6f4;
+	}
+	&[data-color='danger'] {
+		color: #ff0000;
+		background: #f8eef0;
+	}
+	&[data-color='warning'] {
+		color: #f9a60c;
+		background: #f8f2ec;
+	}
 	&[data-color='gray'] {
 		background: #f4f5f7;
 		color: #000;

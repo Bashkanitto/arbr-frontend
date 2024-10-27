@@ -6,7 +6,7 @@ import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
 import { Avatar } from '../../atoms/Avatar'
 import { IconButton } from '../../atoms/Button/IconButton'
 import { Skeleton } from '../../atoms/Skeleton'
-import { UserInfo } from '../../molecules/UserInfo'
+import { UserInfo } from '../../molecules'
 import styles from './ContentUserInfo.module.scss'
 
 export const ContentUserInfo = () => {

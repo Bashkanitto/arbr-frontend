@@ -4,6 +4,7 @@ import { ContentUserInfo } from '../../layouts/ContentUserInfo'
 import styles from './WithdrawsPage.module.scss'
 import { WithdrawsPageChart } from './WithdrawsPageChart/WithdrawsPageChart'
 import { WithdrawsPageData } from './WithdrawsPageData/WithdrawsPageData'
+import { WithdrawsPageTable } from './WithdrawsPageTable/WithdrawPageTable'
 
 const WithdrawsPage = () => {
 	return (
@@ -20,7 +21,9 @@ const WithdrawsPage = () => {
 				<WithdrawsPageChart />
 				<WithdrawsPageData />
 			</div>
-			<div className={styles['bottom']}></div>
+			<div className={styles['']}>
+				<WithdrawsPageTable />
+			</div>
 		</ContentLayout>
 	)
 }
