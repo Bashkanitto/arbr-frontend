@@ -37,7 +37,13 @@ const initialElements = [
 export const WithdrawsPageTable = () => {
 	const [selectRows, setSelectRows] = useState<number[]>([])
 	const [elementsData, setElementsData] = useState(initialElements)
-	const [selectedItem, setSelectedItem] = useState(null)
+	const [selectedItem, setSelectedItem] = useState<{
+		id: number
+		customer: string
+		status: string
+		sum: string
+		date: Date
+	} | null>(null)
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 	const [statusFilter, setStatusFilter] = useState<string | null>(null)
 	const navigate = useNavigate()
