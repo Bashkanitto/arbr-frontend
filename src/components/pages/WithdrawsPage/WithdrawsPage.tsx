@@ -4,7 +4,7 @@ import { ContentUserInfo } from '../../layouts/ContentUserInfo'
 import styles from './WithdrawsPage.module.scss'
 import { WithdrawsPageChart } from './WithdrawsPageChart/WithdrawsPageChart'
 import { WithdrawsPageData } from './WithdrawsPageData/WithdrawsPageData'
-import { WithdrawsPageTable } from './WithdrawsPageTable/WithdrawPageTable'
+import { WithdrawsPageTable } from './WithdrawsPageTable'
 
 const WithdrawsPage = () => {
 	return (

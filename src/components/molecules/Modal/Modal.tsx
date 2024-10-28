@@ -4,8 +4,20 @@ import { useState } from 'react'
 type EditModalProps = {
 	isOpen: boolean
 	onClose: () => void
-	item: { id: number; customer: string; sum: string; date: Date }
-	onSave: (updatedItem: any) => void
+	item: {
+		id: number
+		customer: string
+		status: string
+		sum: string
+		date: Date
+	}
+	onSave: (updatedItem: {
+		id: number
+		customer: string
+		status: string
+		sum: string
+		date: Date
+	}) => void
 }
 
 export const ModalWindow = ({
