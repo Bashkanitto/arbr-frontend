@@ -48,7 +48,7 @@ jobs:
           ssh-keyscan $HOST >> ~/.ssh/known_hosts
 
           ssh $USERNAME@$HOST <<EOF
-            cd ~/configs
+            cd ~/phase
             echo "Pulling the latest Docker image"
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/phase-frontend:latest
             echo "Recreating the app container with Docker Compose"
