@@ -21,7 +21,7 @@ COPY --from=builder /app/package*.json ./
 RUN npm ci --only=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.env .env
+# COPY --from=builder /app/.env .env
 
 RUN npm install -g vite
 
