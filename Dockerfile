@@ -22,7 +22,7 @@ RUN npm ci --only=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.env .env
-COPY .env /app/.env
+# COPY .env /app/.env
 
-EXPOSE 8000
+EXPOSE 5000
 CMD ["npm", "run", "preview"]
