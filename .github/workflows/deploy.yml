@@ -29,14 +29,6 @@ jobs:
 
       - name: SSH into server and deploy
         uses: appleboy/scp-action@v0.1.0
-        with:
-          host: ${{ secrets.SSH_HOST}}
-          username: { { secrets.SSH_USERNAME } }
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: docker-compose.yml
-          target: ~/frontend/
-
-      - name: Run Docker container
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@195.49.215.169 "docker run -d -p 8000:8000 --name frontend_app 20030715/frontend:latest"
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} 20030715@195.49.215.169
+ "cd ~/phase && docker-compose -f docker-compose.dev.yaml up -d --build frontend"
