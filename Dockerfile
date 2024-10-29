@@ -22,7 +22,9 @@ RUN npm ci --only=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.env .env
-# COPY .env /app/.env
 
-EXPOSE 5000
+RUN npm install -g vite
+
+EXPOSE 8000
+# Используйте vite для запуска приложения
 CMD ["npm", "run", "preview"]
