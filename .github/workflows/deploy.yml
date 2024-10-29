@@ -3,7 +3,7 @@ name: Deploy Frontend to Server
 on:
   push:
     branches:
-      - main
+      - main # Укажите ветку для деплоя
 
 jobs:
   deploy:
@@ -18,19 +18,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t my-frontend-image:latest .
-          docker tag my-frontend-image:latest ${secrets.SSH_HOST}:5000/my-frontend-image:latest
-          docker push ${secrets.SSH_HOST}:5000/my-frontend-image:latest  # Update to your actual Docker registry if necessary
-
       - name: Deploy via SSH
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST << 'EOF'
-            cd /path/to/deployment  # Update to the path where you want to deploy
+            cd /path/to/deployment  # Путь к проекту на сервере
             docker-compose -f docker-compose.dev.yaml pull frontend
             docker-compose -f docker-compose.dev.yaml up -d --build frontend
           EOF
