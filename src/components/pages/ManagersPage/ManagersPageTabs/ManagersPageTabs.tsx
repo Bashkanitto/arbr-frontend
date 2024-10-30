@@ -9,7 +9,6 @@ export const ManagersPageTabs = () => {
 			<Tabs className={styles['tab']} defaultValue='all'>
 				<Tabs.List>
 					<Tabs.Tab value='all'>Все карты</Tabs.Tab>
-					<Tabs.Tab value='groups'>Группы карт</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel className={styles['panel']} value='all'>
 					<Select
