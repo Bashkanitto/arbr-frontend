@@ -14,6 +14,10 @@ const WithdrawsPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/WithdrawsPage/WithdrawsPage')
 })
+const SecurityPage = lazy(async () => {
+	await wait(500)
+	return import('../components/pages/SecurityPage/SecurityPage')
+})
 
 export const AppRouter = () => {
 	return (
@@ -39,6 +43,7 @@ export const AppRouter = () => {
 							<Route path={RoutePathList.managers} Component={ManagersPage} />
 							<Route path={RoutePathList.search} Component={WithdrawsPage} />
 							<Route path={RoutePathList.withdraws} Component={WithdrawsPage} />
+							<Route path={RoutePathList.security} Component={SecurityPage} />
 						</Route>
 					</Route>
 					<Route path='*' element={<Navigate to='/' />} />

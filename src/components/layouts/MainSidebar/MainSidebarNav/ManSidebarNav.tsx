@@ -33,7 +33,7 @@ const navItems = [
 	{
 		icon: <LockIcon />,
 		title: 'Безопасность',
-		route: '3',
+		route: RouteNavList.security(),
 	},
 ]
 
