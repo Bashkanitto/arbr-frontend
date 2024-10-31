@@ -9,6 +9,11 @@
 		width: 100%;
 		height: 100%;
 		border-radius: 30px;
-		background: #737684;
+		background: #fff;
+		overflow: scroll;
+
+		&::-webkit-scrollbar {
+			display: none; /* Hide scrollbar */
+		}
 	}
 }
