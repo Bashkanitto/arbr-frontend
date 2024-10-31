@@ -9,6 +9,7 @@ type DateItemVariantColor =
 	| 'danger'
 	| 'warning'
 	| 'gray'
+	| 'secondary-text'
 type DateItemProps = ComponentPropsWithoutRef<'div'> & {
 	variantColor?: DateItemVariantColor
 }
