@@ -7,6 +7,7 @@ import {
 } from '../../../../assets/icons'
 import { UserIcon } from '../../../../assets/icons/UserIcon'
 import { RouteNavList } from '../../../../constants/router'
+import CatalogPage from '../../../pages/CatalogPage/CatalogPage'
 import styles from './MainSidebarNav.module.scss'
 
 const navItems = [
@@ -14,6 +15,11 @@ const navItems = [
 		icon: <UserIcon />,
 		title: 'Менеджеры',
 		route: RouteNavList.managers(),
+	},
+	{
+		icon: <CatalogPage />,
+		title: 'Каталог',
+		route: RouteNavList.catalog(),
 	},
 	{
 		icon: <SearchIcon />,

@@ -10,9 +10,17 @@ const ManagersPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/ManagersPage/ManagersPage')
 })
+const CatalogPage = lazy(async () => {
+	await wait(500)
+	return import('../components/pages/CatalogPage/CatalogPage')
+})
 const WithdrawsPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/WithdrawsPage/WithdrawsPage')
+})
+const NotFoundPage = lazy(async () => {
+	await wait(500)
+	return import('../components/pages/NotFoundPage/NotFoundPage')
 })
 const SecurityPage = lazy(async () => {
 	await wait(500)
@@ -41,12 +49,14 @@ export const AppRouter = () => {
 					<Route Component={AuthProtect}>
 						<Route Component={MainLayout}>
 							<Route path={RoutePathList.managers} Component={ManagersPage} />
-							<Route path={RoutePathList.search} Component={WithdrawsPage} />
+							<Route path={RoutePathList.catalog} Component={CatalogPage} />
+							<Route path={RoutePathList.notfound} Component={NotFoundPage} />
+							<Route path={RoutePathList.search} Component={NotFoundPage} />
 							<Route path={RoutePathList.withdraws} Component={WithdrawsPage} />
 							<Route path={RoutePathList.security} Component={SecurityPage} />
 						</Route>
 					</Route>
-					<Route path='*' element={<Navigate to='/' />} />
+					<Route path='*' element={<Navigate to='/notfound' />} />
 				</Routes>
 			</BrowserRouter>
 		</Suspense>
