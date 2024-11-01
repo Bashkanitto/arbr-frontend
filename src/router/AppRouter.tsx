@@ -52,6 +52,7 @@ export const AppRouter = () => {
 							<Route path={RoutePathList.catalog} Component={CatalogPage} />
 							<Route path={RoutePathList.notfound} Component={NotFoundPage} />
 							<Route path={RoutePathList.search} Component={NotFoundPage} />
+							<Route path={RoutePathList.list} Component={NotFoundPage} />
 							<Route path={RoutePathList.withdraws} Component={WithdrawsPage} />
 							<Route path={RoutePathList.security} Component={SecurityPage} />
 						</Route>

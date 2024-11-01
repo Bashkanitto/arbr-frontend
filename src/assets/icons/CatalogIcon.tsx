@@ -1,53 +1,34 @@
 import { SVGProps } from 'react'
 
-export const CoinsIcon = ({ ...props }: SVGProps<SVGSVGElement>) => {
+export const CatalogIcon = ({ ...props }: SVGProps<SVGSVGElement>) => {
 	return (
-		<svg width='200' height='200' xmlns='http://www.w3.org/2000/svg' {...props}>
-			<rect
-				x='20'
-				y='20'
-				width='160'
-				height='160'
-				rx='30'
-				ry='30'
-				fill='#c4c8de'
+		<svg
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			xmlns='http://www.w3.org/2000/svg'
+			{...props}
+		>
+			<path
+				d='M3 5h18c0.552 0 1-0.448 1-1s-0.448-1-1-1H3c-0.552 0-1 0.448-1 1s0.448 1 1 1z'
+				stroke='currentColor'
+				strokeWidth='1.5'
 			/>
-
-			<rect
-				x='30'
-				y='50'
-				width='140'
-				height='25'
-				rx='15'
-				ry='15'
-				fill='#c4c8de'
+			<path
+				d='M3 10h18c0.552 0 1-0.448 1-1s-0.448-1-1-1H3c-0.552 0-1 0.448-1 1s0.448 1 1 1z'
+				stroke='currentColor'
+				strokeWidth='1.5'
 			/>
-			<rect
-				x='30'
-				y='90'
-				width='140'
-				height='25'
-				rx='15'
-				ry='15'
-				fill='#c4c8de'
+			<path
+				d='M3 15h18c0.552 0 1-0.448 1-1s-0.448-1-1-1H3c-0.552 0-1 0.448-1 1s0.448 1 1 1z'
+				stroke='currentColor'
+				strokeWidth='1.5'
 			/>
-			<rect
-				x='30'
-				y='130'
-				width='140'
-				height='25'
-				rx='15'
-				ry='15'
-				fill='#c4c8de'
-			/>
-			<rect
-				x='30'
-				y='170'
-				width='140'
-				height='25'
-				rx='15'
-				ry='15'
-				fill='#c4c8de'
+			<path
+				d='M3 20h18c0.552 0 1-0.448 1-1s-0.448-1-1-1H3c-0.552 0-1 0.448-1 1s0.448 1 1 1z'
+				stroke='currentColor'
+				strokeWidth='1.5'
 			/>
 		</svg>
 	)

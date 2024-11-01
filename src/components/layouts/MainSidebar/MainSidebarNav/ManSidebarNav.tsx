@@ -5,9 +5,9 @@ import {
 	SearchIcon,
 	StatusIcon,
 } from '../../../../assets/icons'
+import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
 import { UserIcon } from '../../../../assets/icons/UserIcon'
 import { RouteNavList } from '../../../../constants/router'
-import CatalogPage from '../../../pages/CatalogPage/CatalogPage'
 import styles from './MainSidebarNav.module.scss'
 
 const navItems = [
@@ -17,7 +17,7 @@ const navItems = [
 		route: RouteNavList.managers(),
 	},
 	{
-		icon: <CatalogPage />,
+		icon: <CatalogIcon />,
 		title: 'Каталог',
 		route: RouteNavList.catalog(),
 	},
@@ -29,7 +29,7 @@ const navItems = [
 	{
 		icon: <StatusIcon />,
 		title: 'Список',
-		route: '2',
+		route: RouteNavList.list(),
 	},
 	{
 		icon: <CoinsIcon />,
