@@ -1,5 +1,7 @@
 .managers-page-charts {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
 	align-items: center;
 	gap: 20px;
 	width: 100%;
@@ -7,10 +9,10 @@
 
 	.chart {
 		width: 100%;
-		height: 100%;
+		height: 438px;
 		border-radius: 30px;
-		background: #fff;
 		overflow: scroll;
+		background: #fff;
 
 		&::-webkit-scrollbar {
 			display: none; /* Hide scrollbar */
