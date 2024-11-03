@@ -1,9 +1,10 @@
 import CatalogSwitch from '../../molecules/CatalogSwitch/CatalogSwitch'
 import Tender from '../../molecules/Tender/Tender'
-import CatalogFilters from './CatalogFilter/CatalogFilters'
-import styles from './CatalogPage.module.scss'
+import styles from './Search.module.scss'
+import SearchFilters from './SearchFilters/SearchFilters'
 
-const CatalogPage = () => {
+const SearchPage = () => {
+	const customerLength = '19 300'
 	const userData = [
 		{
 			id: 0,
@@ -101,12 +102,14 @@ const CatalogPage = () => {
 	]
 
 	return (
-		<div className={styles['catalog-page']}>
+		<div className={styles['search-page']}>
 			<CatalogSwitch />
-			<p className={styles['catalog-title']}>Каталог</p>
-			<p className={styles['catalog-description']}>Топ - 50</p>
-			<CatalogFilters />
-			<div className={styles['catalog-tenders']}>
+			<p className={styles['search-title']}>Поиск</p>
+			<p className={styles['search-description']}>
+				{customerLength} cпециалистов
+			</p>
+			<SearchFilters />
+			<div className={styles['search-tenders']}>
 				{userData.map(user => (
 					<Tender
 						key={user.id}
@@ -124,4 +127,4 @@ const CatalogPage = () => {
 	)
 }
 
-export default CatalogPage
+export default SearchPage

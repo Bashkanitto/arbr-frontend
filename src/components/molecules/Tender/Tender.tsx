@@ -1,4 +1,5 @@
-import { Avatar } from '../../../atoms/Avatar'
+import { useNavigate } from 'react-router-dom'
+import { Avatar } from '../../atoms/Avatar'
 import styles from './Tender.module.scss'
 
 interface TenderItem {
@@ -18,6 +19,12 @@ interface TenderType {
 }
 
 const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
+	const navigate = useNavigate()
+
+	function navigateToProductDetails(id: number) {
+		navigate(`/product/${id}`)
+	}
+
 	return (
 		<div className={styles['tender']}>
 			{/* Информация о пользователе */}
@@ -45,10 +52,14 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 			{/* Отображение тендеров */}
 			<div className={styles['tender-items']}>
 				{tenders.map(tender => (
-					<div key={tender.id} className={styles['tender-item']}>
+					<button
+						onClick={() => navigateToProductDetails(tender.id)}
+						key={tender.id}
+						className={styles['tender-item']}
+					>
 						<img src={tender.image} className={styles['tender-image']} />
 						<p className={styles['tender-title']}>{tender.title}</p>
-					</div>
+					</button>
 				))}
 			</div>
 		</div>

@@ -28,6 +28,11 @@ body {
 	margin: 0;
 }
 
+button,
+a {
+	cursor: pointer;
+}
+
 p {
 	margin: 0;
 }

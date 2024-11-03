@@ -1,0 +1,18 @@
+.search-header {
+	margin-top: 55px;
+	width: 100%;
+	gap: 10px;
+	display: flex;
+
+	div {
+		flex: 1;
+	}
+
+	input {
+		height: 64px;
+		border-radius: 15px;
+		background: transparent;
+		border: 1px solid grey;
+		font-size: 20px;
+	}
+}

@@ -37,6 +37,12 @@
 	display: flex;
 	gap: 10px;
 
+	button {
+		border: none;
+		background: transparent;
+		text-align: left;
+	}
+
 	.tender-image {
 		width: 160px;
 		height: 144px;
