@@ -36,6 +36,10 @@
 .tender-items {
 	display: flex;
 	gap: 10px;
+	overflow-x: scroll;
+	&::-webkit-scrollbar {
+		display: none;
+	}
 
 	button {
 		border: none;

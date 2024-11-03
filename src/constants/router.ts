@@ -12,6 +12,7 @@ export const RoutePathList = {
 	managers: '/managers',
 	search: '/search',
 	notfound: '/notfound',
+	product: '/product/:id',
 	list: '/list',
 	withdraws: '/withdraws',
 	security: '/security',

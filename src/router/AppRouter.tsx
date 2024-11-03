@@ -30,6 +30,10 @@ const SecurityPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/SecurityPage/SecurityPage')
 })
+const ProductPage = lazy(async () => {
+	await wait(500)
+	return import('../components/pages/ProductPage/ProductPage')
+})
 
 export const AppRouter = () => {
 	return (
@@ -56,6 +60,7 @@ export const AppRouter = () => {
 							<Route path={RoutePathList.catalog} Component={CatalogPage} />
 							<Route path={RoutePathList.notfound} Component={NotFoundPage} />
 							<Route path={RoutePathList.search} Component={SearchPage} />
+							<Route path={RoutePathList.product} Component={ProductPage} />
 							<Route path={RoutePathList.list} Component={NotFoundPage} />
 							<Route path={RoutePathList.withdraws} Component={WithdrawsPage} />
 							<Route path={RoutePathList.security} Component={SecurityPage} />
