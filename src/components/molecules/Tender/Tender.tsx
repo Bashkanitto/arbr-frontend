@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowUpRightIcon } from '../../../assets/icons/ArrowUpRightIcon'
 import { Avatar } from '../../atoms/Avatar'
+import EditProcentModal from '../../pages/CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './Tender.module.scss'
 
 interface TenderItem {
@@ -20,6 +23,7 @@ interface TenderType {
 
 const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 	const navigate = useNavigate()
+	const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
 
 	function navigateToProductDetails(id: number) {
 		navigate(`/product/${id}`)
@@ -35,6 +39,12 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 						<p className={styles['tender-user-name']}>{name}</p>
 						<p className={styles['tender-user-role']}>Поставщик</p>
 					</div>
+					<button
+						onClick={() => setIsProcentModalOpen(true)}
+						className={styles['link']}
+					>
+						<ArrowUpRightIcon />
+					</button>
 				</div>
 				<div className={styles['tender-user-statistics']}>
 					<div className={styles['tender-winned']}>
@@ -62,6 +72,12 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 					</button>
 				))}
 			</div>
+			{isProcentModalOpen && (
+				<EditProcentModal
+					isOpen={isProcentModalOpen}
+					onClose={() => setIsProcentModalOpen(false)}
+				/>
+			)}
 		</div>
 	)
 }
