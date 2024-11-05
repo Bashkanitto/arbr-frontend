@@ -7,7 +7,7 @@ const AddCatalogModal = ({
 	onClose,
 }: {
 	isOpen: boolean
-	onClose: unknown
+	onClose: () => void
 }) => {
 	return (
 		<Modal

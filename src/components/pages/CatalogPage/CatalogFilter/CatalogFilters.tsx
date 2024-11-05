@@ -1,7 +1,7 @@
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './CatalogFilters.module.scss'
 
-const CatalogFilters = ({ addCatalog }) => {
+const CatalogFilters = ({ addCatalog }: { addCatalog: () => void }) => {
 	return (
 		<div className={styles['catalog-header']}>
 			<div className={styles['catalog-filter']}>
