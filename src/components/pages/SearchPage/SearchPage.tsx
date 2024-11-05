@@ -1,7 +1,7 @@
-import CatalogSwitch from '../../molecules/CatalogSwitch/CatalogSwitch'
 import Tender from '../../molecules/Tender/Tender'
-import styles from './Search.module.scss'
+import CatalogSwitch from '../CatalogPage/CatalogSwitch/CatalogSwitch'
 import SearchFilters from './SearchFilters/SearchFilters'
+import styles from './SearchPage.module.scss'
 
 const SearchPage = () => {
 	const customerLength = '19 300'
