@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { BaseButton } from '../../atoms/Button/BaseButton'
+import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './CatalogSwitch.module.scss'
 
 const CatalogSwitch = () => {

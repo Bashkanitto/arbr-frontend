@@ -1,7 +1,9 @@
-import CatalogSwitch from '../../molecules/CatalogSwitch/CatalogSwitch'
+import { useState } from 'react'
 import Tender from '../../molecules/Tender/Tender'
+import AddCatalogModal from './AddCatalogModal/AddCatalogModal'
 import CatalogFilters from './CatalogFilter/CatalogFilters'
 import styles from './CatalogPage.module.scss'
+import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
 
 const CatalogPage = () => {
 	const userData = [
@@ -99,13 +101,18 @@ const CatalogPage = () => {
 			],
 		},
 	]
+	const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>()
+
+	function addCatalog() {
+		setIsAddCatalogOpen(true)
+	}
 
 	return (
 		<div className={styles['catalog-page']}>
 			<CatalogSwitch />
 			<p className={styles['catalog-title']}>Каталог</p>
 			<p className={styles['catalog-description']}>Топ - 50</p>
-			<CatalogFilters />
+			<CatalogFilters addCatalog={addCatalog} />
 			<div className={styles['catalog-tenders']}>
 				{userData.map(user => (
 					<Tender
@@ -120,6 +127,12 @@ const CatalogPage = () => {
 					/>
 				))}
 			</div>
+			{isAddCatalogOpen && (
+				<AddCatalogModal
+					isOpen={isAddCatalogOpen}
+					onClose={() => setIsAddCatalogOpen(false)}
+				/>
+			)}
 		</div>
 	)
 }
