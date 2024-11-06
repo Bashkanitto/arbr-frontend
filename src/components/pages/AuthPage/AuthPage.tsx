@@ -40,12 +40,12 @@ const AuthPAge = () => {
 				</form>
 			</div>
 			<footer>
-				<div className='contact'>
+				<div className={styles.footerItem}>
 					<h3>Есть вопросы?</h3>
 					<p>Звоните и мы с радостью на них ответим</p>
 					<p className={styles.number}>+7 800 707 22 03</p>
 				</div>
-				<div className='social'>
+				<div className={styles.footerItem}>
 					<h3>Соц сети</h3>
 					<p>
 						Подписывайтесь на наш канал и будьте в курсе последних новостей.
@@ -59,7 +59,7 @@ const AuthPAge = () => {
 						</a>
 					</div>
 				</div>
-				<div className='mobile'>
+				<div className={styles.footerItem}>
 					<h3>Мобильное приложение</h3>
 					<p>
 						Скачайте наше мобильное приложение для удобства. Всегда под рукой,
