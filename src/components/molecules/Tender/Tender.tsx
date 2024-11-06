@@ -67,7 +67,8 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 						key={tender.id}
 						className={styles['tender-item']}
 					>
-						<img src={tender.image} className={styles['tender-image']} />
+						<div className={styles['tender-image']} />
+						{/* <img src={tender.image} className={styles['tender-image']} /> */}
 						<p className={styles['tender-title']}>{tender.title}</p>
 					</button>
 				))}
