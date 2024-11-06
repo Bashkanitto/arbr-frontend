@@ -1,4 +1,5 @@
 import { Input } from '@mantine/core'
+import { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import styles from './AuthPage.module.scss'
@@ -6,10 +7,11 @@ import styles from './AuthPage.module.scss'
 const AuthPAge = () => {
 	const navigate = useNavigate()
 
-	function handleSubmit(event) {
+	function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-		const email = event.target.email.value
-		const password = event.target.password.value
+
+		const email = (event.target as HTMLFormElement).email.value
+		const password = (event.target as HTMLFormElement).password.value
 
 		if (email == 'admin' && password == 'admin') {
 			navigate('/manager')
