@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import styles from './AuthPage.module.scss'
 
-const AuthPAge = () => {
+const AuthPage = () => {
 	const navigate = useNavigate()
 
 	function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -73,4 +73,4 @@ const AuthPAge = () => {
 	)
 }
 
-export default AuthPAge
+export default AuthPage

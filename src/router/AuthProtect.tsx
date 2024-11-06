@@ -1,11 +1,14 @@
 import { observer } from 'mobx-react-lite'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import AuthPage from '../components/pages/AuthPage/AuthPage'
 
 export const AuthProtect = observer(() => {
 	const isAuth = true
+	const navigate = useNavigate()
 
 	if (!isAuth) {
-		return <Navigate to='/auth' />
+		navigate('/auth')
+		return <AuthPage />
 	}
 
 	return <Outlet />
