@@ -11,6 +11,7 @@ export const RouteNavList = {
 export const RoutePathList = {
 	managers: '/managers',
 	search: '/search',
+	auth: '/auth',
 	notfound: '/notfound',
 	product: '/product/:id',
 	list: '/list',

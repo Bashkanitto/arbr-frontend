@@ -5,7 +5,7 @@ export const AuthProtect = observer(() => {
 	const isAuth = true
 
 	if (!isAuth) {
-		return <Navigate to='/' />
+		return <Navigate to='/auth' />
 	}
 
 	return <Outlet />

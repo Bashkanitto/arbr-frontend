@@ -10,6 +10,10 @@ const ManagersPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/ManagersPage/ManagersPage')
 })
+const AuthPage = lazy(async () => {
+	await wait(500)
+	return import('../components/pages/AuthPage/AuthPage')
+})
 const CatalogPage = lazy(async () => {
 	await wait(500)
 	return import('../components/pages/CatalogPage/CatalogPage')
@@ -55,6 +59,7 @@ export const AppRouter = () => {
 				<Routes>
 					<Route path='/' element={<Navigate to={RouteNavList.managers()} />} />
 					<Route Component={AuthProtect}>
+						<Route path={RoutePathList.auth} Component={AuthPage} />
 						<Route Component={MainLayout}>
 							<Route path={RoutePathList.managers} Component={ManagersPage} />
 							<Route path={RoutePathList.catalog} Component={CatalogPage} />
