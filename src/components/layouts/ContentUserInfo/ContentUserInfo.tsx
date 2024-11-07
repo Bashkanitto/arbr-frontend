@@ -1,38 +1,43 @@
 import { useWindowScroll } from '@mantine/hooks'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+// import { useEffect, useState } from 'react'
 import { SearchIcon } from '../../../assets/icons'
 import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
+import authStore from '../../../store/AuthStore'
 import { Avatar } from '../../atoms/Avatar'
 import { IconButton } from '../../atoms/Button/IconButton'
 import { Skeleton } from '../../atoms/Skeleton'
 import { UserInfo } from '../../molecules'
 import styles from './ContentUserInfo.module.scss'
 
-export const ContentUserInfo = () => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [user, setUser] = useState<any>(null)
+export const ContentUserInfo = observer(() => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
+	// const [user, setUser] = useState<any>()
 	const [scroll] = useWindowScroll()
+	const { userProfile } = authStore
+	console.log(userProfile)
+	if (!userProfile) return null
 
 	const isScroll = scroll.y > 100
 
-	useEffect(() => {
-		setTimeout(() => {
-			setUser({
-				fullName: 'Мальсагов А.С',
-				updateAt: new Date(),
-				createdAt: new Date(),
-				region: 'Урал',
-				archive: true,
-				active: true,
-				profile: 'Администратор',
-			})
-		}, 2000)
-	}, [])
+	// useEffect(() => {
+	// 	setTimeout(() => {
+	// 		setUser({
+	// 			fullName: `${userProfile.firstName} ${userProfile.lastName}`,
+	// 			updateAt: userProfile.loginAt,
+	// 			createdAt: new Date(),
+	// 			region: 'Урал',
+	// 			archive: true,
+	// 			active: userProfile.status,
+	// 			role: userProfile.role,
+	// 		})
+	// 	}, 2000)
+	// }, [])
 
 	return (
 		<>
-			{!user ? (
+			{!userProfile ? (
 				<Skeleton width={isScroll ? 85 : 447} height='100%' radius={30} />
 			) : (
 				<motion.div
@@ -67,8 +72,8 @@ export const ContentUserInfo = () => {
 							<UserInfo
 								className={styles['user-info']}
 								avatar={<Avatar />}
-								title={user?.fullName}
-								description={user?.profile}
+								title={userProfile?.firstName}
+								description={userProfile?.role}
 							/>
 						</>
 					) : (
@@ -78,4 +83,4 @@ export const ContentUserInfo = () => {
 			)}
 		</>
 	)
-}
+})

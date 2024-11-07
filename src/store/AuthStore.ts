@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import {
-	fetchAccount,
+	fetchProfile,
 	login as loginApi,
 } from '../services/api/auth/authService'
 import { UserType } from './Types'
@@ -8,7 +8,7 @@ import { UserType } from './Types'
 class AuthStore {
 	accessToken: string | null = localStorage.getItem('accessToken')
 	refreshToken: string | null = localStorage.getItem('refreshToken')
-	userProfile: UserType | null = null // Holds the user's profile data after
+	userProfile: UserType | null = null
 	loading: boolean = false
 
 	constructor() {
@@ -39,10 +39,10 @@ class AuthStore {
 
 	async getProfile() {
 		try {
-			const profileData = await fetchAccount()
-			console.log(profileData)
+			const profileData = await fetchProfile()
+			console.log('in store -', profileData)
 			runInAction(() => {
-				this.userAccount = profileData
+				this.userProfile = profileData
 			})
 		} catch (error) {
 			console.error('Fetching profile failed:', error)
