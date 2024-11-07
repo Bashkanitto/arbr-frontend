@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react-lite'
 import { Outlet, useNavigate } from 'react-router-dom'
-import AuthPage from '../components/pages/AuthPage/AuthPage'
+import authStore from '../store/AuthStore'
 
 export const AuthProtect = observer(() => {
-	const isAuth = true
 	const navigate = useNavigate()
 
-	if (!isAuth) {
+	if (!authStore.isLoggedIn) {
 		navigate('/auth')
-		return <AuthPage />
+	} else {
+		navigate('/managers')
 	}
 
 	return <Outlet />

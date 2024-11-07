@@ -1,19 +1,21 @@
 import { Input } from '@mantine/core'
+import { observer } from 'mobx-react-lite'
 import { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import authStore from '../../../store/AuthStore'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import styles from './AuthPage.module.scss'
 
-const AuthPage = () => {
+const AuthPage = observer(() => {
 	const navigate = useNavigate()
 
-	function handleSubmit(event: FormEvent<HTMLFormElement>) {
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
-
-		const email = (event.target as HTMLFormElement).email.value
+		const identifier = (event.target as HTMLFormElement).identifier.value
 		const password = (event.target as HTMLFormElement).password.value
+		await authStore.login(identifier, password)
 
-		if (email == 'admin' && password == 'admin') {
+		if (identifier == 'admin' && password == 'admin') {
 			navigate('/manager')
 		}
 	}
@@ -26,7 +28,7 @@ const AuthPage = () => {
 					<p>Введите ваш номер телефона для входа в личный кабинет.</p>
 					<Input
 						className={styles['inputs']}
-						name='email'
+						name='identifier'
 						placeholder='Ваша Почта'
 					/>
 					<Input
@@ -71,6 +73,6 @@ const AuthPage = () => {
 			</footer>
 		</div>
 	)
-}
+})
 
 export default AuthPage
