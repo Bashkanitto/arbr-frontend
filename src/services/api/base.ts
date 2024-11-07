@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { env } from '../../configs/env.config'
+import authStore from '../../store/AuthStore'
 
 export const baseApi = axios.create({
 	baseURL: env.baseUrl,
@@ -7,18 +8,17 @@ export const baseApi = axios.create({
 
 baseApi.interceptors.request.use(
 	config => {
+		if (authStore.accessToken) {
+			config.headers['Authorization'] = `Bearer ${authStore.accessToken}`
+		}
 		return config
 	},
-	error => {
-		return Promise.reject(error)
-	}
+	error => Promise.reject(error)
 )
 
 baseApi.interceptors.response.use(
-	response => {
-		return response.data
-	},
-	error => {
-		return Promise.reject(error)
-	}
+	response => response.data,
+	error => Promise.reject(error)
 )
+
+export default baseApi
