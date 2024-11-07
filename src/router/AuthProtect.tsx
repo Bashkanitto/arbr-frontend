@@ -7,8 +7,6 @@ export const AuthProtect = observer(() => {
 
 	if (!authStore.isLoggedIn) {
 		navigate('/auth')
-	} else {
-		navigate('/managers')
 	}
 
 	return <Outlet />

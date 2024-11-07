@@ -15,8 +15,8 @@ const AuthPage = observer(() => {
 		const password = (event.target as HTMLFormElement).password.value
 		await authStore.login(identifier, password)
 
-		if (identifier == 'admin' && password == 'admin') {
-			navigate('/manager')
+		if (authStore.isLoggedIn) {
+			navigate('/managers')
 		}
 	}
 
