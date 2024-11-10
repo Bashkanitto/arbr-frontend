@@ -1,3 +1,5 @@
+import { AxiosResponse } from 'axios'
+import Cookies from 'js-cookie'
 import { UserType } from '../../../store/Types'
 import { baseApi } from '../base'
 
@@ -6,47 +8,57 @@ interface LoginResponse {
 	refreshToken: string
 }
 
-// Helper function to save tokens to local storage
 const setTokens = (accessToken: string, refreshToken: string) => {
 	localStorage.setItem('accessToken', accessToken)
 	localStorage.setItem('refreshToken', refreshToken)
+	Cookies.set('accessToken', accessToken, { expires: 1 })
+	Cookies.set('refreshToken', refreshToken, { expires: 1 })
 }
 
-// –––––––––––––––––––––––––––––––Login –––––––––––––––––––––––––––––––
+// –––––––––––––––––––––––––––––––Login–––––––––––––––––––––––––––––––
+
 export const login = async (
 	identifier: string,
 	password: string
 ): Promise<LoginResponse> => {
 	try {
-		// Note: Removing the type from AxiosResponse<LoginResponse> because we need the tokens directly
-		const response: { accessToken: string; refreshToken: string } =
-			await baseApi.post('/auth/login', {
-				identifier,
-				password,
-			})
-
-		// Extract tokens directly from the response
+		const response: LoginResponse = await baseApi.post('/auth/login', {
+			identifier,
+			password,
+		})
 		const { accessToken, refreshToken } = response
 
-		// Save tokens
 		setTokens(accessToken, refreshToken)
 
-		// Return tokens as the expected LoginResponse type
 		return { accessToken, refreshToken }
 	} catch (error) {
-		console.error('Login failed:', error)
-		throw error
+		console.error('Unknown error type:', error)
+		throw new Error(`Login failed: Unknown error - ${error}`)
 	}
 }
 
+// ––––––––––––––––––––––––––––––Log Out–––––––––––––––––––––––––––––––
+export const logout = () => {
+	localStorage.removeItem('accessToken')
+	localStorage.removeItem('refreshToken')
+	Cookies.remove('accessToken')
+	Cookies.remove('refreshToken')
+}
+
+// Автоматический выход через 24 часа
+export const setLogoutTimer = () => {
+	setTimeout(logout, 24 * 60 * 60 * 1000)
+}
+
 // –––––––––––––––––––––––––––––––Fetch Profile–––––––––––––––––––––––––––––––
-export const fetchProfile = async (): Promise<UserType> => {
+export const fetchProfile = async (): Promise<AxiosResponse<UserType>> => {
 	try {
-		const response: UserType = await baseApi.get(`/account/profile`)
-		console.log('in api -', response)
+		const response: AxiosResponse<UserType> = await baseApi.get(
+			'/account/profile'
+		)
 		return response
 	} catch (error) {
-		console.error('Failed to fetch account:', error)
-		throw error
+		console.error('Unknown error type:', error)
+		throw new Error(`Failed to fetch profile: Unknown error - ${error}`)
 	}
 }

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 // import { useEffect, useState } from 'react'
 import { SearchIcon } from '../../../assets/icons'
-import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
+import { SignOut } from '../../../assets/icons/SignOut'
 import authStore from '../../../store/AuthStore'
 import { Avatar } from '../../atoms/Avatar'
 import { IconButton } from '../../atoms/Button/IconButton'
@@ -13,7 +13,6 @@ import styles from './ContentUserInfo.module.scss'
 
 export const ContentUserInfo = observer(() => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
-	// const [user, setUser] = useState<any>()
 	const [scroll] = useWindowScroll()
 	const { userProfile } = authStore
 	console.log(userProfile)
@@ -21,19 +20,9 @@ export const ContentUserInfo = observer(() => {
 
 	const isScroll = scroll.y > 100
 
-	// useEffect(() => {
-	// 	setTimeout(() => {
-	// 		setUser({
-	// 			fullName: `${userProfile.firstName} ${userProfile.lastName}`,
-	// 			updateAt: userProfile.loginAt,
-	// 			createdAt: new Date(),
-	// 			region: 'Урал',
-	// 			archive: true,
-	// 			active: userProfile.status,
-	// 			role: userProfile.role,
-	// 		})
-	// 	}, 2000)
-	// }, [])
+	async function logout() {
+		authStore.logout()
+	}
 
 	return (
 		<>
@@ -65,8 +54,8 @@ export const ContentUserInfo = observer(() => {
 								<IconButton variantColor='secondary'>
 									<SearchIcon />
 								</IconButton>
-								<IconButton variantColor='secondary'>
-									<NotificationIcon />
+								<IconButton onClick={logout} variantColor='danger'>
+									<SignOut />
 								</IconButton>
 							</div>
 							<UserInfo

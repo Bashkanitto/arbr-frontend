@@ -3,7 +3,7 @@ import { ComponentPropsWithRef, ComponentRef, forwardRef } from 'react'
 import { cn } from '../../../../helpers'
 import styles from './BaseButton.module.scss'
 
-type BaseButtonVariantColor = 'primary' | 'secondary'
+type BaseButtonVariantColor = 'primary' | 'secondary' | 'danger'
 type BaseButtonProps = ComponentPropsWithRef<'button'> & {
 	variantColor?: BaseButtonVariantColor
 }

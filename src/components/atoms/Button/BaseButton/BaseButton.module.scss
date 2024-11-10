@@ -20,4 +20,11 @@
 			background: #f0f3ffc1;
 		}
 	}
+	&[data-color='danger'] {
+		background: #ffe3e3;
+		color: red;
+		&:hover {
+			background: #ffe3e3;
+		}
+	}
 }

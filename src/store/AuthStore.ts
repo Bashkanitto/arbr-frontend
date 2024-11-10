@@ -1,32 +1,45 @@
+// –––––––––––––––––––––––––––––––––– AuthStore.ts ––––––––––––––––––––––––––––––––––
+
+import Cookies from 'js-cookie'
 import { makeAutoObservable, runInAction } from 'mobx'
 import {
 	fetchProfile,
 	login as loginApi,
+	logout as logoutApi,
 } from '../services/api/auth/authService'
 import { UserType } from './Types'
 
 class AuthStore {
-	accessToken: string | null = localStorage.getItem('accessToken')
-	refreshToken: string | null = localStorage.getItem('refreshToken')
+	accessToken = Cookies.get('accessToken')
+	refreshToken = Cookies.get('refreshToken')
 	userProfile: UserType | null = null
-	loading: boolean = false
+	loading = false
 
 	constructor() {
 		makeAutoObservable(this)
+		this.loadUserProfileFromCookies()
 	}
 
+	private loadUserProfileFromCookies() {
+		const savedProfile = Cookies.get('userProfile')
+		if (savedProfile) {
+			this.userProfile = JSON.parse(savedProfile)
+		}
+	}
+
+	// –––––––––––––––––––––––––––––––Login–––––––––––––––––––––––––––––––
 	async login(identifier: string, password: string) {
 		this.loading = true
 		try {
-			const { accessToken, refreshToken } = await loginApi(identifier, password)
+			const response = await loginApi(identifier, password)
+			const { accessToken, refreshToken } = response
 
 			runInAction(() => {
 				this.accessToken = accessToken
 				this.refreshToken = refreshToken
-				localStorage.setItem('accessToken', accessToken)
-				localStorage.setItem('refreshToken', refreshToken)
+				Cookies.set('accessToken', accessToken, { expires: 1 })
+				Cookies.set('refreshToken', refreshToken, { expires: 1 })
 			})
-
 			await this.getProfile()
 		} catch (error) {
 			console.error('Login failed:', error)
@@ -37,29 +50,34 @@ class AuthStore {
 		}
 	}
 
+	// –––––––––––––––––––––––––––––––Fetch Profile–––––––––––––––––––––––––––––––
 	async getProfile() {
 		try {
-			const profileData = await fetchProfile()
-			console.log('in store -', profileData)
+			const response = await fetchProfile()
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const profileData: any = response
+
 			runInAction(() => {
 				this.userProfile = profileData
+				Cookies.set('userProfile', JSON.stringify(profileData), { expires: 1 })
 			})
 		} catch (error) {
 			console.error('Fetching profile failed:', error)
 		}
 	}
 
-	//TODO set timer for logout
+	// –––––––––––––––––––––––––––––––Logout–––––––––––––––––––––––––––––––
 	logout() {
-		this.accessToken = null
-		this.refreshToken = null
-		this.userProfile = null
-		localStorage.removeItem('accessToken')
-		localStorage.removeItem('refreshToken')
+		runInAction(() => {
+			this.accessToken = undefined
+			this.refreshToken = undefined
+			this.userProfile = null
+		})
+		logoutApi()
 	}
 
 	get isLoggedIn() {
-		return !!this.accessToken
+		return Boolean(this.accessToken)
 	}
 }
 

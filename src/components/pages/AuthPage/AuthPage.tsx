@@ -1,6 +1,6 @@
 import { Input } from '@mantine/core'
 import { observer } from 'mobx-react-lite'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authStore from '../../../store/AuthStore'
 import { BaseButton } from '../../atoms/Button/BaseButton'
@@ -8,15 +8,24 @@ import styles from './AuthPage.module.scss'
 
 const AuthPage = observer(() => {
 	const navigate = useNavigate()
+	const [error, setError] = useState<string | null>(null)
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
+		setError(null)
+
 		const identifier = (event.target as HTMLFormElement).identifier.value
 		const password = (event.target as HTMLFormElement).password.value
-		await authStore.login(identifier, password)
 
-		if (authStore.isLoggedIn) {
-			navigate('/managers')
+		try {
+			await authStore.login(identifier, password)
+			if (authStore.isLoggedIn) {
+				navigate('/managers')
+			} else {
+				setError('Не удалось войти, проверьте данные')
+			}
+		} catch (error) {
+			setError('Ошибка: Неправильные данные для входа') // обработка ошибки
 		}
 	}
 
@@ -26,6 +35,7 @@ const AuthPage = observer(() => {
 				<form onSubmit={e => handleSubmit(e)}>
 					<h4>Авторизация</h4>
 					<p>Введите ваш номер телефона для входа в личный кабинет.</p>
+
 					<Input
 						className={styles['inputs']}
 						name='identifier'
@@ -37,8 +47,10 @@ const AuthPage = observer(() => {
 						placeholder='Ваш Пароль'
 					/>
 					<BaseButton type='submit' variantColor='primary'>
-						Войти
+						{authStore.loading ? 'Вход...' : 'Войти'}
 					</BaseButton>
+					{/* Отображение сообщения об ошибке */}
+					{error && <p className={styles.error}>{error}</p>}
 				</form>
 			</div>
 			<footer>
