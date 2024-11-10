@@ -1,40 +1,53 @@
-// stores/ProductStore.js
-import { makeAutoObservable, runInAction } from 'mobx'
+// import { makeAutoObservable, runInAction } from 'mobx'
+// import {
+// 	fetchProductById,
+// 	fetchProducts,
+// } from '../services/api/product/productService'
+// import { ProductType } from './Types'
 
-class ProductStore {
-	products = []
-	loading = false
-	error = null
+// class ProductStore {
+// 	products: ProductType[] = []
+// 	selectedProduct: ProductType | null = null
+// 	loading = false
 
-	constructor() {
-		makeAutoObservable(this)
-	}
+// 	constructor() {
+// 		makeAutoObservable(this)
+// 	}
 
-	async fetchProducts() {
-		this.loading = true
-		this.error = null
-		try {
-			const response = await fetch('/product')
-			if (!response.ok) {
-				throw new Error(`Error: ${response.statusText}`)
-			}
-			const data = await response.json()
-			runInAction(() => {
-				this.products = data
-				this.loading = false
-			})
-		} catch (error) {
-			runInAction(() => {
-				this.error = 'Failed to load products'
-				this.loading = false
-			})
-		}
-	}
+// 	// Получение списка продуктов
+// 	async loadProducts() {
+// 		this.loading = true
+// 		try {
+// 			const products = await fetchProducts()
+// 			runInAction(() => {
+// 				this.products = products
+// 			})
+// 		} catch (error) {
+// 			console.error('Ошибка загрузки продуктов:', error)
+// 		} finally {
+// 			runInAction(() => {
+// 				this.loading = false
+// 			})
+// 		}
+// 	}
 
-	get productCount() {
-		return this.products.length
-	}
-}
+// 	// Получение данных по конкретному продукту
+// 	async loadProductById(id: string) {
+// 		this.loading = true
+// 		try {
+// 			const product = await fetchProductById(id)
+// 			runInAction(() => {
+// 				this.selectedProduct = product
+// 			})
+// 		} catch (error) {
+// 			console.error('Ошибка загрузки продукта:', error)
+// 		} finally {
+// 			runInAction(() => {
+// 				this.loading = false
+// 			})
+// 		}
+// 	}
+// }
 
-const productStore = new ProductStore()
-export default productStore
+// const productStore = new ProductStore()
+// export default productStore

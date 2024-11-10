@@ -17,7 +17,6 @@ export const ContentUserInfo = observer(() => {
 	const [scroll] = useWindowScroll()
 	const { userProfile } = authStore
 	const navigate = useNavigate()
-	console.log(userProfile)
 	if (!userProfile) return null
 
 	const isScroll = scroll.y > 100
