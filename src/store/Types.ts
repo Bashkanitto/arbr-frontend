@@ -18,3 +18,37 @@ export interface UserType {
 	deliveryAddresses: string[]
 	transactions: string[]
 }
+
+// Определим тип для продуктов
+export interface ProductType {
+	name: string
+	description: string
+	quantity: number
+	price: number
+	amountPrice: number
+	rating: number
+	brand: {
+		name: string
+		rating: number
+		image: {
+			filename: string
+			originalname: string
+			mimetype: string
+			size: number
+			bucket: string
+			url: string
+		}
+		features: Record<string, any>
+	}
+	subcategory: {
+		name: string
+		category: {
+			name: string
+			mainCategory: any
+			subcategories: (null | ProductType)[]
+		}
+	}
+	images: string[]
+	userWishList: string[]
+	features: Record<string, any>
+}
