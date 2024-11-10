@@ -2,6 +2,7 @@ import { useWindowScroll } from '@mantine/hooks'
 import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 // import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { SearchIcon } from '../../../assets/icons'
 import { SignOut } from '../../../assets/icons/SignOut'
 import authStore from '../../../store/AuthStore'
@@ -15,6 +16,7 @@ export const ContentUserInfo = observer(() => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
 	const [scroll] = useWindowScroll()
 	const { userProfile } = authStore
+	const navigate = useNavigate()
 	console.log(userProfile)
 	if (!userProfile) return null
 
@@ -51,7 +53,10 @@ export const ContentUserInfo = observer(() => {
 					{!isScroll ? (
 						<>
 							<div className={styles['left']}>
-								<IconButton variantColor='secondary'>
+								<IconButton
+									onClick={() => navigate('/search')}
+									variantColor='secondary'
+								>
 									<SearchIcon />
 								</IconButton>
 								<IconButton onClick={logout} variantColor='danger'>
