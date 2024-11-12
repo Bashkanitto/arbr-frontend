@@ -24,7 +24,8 @@ const AuthPage = observer(() => {
 			} else {
 				setError('Не удалось войти, проверьте данные')
 			}
-		} catch (error) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error: unknown) {
 			setError('Ошибка: Неправильные данные для входа') // обработка ошибки
 		}
 	}
