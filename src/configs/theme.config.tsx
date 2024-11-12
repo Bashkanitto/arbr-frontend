@@ -23,6 +23,7 @@ export const themeConfig = createTheme({
 		// 			color: '#fff',
 		// 		},
 		// 	},
+		//}1
 		// }),
 		Select: SelectExtend,
 		Tabs: TabsExtend,
