@@ -17,6 +17,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # Копирование собранных файлов
+ENV BASE_URL $BASE_URL
 COPY --from=builder /app/package*.json ./
 RUN npm ci --only=production
 COPY --from=builder /app/dist ./dist

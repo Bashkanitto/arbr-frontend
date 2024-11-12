@@ -1,3 +1,3 @@
 export const env = {
-	baseUrl: import.meta.env.VITE_BASE_URL,
+	baseUrl: 'http://195.49.215.169/back',
 }
