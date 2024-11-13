@@ -13,8 +13,8 @@
 		border: 15px solid white;
 		padding-bottom: 30px;
 		border-radius: 30px;
-		overflow: scroll;
 		background: #fff;
+		overflow: hidden;
 
 		&::-webkit-scrollbar {
 			display: none; /* Hide scrollbar */

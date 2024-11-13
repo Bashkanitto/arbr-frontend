@@ -39,8 +39,8 @@ const LastRegisterChart = () => {
 	return (
 		<div className={styles.container}>
 			<h2 className={styles.title}>Последние регистрации</h2>
-			<Table stickyHeader>
-				<Table.Tbody>
+			<Table stickyHeader style={{ overflow: 'scroll' }}>
+				<Table.Tbody style={{ overflow: 'scroll' }}>
 					{elements.map((item, index) => (
 						<Table.Tr key={index}>
 							<Table.Td>
