@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRightIcon } from '../../../assets/icons/ArrowUpRightIcon'
+import { DiscountIcon } from '../../../assets/icons/DiscountIcon'
 import { Avatar } from '../../atoms/Avatar'
+import DiscountModal from '../../pages/CatalogPage/DiscountModal/DiscountModal'
 import EditProcentModal from '../../pages/CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './Tender.module.scss'
 
@@ -24,6 +26,7 @@ interface TenderType {
 const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 	const navigate = useNavigate()
 	const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
+	const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false)
 
 	function navigateToProductDetails(id: number) {
 		navigate(`/product/${id}`)
@@ -44,6 +47,13 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 						className={styles['link']}
 					>
 						<ArrowUpRightIcon />
+					</button>
+					<button
+						onClick={() => setIsDiscountModalOpen(true)}
+						className={styles['link']}
+						style={{ background: 'black' }}
+					>
+						<DiscountIcon />
 					</button>
 				</div>
 				<div className={styles['tender-user-statistics']}>
@@ -73,10 +83,20 @@ const Tender: React.FC<TenderType> = ({ name, tenders, winned, sold }) => {
 					</button>
 				))}
 			</div>
+
+			{/* percentModal */}
 			{isProcentModalOpen && (
 				<EditProcentModal
 					isOpen={isProcentModalOpen}
 					onClose={() => setIsProcentModalOpen(false)}
+				/>
+			)}
+
+			{/* discountModal */}
+			{isDiscountModalOpen && (
+				<DiscountModal
+					isOpen={isDiscountModalOpen}
+					onClose={() => setIsDiscountModalOpen(false)}
 				/>
 			)}
 		</div>

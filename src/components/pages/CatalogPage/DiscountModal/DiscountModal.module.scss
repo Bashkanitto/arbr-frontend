@@ -1,0 +1,44 @@
+@import '../../../../constants/Variables.scss';
+
+section {
+	padding: 10px;
+}
+
+.DiscountModal-modal {
+	header {
+		display: none;
+	}
+
+	input:select {
+		margin-top: 20px;
+	}
+	.checkbox {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		margin: 20px 0;
+		font-size: 14px;
+	}
+
+	.AddCatalog-button {
+		display: flex;
+		width: 100%;
+	}
+
+	.procent {
+		color: $secondary-color;
+		display: flex;
+		justify-content: center;
+		margin: 30px 0;
+	}
+
+	.DiscountModal-button {
+		margin-top: 20px;
+		background: #292933;
+		width: 100%;
+	}
+
+	.DiscountModal-button:hover {
+		background: #292933;
+	}
+}
