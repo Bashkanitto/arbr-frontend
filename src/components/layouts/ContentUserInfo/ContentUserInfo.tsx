@@ -66,7 +66,9 @@ export const ContentUserInfo = observer(() => {
 								className={styles['user-info']}
 								avatar={<Avatar />}
 								title={userProfile?.firstName}
-								description={userProfile?.role}
+								description={
+									(userProfile?.role == 'manager' && 'Менеджер') || 'Поставщик'
+								}
 							/>
 						</>
 					) : (
