@@ -1,13 +1,17 @@
 import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import authStore from '../store/AuthStore'
 
 export const AuthProtect = observer(() => {
 	const navigate = useNavigate()
+	const isLogged = authStore.isLoggedIn
 
-	if (!authStore.isLoggedIn) {
-		navigate('/auth')
-	}
+	useEffect(() => {
+		if (!isLogged) {
+			navigate('/auth')
+		}
+	}, [isLogged, navigate])
 
-	return <Outlet />
+	return authStore.isLoggedIn ? <Outlet /> : null
 })
