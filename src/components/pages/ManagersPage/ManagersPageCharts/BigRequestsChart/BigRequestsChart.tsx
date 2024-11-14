@@ -10,7 +10,7 @@ import {
 } from 'chart.js'
 import React from 'react'
 import { Line } from 'react-chartjs-2'
-import styles from './WithdrawsPageChart.module.scss'
+import styles from './BigRequestsChart.module.scss'
 
 ChartJS.register(
 	CategoryScale,
@@ -22,7 +22,7 @@ ChartJS.register(
 	Legend
 )
 
-const WithdrawsPageChart: React.FC = () => {
+const BigRequestChart: React.FC = () => {
 	const labels = ['Янв', 'Фев', 'Март', 'Апр', 'Май']
 	const data = [12, 19, 3, 5, 2]
 
@@ -48,10 +48,10 @@ const WithdrawsPageChart: React.FC = () => {
 
 	return (
 		<div className={styles.container}>
-			<h2 className={styles.title}> Общие сведения</h2>
+			<h2 className={styles.title}> Большие запросы</h2>
 			<Line data={chartData} options={options} />
 		</div>
 	)
 }
 
-export default WithdrawsPageChart
+export default BigRequestChart

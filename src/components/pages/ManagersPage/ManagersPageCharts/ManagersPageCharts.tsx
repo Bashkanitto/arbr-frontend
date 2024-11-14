@@ -1,7 +1,8 @@
-import ConfirmatedUsers from './ConfirmatedUsers/ConfirmatedUsers'
+import BigRequestChart from './BigRequestsChart/BigRequestsChart'
+import { default as ConfirmatedUsersChart } from './ConfirmatedUsersCart/ConfirmatedUsersChart'
 import LastRegisterChart from './LastRegisterChart/LastRegisterChart'
 import styles from './ManagersPageCharts.module.scss'
-import TopProducts from './TopProducts/TopProducts'
+import TopProductsChart from './TopProductsChart/TopProductsChart'
 
 export const ManagersPageCharts = () => {
 	return (
@@ -10,13 +11,13 @@ export const ManagersPageCharts = () => {
 				<LastRegisterChart />
 			</div>
 			<div className={styles['chart']}>
-				<ConfirmatedUsers />
+				<ConfirmatedUsersChart />
 			</div>
 			<div className={styles['chart']}>
-				<TopProducts />
+				<TopProductsChart />
 			</div>
 			<div className={styles['chart']}>
-				<ConfirmatedUsers />
+				<BigRequestChart />
 			</div>
 		</div>
 	)

@@ -8,7 +8,7 @@ import {
 	Tooltip,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
-import styles from './TopProducts.module.scss'
+import styles from './TopProductsChart.module.scss'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 

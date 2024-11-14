@@ -1,7 +1,7 @@
 import { Avatar } from '../../../../atoms/Avatar'
 import { DateItem } from '../../../../atoms/DateItem'
 import { Table } from '../../../../atoms/Table'
-import styles from './ConfirmatedUsers.module.scss'
+import styles from './ConfirmatedUsersChart.module.scss'
 
 const elements = [
 	{
@@ -34,7 +34,7 @@ const elements = [
 	},
 ]
 
-const ConfirmatedUsers = () => {
+const ConfirmatedUsersChart = () => {
 	return (
 		<div className={styles.container}>
 			<h2 className={styles.title}>Юр. лица с подтверждениями</h2>
@@ -65,4 +65,4 @@ const ConfirmatedUsers = () => {
 	)
 }
 
-export default ConfirmatedUsers
+export default ConfirmatedUsersChart

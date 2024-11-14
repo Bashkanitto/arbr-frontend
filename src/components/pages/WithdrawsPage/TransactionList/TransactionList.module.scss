@@ -1,0 +1,57 @@
+// TransactionList.module.scss
+
+.container {
+	padding: 10px;
+}
+
+.date {
+	font-weight: normal;
+	color: #333;
+	margin-bottom: 8px;
+}
+
+.title,
+p,
+h3 {
+	font-weight: 400;
+	margin: 0;
+}
+
+.transaction {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px dotted #ccc;
+}
+
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #f1f1f1;
+	margin-right: 12px;
+}
+
+.details {
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.subtitle {
+	font-size: 14px;
+	color: #888;
+}
+
+.amount {
+	font-size: 18px;
+}
+
+.amountPositive {
+	color: #4caf50;
+}
+
+.amountNegative {
+	color: #000;
+	font-weight: bold;
+}

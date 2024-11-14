@@ -1,9 +1,9 @@
 import { ContentLayout } from '../../layouts/ContentLayout'
 import { ContentTopBar } from '../../layouts/ContentTopBar'
 import { ContentUserInfo } from '../../layouts/ContentUserInfo'
+import TransactionList from './TransactionList/TransactionList'
 import styles from './WithdrawsPage.module.scss'
-import { WithdrawsPageChart } from './WithdrawsPageChart/WithdrawsPageChart'
-import { WithdrawsPageData } from './WithdrawsPageData/WithdrawsPageData'
+import WithdrawsPageChart from './WithdrawsPageChart/WithdrawsPageChart'
 import { WithdrawsPageTable } from './WithdrawsPageTable'
 
 const WithdrawsPage = () => {
@@ -18,8 +18,12 @@ const WithdrawsPage = () => {
 			}
 		>
 			<div className={styles['content']}>
-				<WithdrawsPageChart />
-				<WithdrawsPageData />
+				<div className={styles['chart']}>
+					<WithdrawsPageChart />
+				</div>
+				<div className={styles['chart']}>
+					<TransactionList />
+				</div>
 			</div>
 			<div className={styles['']}>
 				<WithdrawsPageTable />
