@@ -7,12 +7,12 @@ export const MainSidebarManagerInfo = () => {
 		<div className={styles['main-sidebar-manager-info']}>
 			<UserInfo
 				avatar={<img src='/images/manager_photo.png' alt='logo' />}
-				title='Иванов Иван'
+				title='Аслан ага'
 				description='Ваш менеджер'
 			/>
 			<div className={styles['phone']}>
 				<PhoneIcon />
-				<span>8 (800) 152-15-25</span>
+				<span>8 (701) 552 61 52</span>
 			</div>
 		</div>
 	)
