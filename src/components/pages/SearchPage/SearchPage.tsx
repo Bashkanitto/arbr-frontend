@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import Tender from '../../molecules/Tender/Tender'
 import CatalogSwitch from '../CatalogPage/CatalogSwitch/CatalogSwitch'
 import SearchFilters from './SearchFilters/SearchFilters'
 import styles from './SearchPage.module.scss'
 
 const SearchPage = () => {
+	const [searchQuery, setSearchQuery] = useState('')
+
 	const customerLength = '19 300'
 	const userData = [
 		{
@@ -40,7 +43,7 @@ const SearchPage = () => {
 		{
 			id: 2,
 			title: 'БФГ',
-			name: 'Самса сенсей',
+			name: 'данияр ',
 			rang: 96,
 			rangCount: 12,
 			winned: '95/106',
@@ -71,7 +74,7 @@ const SearchPage = () => {
 		{
 			id: 3,
 			title: 'БФГ',
-			name: 'Самса сенсей',
+			name: 'Кана сенсей',
 			rang: 96,
 			rangCount: 12,
 			winned: '95/106',
@@ -101,16 +104,21 @@ const SearchPage = () => {
 		},
 	]
 
+	// Фильтрация данных на основе запроса
+	const filteredUserData = userData.filter(user =>
+		user.name.toLowerCase().includes(searchQuery.toLowerCase())
+	)
+
 	return (
 		<div className={styles['search-page']}>
 			<CatalogSwitch />
 			<p className={styles['search-title']}>Поиск</p>
 			<p className={styles['search-description']}>
-				{customerLength} cпециалистов
+				{customerLength} специалистов
 			</p>
-			<SearchFilters />
+			<SearchFilters setSearchTerm={setSearchQuery} />
 			<div className={styles['search-tenders']}>
-				{userData.map(user => (
+				{filteredUserData.map(user => (
 					<Tender
 						key={user.id}
 						id={user.id}
