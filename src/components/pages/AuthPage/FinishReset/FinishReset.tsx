@@ -2,39 +2,40 @@ import { Input } from '@mantine/core'
 import { observer } from 'mobx-react-lite'
 import { FormEvent, useState } from 'react'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
-import styles from './PasswordReset.module.scss'
+import styles from '../PasswordReset/PasswordReset.module.scss'
 
 interface PasswordResetProps {
 	onNext: () => void
 	onBack: () => void
 }
 
-const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
+const FinishPassword = observer(({ onNext, onBack }: PasswordResetProps) => {
 	const [code, setCode] = useState(true)
 	const handleReset = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		// Логика сброса пароля
 		console.log('Сброс пароля')
-		onNext()
 	}
 
 	return (
 		<form className={styles.resetForm} onSubmit={handleReset}>
 			<div>
 				<h4>
-					Сброс пароля <button onClick={onBack}>Назад</button>
+					Введите новый пароль <button onClick={onBack}>Назад</button>
 				</h4>
-				<p>
-					Введите адрес, на который мы вам
-					<br />
-					отправим код .
-				</p>
+				<p>Введите код, который мы вам отправили на ваш адрес</p>
 			</div>
 			<div>
 				<Input
 					onChange={() => setCode(false)}
 					name='email'
-					placeholder='Ваша почта'
+					placeholder='Введите пароль'
+					required
+				/>
+				<Input
+					onChange={() => setCode(false)}
+					name='email'
+					placeholder='Подтвердите пароль'
 					required
 				/>
 				<BaseButton
@@ -43,11 +44,11 @@ const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
 					type='submit'
 					variantColor='primary'
 				>
-					Отправить код
+					Войти
 				</BaseButton>
 			</div>
 		</form>
 	)
 })
 
-export default PasswordReset
+export default FinishPassword

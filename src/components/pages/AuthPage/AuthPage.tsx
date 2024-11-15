@@ -5,13 +5,15 @@ import { useNavigate } from 'react-router-dom'
 import authStore from '../../../store/AuthStore'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import styles from './AuthPage.module.scss'
+import FinishPassword from './FinishReset/FinishReset'
 import Footer from './Footer/Footer'
+import GetCode from './GetCode/GetCode'
 import PasswordReset from './PasswordReset/PasswordReset'
 
 const AuthPage = observer(() => {
 	const navigate = useNavigate()
 	const [error, setError] = useState<string | null>(null)
-	const [isResetMode, setIsResetMode] = useState(false)
+	const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
@@ -35,11 +37,14 @@ const AuthPage = observer(() => {
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.formWrapper}>
+			<div
+				className={styles.formWrapper}
+				style={{ height: step == 1 ? '400px' : '320px' }}
+			>
 				<div
 					className={styles.formScroller}
 					style={{
-						transform: isResetMode ? 'translateX(-480px)' : 'translateX(0)',
+						transform: `translateX(-${(step - 1) * 480}px)`,
 					}}
 				>
 					<form className={styles.authForm} onSubmit={e => handleSubmit(e)}>
@@ -57,19 +62,16 @@ const AuthPage = observer(() => {
 							name='password'
 							placeholder='Ваш Пароль'
 						/>
-						<a
-							onClick={() => setIsResetMode(true)}
-							className={styles.forgetPassword}
-						>
+						<a onClick={() => setStep(2)} className={styles.forgetPassword}>
 							Забыли пароль?
 						</a>
 						<BaseButton type='submit' variantColor='primary'>
 							{authStore.loading ? 'Вход...' : 'Войти'}
 						</BaseButton>
-
-						{/* Отображение сообщения об ошибке */}
 					</form>
-					<PasswordReset />
+					<PasswordReset onNext={() => setStep(3)} onBack={() => setStep(1)} />
+					<GetCode onNext={() => setStep(4)} onBack={() => setStep(2)} />
+					<FinishPassword onNext={() => setStep(1)} onBack={() => setStep(3)} />
 				</div>
 			</div>
 			<Footer />
