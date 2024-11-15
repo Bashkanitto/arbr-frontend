@@ -51,12 +51,8 @@ export const MainSidebarNav = () => {
 	const filteredNavItems = navItems.filter(item => {
 		if (!userProfile) return false // если не залогинен
 		switch (userProfile.role) {
-			case 'admin':
-				return true // админ видит все
 			case 'manager':
-				return ['Каталог', 'Безопасность', 'Поиск', 'Выплаты'].includes(
-					item.title
-				)
+				return true // админ видит все
 			case 'supplier':
 				return [
 					'Каталог',
