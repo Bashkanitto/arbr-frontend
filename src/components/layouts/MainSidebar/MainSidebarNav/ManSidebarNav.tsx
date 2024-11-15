@@ -8,6 +8,7 @@ import {
 import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
 import { UserIcon } from '../../../../assets/icons/UserIcon'
 import { RouteNavList } from '../../../../constants/router'
+import authStore from '../../../../store/AuthStore'
 import styles from './MainSidebarNav.module.scss'
 
 const navItems = [
@@ -45,12 +46,33 @@ const navItems = [
 
 export const MainSidebarNav = () => {
 	const location = useLocation()
+	const { userProfile } = authStore
+	// Фильтрация пунктов меню на основе роли
+	const filteredNavItems = navItems.filter(item => {
+		if (!userProfile) return false // если не залогинен
+		switch (userProfile.role) {
+			case 'admin':
+				return true // админ видит все
+			case 'manager':
+				return ['Каталог', 'Безопасность', 'Поиск', 'Выплаты'].includes(
+					item.title
+				)
+			case 'supplier':
+				return [
+					'Каталог',
+					'Поставки/ Мои сделки',
+					'Заявки',
+					'Безопасность',
+				].includes(item.title)
+			default:
+				return false
+		}
+	})
 
 	return (
 		<nav className={styles['main-sidebar-nav']}>
-			{navItems.map((item, index) => (
+			{filteredNavItems.map((item, index) => (
 				<Link
-					style={{}}
 					key={index}
 					className={styles['nav-item']}
 					data-active={location.pathname.includes(item.route)}
