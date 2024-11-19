@@ -6,7 +6,6 @@ import {
 	logout as logoutApi,
 } from '../services/api/authService'
 import { UserType } from '../services/api/Types'
-import productStore from '../store/ProductStore'
 
 class AuthStore {
 	accessToken = Cookies.get('accessToken') || null
@@ -40,7 +39,6 @@ class AuthStore {
 			})
 
 			await this.getProfile()
-			await productStore.loadVendorDetails()
 		} catch (error: unknown) {
 			console.error('Login failed:', error)
 		} finally {

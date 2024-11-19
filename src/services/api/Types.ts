@@ -19,41 +19,8 @@ export interface UserType {
 	transactions: string[]
 }
 
-// Определим тип для продуктов
-export interface ProductType {
-	name: string
-	description: string
-	quantity: number
-	price: number
-	amountPrice: number
-	rating: number
-	brand: {
-		name: string
-		rating: number
-		image: {
-			filename: string
-			originalname: string
-			mimetype: string
-			size: number
-			bucket: string
-			url: string
-		}
-		features: Record<string, unknown>
-	}
-	subcategory: {
-		name: string
-		category: {
-			name: string
-			mainCategory: unknown
-			subcategories: (null | ProductType)[]
-		}
-	}
-	images: string[]
-	userWishList: string[]
-	features: Record<string, unknown>
-}
-
-export interface VendorResponse {
+export interface VendorType {
+	id: number | null | undefined
 	email: string
 	phone: string
 	role: string
@@ -72,7 +39,7 @@ export interface VendorResponse {
 	bonusAmount: number
 	deliveryAddresses: string[]
 	paymentCards: Array<{
-		account: VendorResponse
+		account: unknown
 		cvv: number
 		cardNumber: string
 		expiredMonth: number
@@ -80,4 +47,15 @@ export interface VendorResponse {
 		ownerName: string
 	}>
 	transactions: string[]
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	vendorGroups: any[]
+}
+
+export interface VendorResponse {
+	records: VendorType[]
+	meta: {
+		totalPages: number
+		page: number
+		total: number
+	}
 }
