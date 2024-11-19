@@ -38,19 +38,19 @@ export interface ProductType {
 			bucket: string
 			url: string
 		}
-		features: Record<string, any>
+		features: Record<string, unknown>
 	}
 	subcategory: {
 		name: string
 		category: {
 			name: string
-			mainCategory: any
+			mainCategory: unknown
 			subcategories: (null | ProductType)[]
 		}
 	}
 	images: string[]
 	userWishList: string[]
-	features: Record<string, any>
+	features: Record<string, unknown>
 }
 
 export interface VendorResponse {

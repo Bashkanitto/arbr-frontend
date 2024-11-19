@@ -1,6 +1,7 @@
 import { baseApi } from './base'
 
-export const fetchAllVendors = async (): any => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const fetchAllVendors = async (): Promise<any> => {
 	// export const fetchAllVendors = async (): Promise<VendorResponse[]> => {
 	try {
 		const response = await baseApi.get('/account/vendors')

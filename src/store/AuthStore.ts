@@ -1,17 +1,16 @@
-// –––––––––––––––––––––––––––––––––– AuthStore.ts ––––––––––––––––––––––––––––––––––
-
 import Cookies from 'js-cookie'
 import { makeAutoObservable, runInAction } from 'mobx'
 import {
 	fetchProfile,
 	login as loginApi,
 	logout as logoutApi,
-} from '../services/api/auth/authService'
-import { UserType } from './Types'
+} from '../services/api/authService'
+import { UserType } from '../services/api/Types'
+import productStore from '../store/ProductStore'
 
 class AuthStore {
-	accessToken = Cookies.get('accessToken')
-	refreshToken = Cookies.get('refreshToken')
+	accessToken = Cookies.get('accessToken') || null
+	refreshToken = Cookies.get('refreshToken') || null
 	userProfile: UserType | null = null
 	loading = false
 
@@ -27,7 +26,6 @@ class AuthStore {
 		}
 	}
 
-	// –––––––––––––––––––––––––––––––Login–––––––––––––––––––––––––––––––
 	async login(identifier: string, password: string) {
 		this.loading = true
 		try {
@@ -40,8 +38,10 @@ class AuthStore {
 				Cookies.set('accessToken', accessToken, { expires: 1 })
 				Cookies.set('refreshToken', refreshToken, { expires: 1 })
 			})
+
 			await this.getProfile()
-		} catch (error) {
+			await productStore.loadVendorDetails()
+		} catch (error: unknown) {
 			console.error('Login failed:', error)
 		} finally {
 			runInAction(() => {
@@ -50,29 +50,27 @@ class AuthStore {
 		}
 	}
 
-	// –––––––––––––––––––––––––––––––Fetch Profile–––––––––––––––––––––––––––––––
 	async getProfile() {
 		try {
 			const response = await fetchProfile()
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const profileData: any = response
-
 			runInAction(() => {
-				this.userProfile = profileData
-				Cookies.set('userProfile', JSON.stringify(profileData), { expires: 1 })
+				this.userProfile = response
+				Cookies.set('userProfile', JSON.stringify(response), { expires: 1 })
 			})
-		} catch (error) {
+		} catch (error: unknown) {
 			console.error('Fetching profile failed:', error)
 		}
 	}
 
-	// –––––––––––––––––––––––––––––––Logout–––––––––––––––––––––––––––––––
 	logout() {
 		runInAction(() => {
-			this.accessToken = undefined
-			this.refreshToken = undefined
+			this.accessToken = null
+			this.refreshToken = null
 			this.userProfile = null
 		})
+		Cookies.remove('accessToken')
+		Cookies.remove('refreshToken')
+		Cookies.remove('userProfile')
 		logoutApi()
 	}
 

@@ -1,63 +1,66 @@
+// components/LastRegisterChart/LastRegisterChart.tsx
 import { format } from 'date-fns'
+import { useEffect, useState } from 'react'
+import {
+	AccountType,
+	fetchAccounts,
+} from '../../../../../services/api/AccountsService'
 import { Avatar } from '../../../../atoms/Avatar'
 import { DateItem } from '../../../../atoms/DateItem'
 import { Table } from '../../../../atoms/Table'
 import styles from './LastRegisterChart.module.scss'
 
-const elements = [
-	{
-		fullName: 'Родриго Гоес',
-		role: 'Менеджер',
-		createdAt: new Date('2022-07-15T14:37:00'),
-		profileLink: '#',
-		avatar: 'https://via.placeholder.com/50',
-	},
-	{
-		fullName: 'Виктор Галкин',
-		role: 'Менеджер',
-		createdAt: new Date('2022-07-15T14:37:00'),
-		profileLink: '#',
-		avatar: 'https://via.placeholder.com/50',
-	},
-	{
-		fullName: 'Оскар Мальгасов',
-		role: 'Менеджер',
-		createdAt: new Date('2022-07-15T14:37:00'),
-		profileLink: '#',
-		avatar: 'https://via.placeholder.com/50',
-	},
-	{
-		fullName: 'Чириштиано Роналдо',
-		role: 'Менеджер',
-		createdAt: new Date('2022-07-15T14:37:00'),
-		profileLink: '#',
-		avatar: 'https://via.placeholder.com/50',
-	},
-]
-
 const LastRegisterChart = () => {
+	const [lastConfirmedAccounts, setLastConfirmedAccounts] = useState<
+		AccountType[]
+	>([])
+	const [loading, setLoading] = useState<boolean>(false)
+	const [error, setError] = useState<string | null>(null)
+
+	// Fetch the accounts data when the component mounts
+	useEffect(() => {
+		const loadLastConfirmedAccounts = async () => {
+			setLoading(true)
+			setError(null)
+			try {
+				const accounts = await fetchAccounts()
+				setLastConfirmedAccounts(accounts)
+			} catch (err: unknown) {
+				setError('Failed to load last confirmed accounts')
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadLastConfirmedAccounts()
+	}, [])
+
+	if (loading) return <div>Loading...</div>
+	if (error) return <div>Error: {error}</div>
+
 	return (
 		<div className={styles.container}>
 			<h2 className={styles.title}>Последние регистрации</h2>
 
 			<Table stickyHeader className={styles.tablee}>
 				<Table.Tbody className={styles.tablee}>
-					{elements.map((item, index) => (
-						<Table.Tr key={index}>
+					{lastConfirmedAccounts.map(item => (
+						<Table.Tr key={item.id}>
 							<Table.Td>
 								<Avatar />
 							</Table.Td>
 							<Table.Td className={styles.nameRole}>
-								<p>{item.fullName}</p>
+								<p>{item.firstName || 'Неизвестный'}</p>
 								<p>{item.role}</p>
 							</Table.Td>
 							<Table.Td>
 								<DateItem variantColor='secondary'>
-									{format(item.createdAt, 'dd.MM.yy - HH:mm')}
+									{format(new Date(item.createdAt), 'dd.MM.yy - HH:mm')}
 								</DateItem>
 							</Table.Td>
 							<Table.Td>
-								<a href={item.profileLink} className={styles.profileLink}>
+								<a href='/' className={styles.profileLink}>
 									Смотреть профиль
 								</a>
 							</Table.Td>

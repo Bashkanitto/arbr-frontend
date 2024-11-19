@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import Cookies from 'js-cookie'
 import { baseApi } from './base'
 import { UserType } from './Types'
@@ -51,11 +50,9 @@ export const setLogoutTimer = () => {
 }
 
 // –––––––––––––––––––––––––––––––Fetch Profile–––––––––––––––––––––––––––––––
-export const fetchProfile = async (): Promise<AxiosResponse<UserType>> => {
+export const fetchProfile = async (): Promise<UserType> => {
 	try {
-		const response: AxiosResponse<UserType> = await baseApi.get(
-			'/account/profile'
-		)
+		const response: UserType = await baseApi.get('/account/profile')
 		return response
 	} catch (error) {
 		console.error('Unknown error type:', error)
