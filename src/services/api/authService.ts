@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import Cookies from 'js-cookie'
-import { UserType } from '../../../store/Types'
-import { baseApi } from '../base'
+import { baseApi } from './base'
+import { UserType } from './Types'
 
 interface LoginResponse {
 	accessToken: string

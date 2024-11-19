@@ -10,7 +10,6 @@ export const ContentTopBar = ({ title }: ContentTopBarProps) => {
 	const [scroll] = useWindowScroll()
 
 	const isScroll = scroll.y > 85
-	console.log(scroll)
 
 	return (
 		<motion.div

@@ -52,3 +52,32 @@ export interface ProductType {
 	userWishList: string[]
 	features: Record<string, any>
 }
+
+export interface VendorResponse {
+	email: string
+	phone: string
+	role: string
+	loginAt: string
+	firstName: string
+	lastName: string
+	userName: string
+	legalName: string
+	dateOfBirth: string
+	fcm: string
+	iin: string
+	bin: string
+	bik: string
+	rating: number
+	status: string
+	bonusAmount: number
+	deliveryAddresses: string[]
+	paymentCards: Array<{
+		account: VendorResponse
+		cvv: number
+		cardNumber: string
+		expiredMonth: number
+		expiredYear: number
+		ownerName: string
+	}>
+	transactions: string[]
+}
