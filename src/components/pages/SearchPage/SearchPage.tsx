@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { VendorType } from '../../../services/api/Types'
+import { fetchAllVendors } from '../../../services/api/productService'
 import Tender from '../../molecules/Tender/Tender'
 import CatalogSwitch from '../CatalogPage/CatalogSwitch/CatalogSwitch'
 import SearchFilters from './SearchFilters/SearchFilters'
@@ -8,105 +10,39 @@ const SearchPage = () => {
 	const [searchQuery, setSearchQuery] = useState('')
 
 	const customerLength = '19 300'
-	const userData = [
-		{
-			id: 0,
-			title: 'БФГ',
-			name: 'Самса сенсей',
-			rang: 96,
-			rangCount: 12,
-			winned: '95/106',
-			sold: 1007,
-			tenders: [
-				{
-					id: 0,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 1,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 2,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 3,
-					title: 'БФГ',
-					image: '/',
-				},
-			],
-		},
-		{
-			id: 2,
-			title: 'БФГ',
-			name: 'данияр ',
-			rang: 96,
-			rangCount: 12,
-			winned: '95/106',
-			sold: 1007,
-			tenders: [
-				{
-					id: 0,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 1,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 2,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 3,
-					title: 'БФГ',
-					image: '/',
-				},
-			],
-		},
-		{
-			id: 3,
-			title: 'БФГ',
-			name: 'Кана сенсей',
-			rang: 96,
-			rangCount: 12,
-			winned: '95/106',
-			sold: 1007,
-			tenders: [
-				{
-					id: 0,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 1,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 2,
-					title: 'БФГ',
-					image: '/',
-				},
-				{
-					id: 3,
-					title: 'БФГ',
-					image: '/',
-				},
-			],
-		},
-	]
+
+	const [vendorData, setVendorData] = useState<VendorType[]>([])
+	const [loading, setLoading] = useState<boolean>(true)
+	const [error, setError] = useState<string | null>(null)
+
+	// Fetch vendor details on component mount
+	useEffect(() => {
+		const loadVendors = async () => {
+			try {
+				setLoading(true)
+				const response = await fetchAllVendors()
+				setVendorData(response.records)
+			} catch (err: unknown) {
+				setError(
+					err instanceof Error
+						? `Failed to load vendor data: ${err.message}`
+						: 'An unknown error occurred'
+				)
+			} finally {
+				setLoading(false)
+			}
+		}
+		loadVendors()
+	}, [])
+
+	// Toggle catalog modal
+
+	if (loading) return <p>Loading vendor data...</p>
+	if (error) return <p>Error: {error}</p>
 
 	// Фильтрация данных на основе запроса
-	const filteredUserData = userData.filter(user =>
-		user.name.toLowerCase().includes(searchQuery.toLowerCase())
+	const filteredUserData = vendorData.filter(user =>
+		user.firstName.toLowerCase().includes(searchQuery.toLowerCase())
 	)
 
 	return (
@@ -118,18 +54,11 @@ const SearchPage = () => {
 			</p>
 			<SearchFilters setSearchTerm={setSearchQuery} />
 			<div className={styles['search-tenders']}>
-				{filteredUserData.map(user => (
-					<Tender
-						key={user.id}
-						id={user.id}
-						name={user.name}
-						rang={user.rang}
-						winned={user.winned}
-						title={user.title}
-						sold={user.sold}
-						tenders={user.tenders}
-					/>
-				))}
+				<div className={styles['catalog-tenders']}>
+					{filteredUserData.map(vendor => (
+						<Tender key={vendor.id} user={vendor} />
+					))}
+				</div>
 			</div>
 		</div>
 	)
