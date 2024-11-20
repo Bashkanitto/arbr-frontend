@@ -7,7 +7,7 @@ export const MainSidebarManagerInfo = () => {
 		<div className={styles['main-sidebar-manager-info']}>
 			<UserInfo
 				avatar={<img src='/images/manager_photo.png' alt='logo' />}
-				title='Аслан ага'
+				title='Курмангалиев Аслан'
 				description='Ваш менеджер'
 			/>
 			<div className={styles['phone']}>

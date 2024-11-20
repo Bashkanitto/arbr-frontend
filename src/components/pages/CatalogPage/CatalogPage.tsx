@@ -36,6 +36,7 @@ const CatalogPage = () => {
 
 	// Toggle catalog modal
 	const addCatalog = () => setIsAddCatalogOpen(true)
+	const top = vendorData.length
 
 	if (loading) return <p>Loading vendor data...</p>
 	if (error) return <p>Error: {error}</p>
@@ -44,7 +45,7 @@ const CatalogPage = () => {
 		<div className={styles['catalog-page']}>
 			<CatalogSwitch />
 			<p className={styles['catalog-title']}>Каталог</p>
-			<p className={styles['catalog-description']}>Топ - 50</p>
+			<p className={styles['catalog-description']}>Топ - {top}</p>
 			<CatalogFilters addCatalog={addCatalog} />
 			<div className={styles['catalog-tenders']}>
 				{vendorData.map(vendor => (

@@ -4,7 +4,7 @@ import {
 	fetchProfile,
 	login as loginApi,
 	logout as logoutApi,
-} from '../services/api/authService'
+} from '../services/api/authService.js'
 import { UserType } from '../services/api/Types'
 
 class AuthStore {

@@ -9,12 +9,11 @@ import styles from './SearchPage.module.scss'
 const SearchPage = () => {
 	const [searchQuery, setSearchQuery] = useState('')
 
-	const customerLength = '19 300'
-
 	const [vendorData, setVendorData] = useState<VendorType[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 
+	const customerLength = vendorData.length
 	// Fetch vendor details on component mount
 	useEffect(() => {
 		const loadVendors = async () => {
