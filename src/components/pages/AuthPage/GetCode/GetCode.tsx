@@ -34,7 +34,10 @@ const GetCode = observer(({ onNext, onBack }: PasswordResetProps) => {
 		<form className={styles.resetForm} onSubmit={handleConfirm}>
 			<div>
 				<h4>
-					Введите код <button onClick={onBack}>Назад</button>
+					Введите код{' '}
+					<button type='button' onClick={onBack}>
+						Назад
+					</button>
 				</h4>
 				<p>Введите код, который мы вам отправили на ваш адрес</p>
 			</div>

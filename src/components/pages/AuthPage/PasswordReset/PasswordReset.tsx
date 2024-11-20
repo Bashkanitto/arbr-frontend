@@ -35,7 +35,10 @@ const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
 		<form className={styles.resetForm} onSubmit={handleReset}>
 			<div>
 				<h4>
-					Сброс пароля <button onClick={onBack}>Назад</button>
+					Сброс пароля{' '}
+					<button type='button' onClick={onBack}>
+						Назад
+					</button>
 				</h4>
 				<p>
 					Введите адрес, на который мы вам
