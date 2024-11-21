@@ -20,6 +20,7 @@ export interface UserType {
 }
 
 export interface VendorType {
+	createdAt: string | number | Date
 	id: number | null | undefined
 	email: string
 	phone: string

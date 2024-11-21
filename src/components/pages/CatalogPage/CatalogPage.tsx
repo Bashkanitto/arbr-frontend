@@ -9,6 +9,7 @@ import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
 
 const CatalogPage = () => {
 	// Local state for vendors, loading, and errors
+	const [filterPeriod, setFilterPeriod] = useState<string | null>(null)
 	const [vendorData, setVendorData] = useState<VendorType[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -20,7 +21,32 @@ const CatalogPage = () => {
 			try {
 				setLoading(true)
 				const response = await fetchAllVendors()
-				setVendorData(response.records)
+				let filteredVendors = response.records
+
+				if (filterPeriod) {
+					const currentDate = new Date()
+					const periodStart = new Date()
+
+					switch (filterPeriod) {
+						case '3_months':
+							periodStart.setMonth(currentDate.getMonth() - 3)
+							break
+						case '6_months':
+							periodStart.setMonth(currentDate.getMonth() - 6)
+							break
+						case '1_year':
+							periodStart.setFullYear(currentDate.getFullYear() - 1)
+							break
+						default:
+							break
+					}
+
+					filteredVendors = filteredVendors.filter(
+						vendor => new Date(vendor.createdAt) >= periodStart
+					)
+				}
+
+				setVendorData(filteredVendors)
 			} catch (err: unknown) {
 				setError(
 					err instanceof Error
@@ -32,7 +58,7 @@ const CatalogPage = () => {
 			}
 		}
 		loadVendors()
-	}, [])
+	}, [filterPeriod])
 
 	// Toggle catalog modal
 	const addCatalog = () => setIsAddCatalogOpen(true)
@@ -46,7 +72,11 @@ const CatalogPage = () => {
 			<CatalogSwitch />
 			<p className={styles['catalog-title']}>Каталог</p>
 			<p className={styles['catalog-description']}>Топ - {top}</p>
-			<CatalogFilters addCatalog={addCatalog} />
+			<CatalogFilters
+				onFilterChange={setFilterPeriod}
+				addCatalog={addCatalog}
+				filterPeriod={filterPeriod}
+			/>
 			<div className={styles['catalog-tenders']}>
 				{vendorData.map(vendor => (
 					<Tender key={vendor.id} user={vendor} />
