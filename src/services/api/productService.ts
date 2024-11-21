@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
 import { VendorResponse } from './Types'
 
@@ -17,9 +18,9 @@ export const fetchAllVendors = async (): Promise<VendorResponse> => {
 }
 
 // –––––––––––––––––- Получение конкретного продукта –––––––––––––
-export const fetchProductById = async (productId: string) => {
+export const fetchProductById = async (productId: any) => {
 	try {
-		const response = await baseApi.get(`/vendor-group/vendor/${productId}`)
+		const response = await baseApi.get(`/product/${productId}?relations=images`)
 		return response // Assuming the response contains the product data in `data`
 	} catch (error) {
 		console.error('Error fetching product:', error)

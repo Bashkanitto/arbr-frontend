@@ -4,9 +4,18 @@ import { useParams } from 'react-router-dom'
 import { fetchProductById } from '../../../services/api/productService'
 import styles from './ProductPage.module.scss'
 
+interface Product {
+	name: string
+	quantity: number
+	price: number
+	images: { url: string }[]
+	order: string
+	details: string
+}
+
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
-	const [product, setProduct] = useState<any | null>(null)
+	const [product, setProduct] = useState<Product | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 
@@ -15,7 +24,7 @@ const ProductPage = () => {
 		const loadProduct = async () => {
 			try {
 				setLoading(true)
-				const fetchedProduct = await fetchProductById(id)
+				const fetchedProduct: any = await fetchProductById(id)
 				setProduct(fetchedProduct)
 			} catch (err: unknown) {
 				setError(
@@ -39,18 +48,18 @@ const ProductPage = () => {
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
-				<img src='/images/product_photo.png' alt='' />
-				<img src='/images/product_photo.png' alt='' />
-				<img src='/images/product_photo.png' alt='' />
+				<img src={product.images[0].url} alt='' />
+				<img src={product.images[1].url} alt='' />
+				<img src={product.images[2].url} alt='' />
 			</div>
 			<div className={styles['product-info']}>
 				<div className={styles['container']}>
 					<p className={styles['product-breadcrumbs']}>
-						Товар <span>{product.vendor.firstName}</span>
+						Товар <span>{product.name}</span>
 					</p>
-					<h4>{product.vendor.firstName}</h4>
+					<h4>{product.name}</h4>
 					<p className={styles['product-count']}>
-						<span>{product.count} </span>в наличии
+						<span>{product.quantity} </span>в наличии
 					</p>
 					<div className={styles['product-price']}>
 						<span>Цена за товар</span>
