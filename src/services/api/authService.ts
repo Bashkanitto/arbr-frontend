@@ -115,10 +115,9 @@ export const confirmOtpResetPassword = async (
 			}
 		)
 
-		const { email, otpToken: nextOtpToken } = response
+		const { otpToken: nextOtpToken } = response
 
 		localStorage.setItem('otpToken', nextOtpToken)
-		localStorage.setItem('otpLogin', email)
 	} catch (error: any) {
 		console.error('Ошибка подтверждения OTP:', error)
 		throw new Error(error.response?.data?.message || 'Неправильный код OTP.')
@@ -129,15 +128,13 @@ export const confirmOtpResetPassword = async (
 export const updatePassword = async (password: string): Promise<void> => {
 	try {
 		const otpToken = localStorage.getItem('otpToken')
-		const otpLogin = localStorage.getItem('otpLogin')
 
-		if (!otpToken || !otpLogin) {
+		if (!otpToken) {
 			throw new Error('Сессия OTP отсутствует.')
 		}
 
 		await baseApi.post('/auth/update-password', {
 			otp_session: otpToken,
-			email: otpLogin,
 			password,
 		})
 
