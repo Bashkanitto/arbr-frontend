@@ -1,42 +1,55 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Select } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { fetchAccounts } from '../../../../services/api/AccountsService'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import { DateItem } from '../../../atoms/DateItem'
 import { Table } from '../../../atoms/Table'
 import styles from './SecurityPageTable.module.scss'
 
-const initialElements = [
-	{
-		id: 12304,
-		customer: 'Иман Ног',
-		status: 'Создано',
-		lastUpdate: new Date(),
-	},
-	{
-		id: 123204,
-		customer: 'Иман Ног',
-		status: 'Подтверждено',
-		lastUpdate: new Date(),
-	},
-	{
-		id: 1214,
-		customer: 'Самса Бургер',
-		status: 'Создано',
-		lastUpdate: new Date(),
-	},
-]
+// Тип данных пользователя
+interface User {
+	firstName: string
+	id: number
+	customer: string
+	status: 'Создано' | 'Подтверждено'
+	updatedAt: string
+}
 
 export const SecurityPageTable = () => {
 	const [selectRows, setSelectRows] = useState<number[]>([])
-	const [elementsData] = useState(initialElements)
+	const [userData, setUserData] = useState<User[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>(null)
+	const [loading, setLoading] = useState<boolean>(false)
+	const [error, setError] = useState<string | null>(null)
 
-	const handSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
+	useEffect(() => {
+		const loadLastConfirmedAccounts = async () => {
+			setLoading(true)
+			setError(null)
+			try {
+				const accounts: any = await fetchAccounts()
+				setUserData(accounts)
+			} catch (err) {
+				setError('Failed to load last confirmed accounts')
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadLastConfirmedAccounts()
+	}, [])
+
+	if (loading) return <div>Loading...</div>
+	if (error) return <div>Error: {error}</div>
+
+	const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { checked } = event.target
 		if (checked) {
-			setSelectRows(elementsData.map((_, index) => index))
+			setSelectRows(userData.map(item => item.id))
 		} else {
 			setSelectRows([])
 		}
@@ -63,31 +76,31 @@ export const SecurityPageTable = () => {
 
 	const renderRow = () => {
 		const filteredData = statusFilter
-			? elementsData.filter(item => item.status === statusFilter)
-			: elementsData
+			? userData.filter(item => item.status === statusFilter)
+			: userData
 
-		return filteredData.map((item, index) => (
-			<Table.Tr key={index}>
+		return filteredData.map(item => (
+			<Table.Tr key={item.id}>
 				<Table.Td style={{ width: '16px' }}>
 					<Checkbox
 						size='xs'
-						checked={selectRows.includes(index)}
-						onChange={handleSelectRowChange(index)}
+						checked={selectRows.includes(item.id)}
+						onChange={handleSelectRowChange(item.id)}
 					/>
 				</Table.Td>
-				<Table.Td>{item.customer}</Table.Td>
+				<Table.Td>{item.firstName}</Table.Td>
 				<Table.Td>
 					<DateItem variantColor={getStatusColor(item.status)}>
 						{item.status}
 					</DateItem>
 				</Table.Td>
 				<Table.Td>
-					{format(item.lastUpdate, 'dd MMMM, yyyy', { locale: ru })}
+					{format(item.updatedAt, 'dd MMMM, yyyy', { locale: ru })}
 				</Table.Td>
 				<Table.Td style={{ width: '50px', padding: '0' }}>
 					<a
 						style={{
-							color: item.status == 'Подтверждено' ? '#23B96C' : 'secondary',
+							color: item.status === 'Подтверждено' ? '#23B96C' : 'secondary',
 						}}
 						href={`/profile/${item.id}`}
 					>
@@ -123,12 +136,11 @@ export const SecurityPageTable = () => {
 							<Table.Th>
 								<Checkbox
 									size='xs'
-									checked={selectRows.length === elementsData.length}
+									checked={selectRows.length === userData.length}
 									indeterminate={
-										selectRows.length > 0 &&
-										selectRows.length < elementsData.length
+										selectRows.length > 0 && selectRows.length < userData.length
 									}
-									onChange={handSelectAllChange}
+									onChange={handleSelectAllChange}
 								/>
 							</Table.Th>
 							<Table.Th>Пользователь</Table.Th>
@@ -139,7 +151,7 @@ export const SecurityPageTable = () => {
 							</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
-					{renderRow()}
+					<Table.Tbody>{renderRow()}</Table.Tbody>
 				</Table>
 			</div>
 		</>

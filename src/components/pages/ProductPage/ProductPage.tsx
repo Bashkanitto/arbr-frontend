@@ -1,15 +1,40 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { fetchProductById } from '../../../services/api/productService'
 import styles from './ProductPage.module.scss'
 
 const ProductPage = () => {
-	const product = {
-		id: 0,
-		title: 'Беговая дорожка NordicTrack C300',
-		count: 'Мало',
-		price: '75 000',
-		order: '120 дней',
-		description: '',
-		details: '',
-	}
+	const { id } = useParams<{ id: string }>()
+	const [product, setProduct] = useState<any | null>(null)
+	const [loading, setLoading] = useState<boolean>(true)
+	const [error, setError] = useState<string | null>(null)
+
+	// Fetch product details on component mount
+	useEffect(() => {
+		const loadProduct = async () => {
+			try {
+				setLoading(true)
+				const fetchedProduct = await fetchProductById(id)
+				setProduct(fetchedProduct)
+			} catch (err: unknown) {
+				setError(
+					err instanceof Error
+						? `Failed to load product: ${err.message}`
+						: 'An unknown error occurred'
+				)
+			} finally {
+				setLoading(false)
+			}
+		}
+		loadProduct()
+	}, [id])
+
+	// Handling loading and error states
+	if (loading) return <div>Loading...</div>
+	if (error) return <div>{error}</div>
+
+	if (!product) return <div>Product not found.</div>
 
 	return (
 		<div className={styles['product-page']}>
@@ -21,9 +46,9 @@ const ProductPage = () => {
 			<div className={styles['product-info']}>
 				<div className={styles['container']}>
 					<p className={styles['product-breadcrumbs']}>
-						Товар <span>Беговые дорожки</span>
+						Товар <span>{product.vendor.firstName}</span>
 					</p>
-					<h4>{product.title}</h4>
+					<h4>{product.vendor.firstName}</h4>
 					<p className={styles['product-count']}>
 						<span>{product.count} </span>в наличии
 					</p>
