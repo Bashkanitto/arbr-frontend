@@ -39,8 +39,15 @@ class AuthStore {
 			})
 
 			await this.getProfile()
+
+			// Проверка роли пользователя
+			if (this.userProfile?.role === 'manager') {
+				this.logout() // Немедленный выход
+				throw new Error('Не известный аккаунт')
+			}
 		} catch (error: unknown) {
 			console.error('Login failed:', error)
+			throw error
 		} finally {
 			runInAction(() => {
 				this.loading = false

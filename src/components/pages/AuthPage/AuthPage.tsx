@@ -24,17 +24,16 @@ const AuthPage = observer(() => {
 
 		try {
 			await authStore.login(identifier, password)
+
 			if (authStore.isLoggedIn) {
 				navigate('/managers')
-			} else {
-				setError('Не удалось войти, проверьте данные')
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error: unknown) {
-			setError('Ошибка: Неправильные данные для входа') // обработка ошибки
+			setError(
+				((error as Error).message = 'Ошибка: Неправильные данные для входа')
+			)
 		}
 	}
-
 	return (
 		<div className={styles.container}>
 			<div

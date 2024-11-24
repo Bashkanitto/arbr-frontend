@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
-import { VendorResponse } from './Types'
+import { addProductType, VendorResponse } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (): Promise<VendorResponse> => {
@@ -25,5 +25,20 @@ export const fetchProductById = async (productId: any) => {
 	} catch (error) {
 		console.error('Error fetching product:', error)
 		throw new Error('Failed to fetch product details.')
+	}
+}
+
+// –––––––––––––––––- Добавление продукта –––––––––––––
+export const addProduct = async (productData: addProductType): Promise<any> => {
+	try {
+		const response = await baseApi.post('/product', productData)
+		return response // Assuming the API returns the created product or a success message
+	} catch (error) {
+		console.error('Error adding product:', error)
+		throw new Error(
+			`Failed to add product: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
 	}
 }

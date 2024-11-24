@@ -1,45 +1,19 @@
 import { Loader } from '@mantine/core'
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../components/layouts/MainLayout'
+import AuthPage from '../components/pages/AuthPage/AuthPage'
+import CatalogPage from '../components/pages/CatalogPage/CatalogPage'
+import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
+import NotFoundPage from '../components/pages/NotFoundPage/NotFoundPage'
+import SecurityPage from '../components/pages/SecurityPage/SecurityPage'
+import WithdrawsPage from '../components/pages/WithdrawsPage/WithdrawsPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
-import { wait } from '../helpers'
+import authStore from '../store/AuthStore'
 import { AuthProtect } from './AuthProtect'
 
-const ManagersPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/ManagersPage/ManagersPage')
-})
-const AuthPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/AuthPage/AuthPage')
-})
-const CatalogPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/CatalogPage/CatalogPage')
-})
-const WithdrawsPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/WithdrawsPage/WithdrawsPage')
-})
-const NotFoundPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/NotFoundPage/NotFoundPage')
-})
-const SearchPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/SearchPage/SearchPage')
-})
-const SecurityPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/SecurityPage/SecurityPage')
-})
-const ProductPage = lazy(async () => {
-	await wait(500)
-	return import('../components/pages/ProductPage/ProductPage')
-})
-
 export const AppRouter = () => {
+	const { userProfile } = authStore
 	return (
 		<Suspense
 			fallback={
@@ -57,20 +31,50 @@ export const AppRouter = () => {
 		>
 			<BrowserRouter>
 				<Routes>
-					<Route path='/' element={<Navigate to={RouteNavList.managers()} />} />
-					<Route path={RoutePathList.auth} Component={AuthPage} />
-					<Route Component={AuthProtect}>
-						<Route Component={MainLayout}>
-							<Route path={RoutePathList.managers} Component={ManagersPage} />
-							<Route path={RoutePathList.catalog} Component={CatalogPage} />
-							<Route path={RoutePathList.notfound} Component={NotFoundPage} />
-							<Route path={RoutePathList.search} Component={SearchPage} />
-							<Route path={RoutePathList.product} Component={ProductPage} />
-							<Route path={RoutePathList.list} Component={NotFoundPage} />
-							<Route path={RoutePathList.withdraws} Component={WithdrawsPage} />
-							<Route path={RoutePathList.security} Component={SecurityPage} />
+					<Route
+						path='/'
+						element={
+							userProfile?.role == 'admin' ? (
+								<Navigate to={RouteNavList.managers()} />
+							) : (
+								<Navigate to={RouteNavList.catalog()} />
+							)
+						}
+					/>
+					<Route path={RoutePathList.auth} element={<AuthPage />} />
+
+					{/* Protected Routes */}
+					<Route element={<AuthProtect allowedRoles={['admin', 'vendor']} />}>
+						<Route element={<MainLayout />}>
+							{/* Admin-only routes */}
+							<Route
+								path={RoutePathList.managers}
+								element={<AuthProtect allowedRoles={['admin']} />}
+							>
+								<Route path='' element={<ManagersPage />} />
+							</Route>
+
+							{/* Vendor and Admin shared routes */}
+							<Route
+								path={RoutePathList.catalog}
+								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+							>
+								<Route path='' element={<CatalogPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.withdraws}
+								element={<AuthProtect allowedRoles={['admin']} />}
+							>
+								<Route path='' element={<WithdrawsPage />} />
+							</Route>
+
+							{/* Shared Routes */}
+							<Route path={RoutePathList.security} element={<SecurityPage />} />
+							<Route path={RoutePathList.notfound} element={<NotFoundPage />} />
 						</Route>
 					</Route>
+
 					<Route path='*' element={<Navigate to='/notfound' />} />
 				</Routes>
 			</BrowserRouter>

@@ -66,10 +66,14 @@ export const fetchProfile = async (): Promise<UserType> => {
 		return response
 	} catch (error) {
 		console.error('Unknown error type:', error)
+
+		// Выход из системы и редирект на страницу авторизации
+		logout()
+		window.location.href = '/auth'
+
 		throw new Error(`Failed to fetch profile: Unknown error - ${error}`)
 	}
 }
-
 // ––––––––––––––––––––––––––––––––––отправка кода–––––––––––––––––––––––––––––––
 export const sendOtpResetPassword = async (
 	identifier: string

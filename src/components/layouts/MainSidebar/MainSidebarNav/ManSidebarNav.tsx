@@ -23,6 +23,16 @@ const navItems = [
 		route: RouteNavList.catalog(),
 	},
 	{
+		icon: <CatalogIcon />,
+		title: 'Cделки',
+		route: RouteNavList.notfound(),
+	},
+	{
+		icon: <CatalogIcon />,
+		title: 'Заявки',
+		route: RouteNavList.notfound(),
+	},
+	{
 		icon: <SearchIcon />,
 		title: 'Поиск',
 		route: RouteNavList.search(),
@@ -47,22 +57,17 @@ const navItems = [
 export const MainSidebarNav = () => {
 	const location = useLocation()
 	const { userProfile } = authStore
-	// Фильтрация пунктов меню на основе роли
+
+	// Фильтрация пунктов меню на основе роли(админ видит все, vedor - массив)
 	const filteredNavItems = navItems.filter(item => {
-		if (!userProfile) return false // если не залогинен
-		switch (userProfile.role) {
-			case 'manager':
-				return true // админ видит все
-			case 'supplier':
-				return [
-					'Каталог',
-					'Поставки/ Мои сделки',
-					'Заявки',
-					'Безопасность',
-				].includes(item.title)
-			default:
-				return false
+		if (!userProfile) return false
+		if (userProfile.role === 'admin') return true
+		if (userProfile.role === 'vendor') {
+			return ['Каталог', 'Cделки', 'Заявки', 'Безопасность'].includes(
+				item.title
+			)
 		}
+		return false
 	})
 
 	return (
@@ -71,7 +76,7 @@ export const MainSidebarNav = () => {
 				<Link
 					key={index}
 					className={styles['nav-item']}
-					data-active={location.pathname.includes(item.route)}
+					data-active={location.pathname.includes(item.title)}
 					to={item.route}
 				>
 					<span className={styles['icon']}>{item.icon}</span>

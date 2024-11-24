@@ -3,15 +3,39 @@ import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import authStore from '../store/AuthStore'
 
-export const AuthProtect = observer(() => {
+interface UserProfile {
+	role: string
+}
+
+interface AuthStore {
+	isLoggedIn: boolean
+	userProfile?: UserProfile | null
+}
+
+interface AuthProtectProps {
+	allowedRoles?: string[]
+}
+
+export const AuthProtect = observer(({ allowedRoles }: AuthProtectProps) => {
 	const navigate = useNavigate()
-	const isLogged = authStore.isLoggedIn
+	const { isLoggedIn, userProfile } = authStore as AuthStore
 
 	useEffect(() => {
-		if (!isLogged) {
+		// Проверка авторизован ли
+		if (!isLoggedIn) {
 			navigate('/auth')
+		} else if (
+			// Если нет ролей перенаправлять на главную
+			allowedRoles &&
+			(!userProfile || !allowedRoles.includes(userProfile.role))
+		) {
+			navigate('/')
 		}
-	}, [isLogged, navigate])
+	}, [isLoggedIn, userProfile, allowedRoles, navigate])
 
-	return authStore.isLoggedIn ? <Outlet /> : null
+	return isLoggedIn &&
+		(!allowedRoles ||
+			(userProfile && allowedRoles.includes(userProfile.role))) ? (
+		<Outlet />
+	) : null
 })

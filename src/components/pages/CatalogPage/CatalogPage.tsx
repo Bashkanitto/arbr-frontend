@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
+import { fetchProfile } from '../../../services/api/authService'
 import { fetchAllVendors } from '../../../services/api/productService'
 import { VendorType } from '../../../services/api/Types'
 import Tender from '../../molecules/Tender/Tender'
 import AddCatalogModal from './AddCatalogModal/AddCatalogModal'
+import AddProductModal from './AddProductModal/AddProductModal'
 import CatalogFilters from './CatalogFilter/CatalogFilters'
 import styles from './CatalogPage.module.scss'
 import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
 
 const CatalogPage = () => {
 	// Local state for vendors, loading, and errors
-	const [filterPeriod, setFilterPeriod] = useState<string | null>(null)
+	const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
+	const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
 	const [vendorData, setVendorData] = useState<VendorType[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -21,8 +24,10 @@ const CatalogPage = () => {
 			try {
 				setLoading(true)
 				const response = await fetchAllVendors()
+				const profileData = await fetchProfile()
 				let filteredVendors = response.records
 
+				// Применяем фильтр периода
 				if (filterPeriod) {
 					const currentDate = new Date()
 					const periodStart = new Date()
@@ -46,13 +51,14 @@ const CatalogPage = () => {
 					)
 				}
 
+				// Фильтруем только ваших vendors
+				filteredVendors = filteredVendors.filter(
+					vendor => vendor.firstName === profileData.firstName
+				)
+
 				setVendorData(filteredVendors)
 			} catch (err: unknown) {
-				setError(
-					err instanceof Error
-						? `Failed to load vendor data: ${err.message}`
-						: 'An unknown error occurred'
-				)
+				setError(`Failed to load vendor data: ${err}`)
 			} finally {
 				setLoading(false)
 			}
@@ -62,7 +68,8 @@ const CatalogPage = () => {
 
 	// Toggle catalog modal
 	const addCatalog = () => setIsAddCatalogOpen(true)
-	const top = vendorData.length
+	const addProduct = () => setIsAddProductOpen(true)
+	const topVendorsQuantity = vendorData.length
 
 	if (loading) return <p>Loading vendor data...</p>
 	if (error) return <p>Error: {error}</p>
@@ -71,10 +78,13 @@ const CatalogPage = () => {
 		<div className={styles['catalog-page']}>
 			<CatalogSwitch />
 			<p className={styles['catalog-title']}>Каталог</p>
-			<p className={styles['catalog-description']}>Топ - {top}</p>
+			<p className={styles['catalog-description']}>
+				Топ - {topVendorsQuantity}
+			</p>
 			<CatalogFilters
 				onFilterChange={setFilterPeriod}
 				addCatalog={addCatalog}
+				addProduct={addProduct}
 				filterPeriod={filterPeriod}
 			/>
 			<div className={styles['catalog-tenders']}>
@@ -86,6 +96,12 @@ const CatalogPage = () => {
 				<AddCatalogModal
 					isOpen={isAddCatalogOpen}
 					onClose={() => setIsAddCatalogOpen(false)}
+				/>
+			)}
+			{isAddProductOpen && (
+				<AddProductModal
+					isOpen={isAddProductOpen}
+					onClose={() => setIsAddProductOpen(false)}
 				/>
 			)}
 		</div>

@@ -5,8 +5,10 @@ const CatalogFilters = ({
 	addCatalog,
 	onFilterChange,
 	filterPeriod,
+	addProduct,
 }: {
 	addCatalog: () => void
+	addProduct: () => void
 	onFilterChange: (filter: string) => void
 	filterPeriod: string | null
 }) => {
@@ -36,7 +38,9 @@ const CatalogFilters = ({
 				<BaseButton onClick={addCatalog} variantColor='secondary'>
 					Добавить каталог
 				</BaseButton>
-				<BaseButton variantColor='primary'>Создать товар</BaseButton>
+				<BaseButton onClick={addProduct} variantColor='primary'>
+					Создать товар
+				</BaseButton>
 			</div>
 		</div>
 	)

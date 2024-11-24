@@ -60,3 +60,21 @@ export interface VendorResponse {
 		total: number
 	}
 }
+
+export interface addProductType {
+	name: string
+	description: string
+	quantity: number
+	price: number
+	amountPrice: number
+	rating: number
+	brandId: number
+	subcategoryId: number
+	features: {
+		isBonus: boolean
+		isFreeDelivery: boolean
+		isDiscount: boolean
+		bonus: number
+		discount: number
+	}
+}
