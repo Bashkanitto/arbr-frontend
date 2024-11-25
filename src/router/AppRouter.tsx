@@ -7,6 +7,7 @@ import CatalogPage from '../components/pages/CatalogPage/CatalogPage'
 import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
 import NotFoundPage from '../components/pages/NotFoundPage/NotFoundPage'
 import SecurityPage from '../components/pages/SecurityPage/SecurityPage'
+import SuppliesPage from '../components/pages/SuppliesPage/SuppliesPage'
 import WithdrawsPage from '../components/pages/WithdrawsPage/WithdrawsPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
 import authStore from '../store/AuthStore'
@@ -46,7 +47,6 @@ export const AppRouter = () => {
 					{/* Protected Routes */}
 					<Route element={<AuthProtect allowedRoles={['admin', 'vendor']} />}>
 						<Route element={<MainLayout />}>
-							{/* Admin-only routes */}
 							<Route
 								path={RoutePathList.managers}
 								element={<AuthProtect allowedRoles={['admin']} />}
@@ -69,8 +69,22 @@ export const AppRouter = () => {
 								<Route path='' element={<WithdrawsPage />} />
 							</Route>
 
-							{/* Shared Routes */}
-							<Route path={RoutePathList.security} element={<SecurityPage />} />
+							<Route
+								path={RoutePathList.supplies}
+								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+							>
+								<Route path='' element={<SuppliesPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.security}
+								element={<AuthProtect allowedRoles={['admin']} />}
+							>
+								<Route
+									path={RoutePathList.security}
+									element={<SecurityPage />}
+								/>
+							</Route>
 							<Route path={RoutePathList.notfound} element={<NotFoundPage />} />
 						</Route>
 					</Route>

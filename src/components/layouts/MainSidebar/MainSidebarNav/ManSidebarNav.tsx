@@ -6,6 +6,7 @@ import {
 	StatusIcon,
 } from '../../../../assets/icons'
 import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
+import { HistoryIcon } from '../../../../assets/icons/HistoryIcon'
 import { UserIcon } from '../../../../assets/icons/UserIcon'
 import { RouteNavList } from '../../../../constants/router'
 import authStore from '../../../../store/AuthStore'
@@ -23,14 +24,9 @@ const navItems = [
 		route: RouteNavList.catalog(),
 	},
 	{
-		icon: <CatalogIcon />,
-		title: 'Cделки',
-		route: RouteNavList.notfound(),
-	},
-	{
-		icon: <CatalogIcon />,
-		title: 'Заявки',
-		route: RouteNavList.notfound(),
+		icon: <HistoryIcon />,
+		title: 'История',
+		route: RouteNavList.history(),
 	},
 	{
 		icon: <SearchIcon />,
@@ -39,8 +35,8 @@ const navItems = [
 	},
 	{
 		icon: <StatusIcon />,
-		title: 'Список',
-		route: RouteNavList.list(),
+		title: 'Мои сделки',
+		route: RouteNavList.supplies(),
 	},
 	{
 		icon: <CoinsIcon />,
@@ -63,9 +59,7 @@ export const MainSidebarNav = () => {
 		if (!userProfile) return false
 		if (userProfile.role === 'admin') return true
 		if (userProfile.role === 'vendor') {
-			return ['Каталог', 'Cделки', 'Заявки', 'Безопасность'].includes(
-				item.title
-			)
+			return ['Каталог', 'Мои сделки', 'История'].includes(item.title)
 		}
 		return false
 	})
@@ -76,7 +70,7 @@ export const MainSidebarNav = () => {
 				<Link
 					key={index}
 					className={styles['nav-item']}
-					data-active={location.pathname.includes(item.title)}
+					data-active={location.pathname.includes(item.route)}
 					to={item.route}
 				>
 					<span className={styles['icon']}>{item.icon}</span>
