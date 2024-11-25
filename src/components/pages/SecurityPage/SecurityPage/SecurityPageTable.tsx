@@ -2,6 +2,7 @@
 import { Checkbox, Select } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import jsPDF from 'jspdf'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { fetchAccounts } from '../../../../services/api/AccountsService'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
@@ -13,9 +14,11 @@ import styles from './SecurityPageTable.module.scss'
 interface User {
 	firstName: string
 	id: number
+	role: string
 	customer: string
 	status: 'Создано' | 'Подтверждено'
 	updatedAt: string
+	createdAt: string
 }
 
 export const SecurityPageTable = () => {
@@ -42,9 +45,28 @@ export const SecurityPageTable = () => {
 
 		loadLastConfirmedAccounts()
 	}, [])
-
 	if (loading) return <div>Loading...</div>
 	if (error) return <div>Error: {error}</div>
+
+	const handleExport = () => {
+		// Create a new instance of jsPDF
+		const doc = new jsPDF()
+		// Example table or data
+		doc.setFontSize(12)
+		userData.forEach((item, index) => {
+			doc.text(
+				`${index + 1}. ${item.firstName} - ${item.role} - ${format(
+					new Date(item.createdAt),
+					'dd.MM.yy - HH:mm'
+				)}`,
+				10,
+				50 + index * 10
+			)
+		})
+
+		// Save the file
+		doc.save('managers_report.pdf')
+	}
 
 	const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { checked } = event.target
@@ -127,7 +149,7 @@ export const SecurityPageTable = () => {
 						value={statusFilter || ''}
 					/>
 				</div>
-				<BaseButton>Экспорт</BaseButton>
+				<BaseButton onClick={handleExport}>Экспорт</BaseButton>
 			</div>
 			<div className={styles['security-page-table']}>
 				<Table stickyHeader>
