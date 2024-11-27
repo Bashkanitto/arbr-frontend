@@ -32,7 +32,7 @@ export const fetchProductById = async (productId: any) => {
 export const addProduct = async (productData: addProductType): Promise<any> => {
 	try {
 		const response = await baseApi.post('/product', productData)
-		return response // Assuming the API returns the created product or a success message
+		return response
 	} catch (error) {
 		console.error('Error adding product:', error)
 		throw new Error(

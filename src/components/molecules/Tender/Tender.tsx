@@ -98,6 +98,7 @@ const Tender = ({ user }: { user: any }) => {
 			{/* percentModal */}
 			{isProcentModalOpen && (
 				<EditProcentModal
+					user={user}
 					isOpen={isProcentModalOpen}
 					onClose={() => setIsProcentModalOpen(false)}
 				/>
