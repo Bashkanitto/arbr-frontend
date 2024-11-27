@@ -61,9 +61,9 @@ const Tender = ({ user }: { user: any }) => {
 						</p>
 						<div className={styles.brandWrapper}>
 							{uniqueBrands.map((brandName, index) => (
-								<span key={index} className={styles.brand}>
+								<div key={index} className={styles.brand}>
 									{brandName}
-								</span>
+								</div>
 							))}
 						</div>
 					</div>
