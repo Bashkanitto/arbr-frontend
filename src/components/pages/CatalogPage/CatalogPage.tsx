@@ -51,10 +51,11 @@ const CatalogPage = () => {
 					)
 				}
 
-				// Фильтруем только ваших vendors
-				filteredVendors = filteredVendors.filter(
-					vendor => vendor.firstName === profileData.firstName
-				)
+				if (profileData.role != 'admin') {
+					filteredVendors = filteredVendors.filter(
+						vendor => vendor.firstName === profileData.firstName
+					)
+				}
 
 				setVendorData(filteredVendors)
 			} catch (err: unknown) {

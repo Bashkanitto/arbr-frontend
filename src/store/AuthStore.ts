@@ -11,6 +11,8 @@ class AuthStore {
 	accessToken = Cookies.get('accessToken') || null
 	refreshToken = Cookies.get('refreshToken') || null
 	userProfile: UserType | null = null
+	isAdmin: boolean = localStorage.getItem('isAdmin') === 'true' || false
+
 	loading = false
 
 	constructor() {
@@ -42,8 +44,15 @@ class AuthStore {
 
 			// Проверка роли пользователя
 			if (this.userProfile?.role === 'manager') {
-				this.logout() // Немедленный выход
-				throw new Error('Не известный аккаунт')
+				this.logout()
+				throw new Error('Роль "manager" не поддерживается')
+			}
+
+			if (this.userProfile?.role === 'admin') {
+				localStorage.setItem('isAdmin', 'true')
+				runInAction(() => {
+					this.isAdmin = true
+				})
 			}
 		} catch (error: unknown) {
 			console.error('Login failed:', error)
@@ -74,6 +83,7 @@ class AuthStore {
 			this.userProfile = null
 		})
 		Cookies.remove('accessToken')
+		localStorage.removeItem('isAdmin')
 		Cookies.remove('refreshToken')
 		Cookies.remove('userProfile')
 		logoutApi()

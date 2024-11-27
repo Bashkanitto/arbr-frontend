@@ -3,6 +3,10 @@ import Cookies from 'js-cookie'
 import { baseApi } from './base'
 import { UserType } from './Types'
 
+import { useNavigate } from 'react-router-dom'
+
+const navigate = useNavigate()
+
 interface LoginResponse {
 	accessToken: string
 	refreshToken: string
@@ -69,7 +73,7 @@ export const fetchProfile = async (): Promise<UserType> => {
 
 		// Выход из системы и редирект на страницу авторизации
 		logout()
-		window.location.href = '/auth'
+		navigate('/auth')
 
 		throw new Error(`Failed to fetch profile: Unknown error - ${error}`)
 	}

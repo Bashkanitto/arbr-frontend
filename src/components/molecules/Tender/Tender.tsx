@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRightIcon } from '../../../assets/icons/ArrowUpRightIcon'
 import { DiscountIcon } from '../../../assets/icons/DiscountIcon'
+import authStore from '../../../store/AuthStore'
 import { Avatar } from '../../atoms/Avatar'
 import DiscountModal from '../../pages/CatalogPage/DiscountModal/DiscountModal'
 import EditProcentModal from '../../pages/CatalogPage/EditProcentModal/EditProcentModal'
@@ -14,6 +15,14 @@ const Tender = ({ user }: { user: any }) => {
 	const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
 	const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false)
 
+	const { isAdmin } = authStore
+
+	const uniqueBrands: string[] = useMemo(() => {
+		return Array.from(
+			new Set(user.vendorGroups.map((item: any) => item.product.brand.name))
+		)
+	}, [user.vendorGroups])
+
 	return (
 		<div className={styles['tender']}>
 			{/* Информация о пользователе */}
@@ -24,29 +33,39 @@ const Tender = ({ user }: { user: any }) => {
 						<p className={styles['tender-user-name']}>{user.firstName}</p>
 						<p className={styles['tender-user-role']}>Поставщик</p>
 					</div>
-					<button
-						onClick={() => setIsProcentModalOpen(true)}
-						className={styles['link']}
-					>
-						<ArrowUpRightIcon />
-					</button>
-					<button
-						onClick={() => setIsDiscountModalOpen(true)}
-						className={styles['link']}
-						style={{ background: 'black' }}
-					>
-						<DiscountIcon />
-					</button>
+					{isAdmin && (
+						<>
+							<button
+								onClick={() => setIsProcentModalOpen(true)}
+								className={styles['link']}
+							>
+								<ArrowUpRightIcon />
+							</button>
+							<button
+								onClick={() => setIsDiscountModalOpen(true)}
+								className={styles['link']}
+								style={{ background: 'black' }}
+							>
+								<DiscountIcon />
+							</button>
+						</>
+					)}
 				</div>
 				<div className={styles['tender-user-statistics']}>
 					<div className={styles['tender-winned']}>
 						<p>
-							Выиграно всего лотов: <span>{}</span>
+							Рейтинг: <span>{user.rating}</span>
 						</p>
 						<p>
-							Выиграно всего лотов: <span>{}</span>
+							Количество товаров: <span>{user.vendorGroups.length}</span>
 						</p>
-						<span>siemens.com</span>
+						<div className={styles.brandWrapper}>
+							{uniqueBrands.map((brandName, index) => (
+								<span key={index} className={styles.brand}>
+									{brandName}
+								</span>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>

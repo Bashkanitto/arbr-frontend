@@ -3,17 +3,17 @@
 	justify-content: space-between;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 	padding: 30px 0 10px;
+	gap: 50px;
 
 	.tender-user {
+		flex: 1;
 		display: flex;
-		width: 45%;
-		align-items: center;
 		justify-content: space-between;
+		gap: 40px;
 		margin-top: 10px;
 
 		.tender-user-info {
 			display: flex;
-			// align-items: center;
 			gap: 15px;
 
 			img {
@@ -31,10 +31,14 @@
 		}
 
 		.tender-user-statistics {
+			width: 100%;
+
 			.tender-winned {
 				width: 100%;
 			}
 			p {
+				display: flex;
+				justify-content: space-between;
 				margin-bottom: 15px;
 				font-size: 14px;
 				border-bottom: 1px solid black;
@@ -54,10 +58,9 @@
 	border: none;
 }
 .tender-items {
-	width: 45%;
+	flex: 1;
 	display: flex;
 	align-items: flex-start;
-	// justify-content: center;
 	overflow-x: scroll;
 
 	.tender-item p {
@@ -88,4 +91,25 @@
 }
 p {
 	margin: 0;
+}
+
+.brandWrapper {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	width: 100%;
+	overflow-y: scroll;
+}
+
+.brand {
+	background: #00000025;
+	overflow: scroll;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 12px;
+	padding: 5px 10px;
+	height: 30px;
+	border-radius: 15px;
+	color: black;
 }
