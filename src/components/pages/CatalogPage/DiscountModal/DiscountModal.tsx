@@ -10,7 +10,7 @@ interface DiscountModalProps {
 	user: any
 }
 
-const EditProcentModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
+const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 	const [sliderValue, setSliderValue] = useState<number>(0)
 	const [discount, setDiscount] = useState<number>(0)
 	const [error, setError] = useState<string>('')
@@ -89,4 +89,4 @@ const EditProcentModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 	)
 }
 
-export default EditProcentModal
+export default DiscountModal
