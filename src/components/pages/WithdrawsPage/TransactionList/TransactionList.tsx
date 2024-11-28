@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { fetchOperations } from '../../../../services/api/operationsServices'
+import { fetchOperations } from '../../../../services/api/operationService'
 import styles from './TransactionList.module.scss'
 
 // Define the type for an operation
