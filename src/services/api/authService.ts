@@ -3,8 +3,6 @@ import Cookies from 'js-cookie'
 import { baseApi } from './base'
 import { UserType } from './Types'
 
-// const navigate = useNavigate()
-
 interface LoginResponse {
 	accessToken: string
 	refreshToken: string
@@ -27,7 +25,6 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 }
 
 // –––––––––––––––––––––––––––––––Login–––––––––––––––––––––––––––––––
-
 export const login = async (
 	identifier: string,
 	password: string
@@ -61,7 +58,7 @@ export const setLogoutTimer = () => {
 	setTimeout(logout, 24 * 60 * 60 * 1000)
 }
 
-// –––––––––––––––––––––––––––––––Fetch Profile–––––––––––––––––––––––––––––––
+// –––––––––––––––––––––––––––––––Данные пользователя–––––––––––––––––––––––––––––––
 export const fetchProfile = async (): Promise<UserType> => {
 	try {
 		const response: UserType = await baseApi.get('/account/profile')
@@ -69,12 +66,10 @@ export const fetchProfile = async (): Promise<UserType> => {
 	} catch (error) {
 		console.error('Unknown error type:', error)
 
-		// Выход из системы и редирект на страницу авторизации
 		logout()
 		if (window.location.pathname != '/auth') {
 			window.location.href == '/auth'
 		}
-		// navigate('/auth')
 
 		throw new Error(`Failed to fetch profile: Unknown error - ${error}`)
 	}
@@ -84,7 +79,6 @@ export const sendOtpResetPassword = async (
 	identifier: string
 ): Promise<void> => {
 	try {
-		// Запрос к API
 		const response: any = await baseApi.post<SendOtpResponse>(
 			'/otp/send-otp-reset-password',
 			{
@@ -92,7 +86,6 @@ export const sendOtpResetPassword = async (
 			}
 		)
 
-		// Данные находятся в корне response
 		const { verifyOtpToken } = response
 		if (!verifyOtpToken) {
 			throw new Error('Сервер не вернул verifyOtpToken.')
@@ -106,7 +99,6 @@ export const sendOtpResetPassword = async (
 }
 
 // ––––––––––––––––––––––––––––––––––Подтверждение кода –––––––––––––––––––––––––––––––
-
 export const confirmOtpResetPassword = async (
 	otpCode: string
 ): Promise<void> => {
@@ -133,7 +125,6 @@ export const confirmOtpResetPassword = async (
 	}
 }
 // ––––––––––––––––––––––––––––––––––Обновление пароля –––––––––––––––––––––––––––––––
-
 export const updatePassword = async (password: string): Promise<void> => {
 	try {
 		const otpToken = localStorage.getItem('otpToken')
