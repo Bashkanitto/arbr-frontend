@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRightIcon } from '../../../assets/icons/ArrowUpRightIcon'
@@ -9,23 +8,25 @@ import DiscountModal from '../../pages/CatalogPage/DiscountModal/DiscountModal'
 import EditProcentModal from '../../pages/CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './Tender.module.scss'
 
-// Fix user props in Tender
 const Tender = ({ user }: { user: any }) => {
 	const navigate = useNavigate()
 	const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
 	const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false)
-
 	const { isAdmin } = authStore
 
+	// Filter unique brands
 	const uniqueBrands: string[] = useMemo(() => {
 		return Array.from(
-			new Set(user.vendorGroups.map((item: any) => item.product.brand.name))
+			new Set(
+				user.vendorGroups
+					.map((item: any) => item.product?.brand?.name)
+					.filter((brandName: string | undefined) => brandName)
+			)
 		)
 	}, [user.vendorGroups])
 
 	return (
 		<div className={styles['tender']}>
-			{/* Информация о пользователе */}
 			<div className={styles['tender-user']}>
 				<div className={styles['tender-user-info']}>
 					<Avatar />
@@ -51,51 +52,41 @@ const Tender = ({ user }: { user: any }) => {
 						</>
 					)}
 				</div>
+
 				<div className={styles['tender-user-statistics']}>
-					<div className={styles['tender-winned']}>
-						<p>
-							Рейтинг: <span>{user.rating}</span>
-						</p>
-						<p>
-							Количество товаров: <span>{user.vendorGroups.length}</span>
-						</p>
-						<div className={styles.brandWrapper}>
-							{uniqueBrands.map((brandName, index) => (
-								<div key={index} className={styles.brand}>
-									{brandName}
-								</div>
-							))}
-						</div>
+					<p>
+						Рейтинг: <span>{user.rating}</span>
+					</p>
+					<p>
+						Количество товаров: <span>{user.vendorGroups.length}</span>
+					</p>
+					<div className={styles.brandWrapper}>
+						{uniqueBrands.map((brandName, index) => (
+							<div key={index} className={styles.brand}>
+								{brandName}
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
 
-			{/* Отображение тендеров */}
 			<div className={styles['tender-items']}>
-				{user.vendorGroups.map(
-					(item: {
-						id: number | string
-						product: {
-							images: { url: any }[]
-							name: string
-						}
-					}) => (
-						<button
-							onClick={() => navigate(`/product/${item.id}`)}
-							key={item.id}
-							className={styles['tender-item']}
-						>
-							<img
-								src={item.product.images[0].url || 'placeholder.png'}
-								className={styles['tender-image']}
-							/>
-							<p className={styles['tender-title']}>{item.product.name}</p>
-						</button>
-					)
-				)}
+				{user.vendorGroups.map((item: any) => (
+					<button
+						onClick={() => navigate(`/product/${item.id}`)}
+						key={item.id}
+						className={styles['tender-item']}
+					>
+						<img
+							src={item.product?.images[0]?.url || 'placeholder.png'}
+							className={styles['tender-image']}
+						/>
+						<p className={styles['tender-title']}>{item.product?.name}</p>
+					</button>
+				))}
 			</div>
 
-			{/* percentModal */}
+			{/* Modals */}
 			{isProcentModalOpen && (
 				<EditProcentModal
 					user={user}
@@ -103,10 +94,9 @@ const Tender = ({ user }: { user: any }) => {
 					onClose={() => setIsProcentModalOpen(false)}
 				/>
 			)}
-
-			{/* discountModal */}
 			{isDiscountModalOpen && (
 				<DiscountModal
+					user={user}
 					isOpen={isDiscountModalOpen}
 					onClose={() => setIsDiscountModalOpen(false)}
 				/>
