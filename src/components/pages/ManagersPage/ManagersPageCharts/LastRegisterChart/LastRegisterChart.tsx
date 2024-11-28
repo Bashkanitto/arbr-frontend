@@ -23,8 +23,8 @@ const LastRegisterChart = () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const accounts = await fetchAccounts()
-				setLastConfirmedAccounts(accounts)
+				const response = await fetchAccounts()
+				setLastConfirmedAccounts(response.records)
 			} catch (err: unknown) {
 				setError('Failed to load last confirmed accounts')
 				console.error(err)

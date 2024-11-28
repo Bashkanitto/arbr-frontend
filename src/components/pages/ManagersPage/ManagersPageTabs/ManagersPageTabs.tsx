@@ -18,34 +18,43 @@ export const ManagersPageTabs = () => {
 	useEffect(() => {
 		const loadLastConfirmedAccounts = async () => {
 			try {
-				const accounts = await fetchAccounts()
-				setLastConfirmedAccounts(accounts)
+				const response = await fetchAccounts()
+				// Only set the records array to state
+				setLastConfirmedAccounts(response.records)
 			} catch (err: unknown) {
 				console.error(err)
 			}
 		}
 
 		loadLastConfirmedAccounts()
-	})
+	}, [])
 
 	const handleExport = () => {
-		// Create a new instance of jsPDF
-		const doc = new jsPDF()
-		// Example table or data
-		doc.setFontSize(12)
-		lastConfirmedAccounts.forEach((item, index) => {
-			doc.text(
-				`${index + 1}. ${item.firstName} - ${item.role} - ${format(
-					new Date(item.createdAt),
-					'dd.MM.yy - HH:mm'
-				)}`,
-				10,
-				50 + index * 10
-			)
-		})
+		// Ensure lastConfirmedAccounts is an array before calling forEach
+		if (Array.isArray(lastConfirmedAccounts)) {
+			// Create a new instance of jsPDF
+			const doc = new jsPDF()
+			// Example table or data
+			doc.setFontSize(12)
+			lastConfirmedAccounts.forEach((item, index) => {
+				doc.text(
+					`${index + 1}. ${item.firstName} - ${item.role} - ${format(
+						new Date(item.createdAt),
+						'dd.MM.yy - HH:mm'
+					)}`,
+					10,
+					50 + index * 10
+				)
+			})
 
-		// Save the file
-		doc.save('managers_report.pdf')
+			// Save the file
+			doc.save('managers_report.pdf')
+		} else {
+			console.error(
+				'lastConfirmedAccounts is not an array:',
+				lastConfirmedAccounts
+			)
+		}
 	}
 
 	return (
