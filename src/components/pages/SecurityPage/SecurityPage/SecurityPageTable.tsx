@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/components/SecurityPageTable/SecurityPageTable.tsx
 import { Checkbox, Select } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
@@ -8,9 +8,9 @@ import { fetchAccounts } from '../../../../services/api/AccountsService'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import { DateItem } from '../../../atoms/DateItem'
 import { Table } from '../../../atoms/Table'
+import { Pagination } from '../../../molecules/Pagination/Pagination'
 import styles from './SecurityPageTable.module.scss'
 
-// Тип данных пользователя
 interface User {
 	firstName: string
 	id: number
@@ -27,31 +27,34 @@ export const SecurityPageTable = () => {
 	const [statusFilter, setStatusFilter] = useState<string | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string | null>(null)
+	const [page, setPage] = useState<number>(1)
+	const [pageSize] = useState<number>(10)
+	const [totalPages, setTotalPages] = useState<number>(1)
 
 	useEffect(() => {
-		const loadLastConfirmedAccounts = async () => {
+		const loadAccounts = async () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const accounts: any = await fetchAccounts()
-				setUserData(accounts)
+				const { records, meta }: any = await fetchAccounts(page, pageSize)
+				setUserData(records)
+				setTotalPages(meta.totalPages)
 			} catch (err) {
-				setError('Failed to load last confirmed accounts')
+				setError('Failed to load accounts')
 				console.error(err)
 			} finally {
 				setLoading(false)
 			}
 		}
 
-		loadLastConfirmedAccounts()
-	}, [])
+		loadAccounts()
+	}, [page, pageSize])
+
 	if (loading) return <div>Loading...</div>
 	if (error) return <div>Error: {error}</div>
 
 	const handleExport = () => {
-		// Create a new instance of jsPDF
 		const doc = new jsPDF()
-		// Example table or data
 		doc.setFontSize(12)
 		userData.forEach((item, index) => {
 			doc.text(
@@ -63,8 +66,6 @@ export const SecurityPageTable = () => {
 				50 + index * 10
 			)
 		})
-
-		// Save the file
 		doc.save('managers_report.pdf')
 	}
 
@@ -176,6 +177,13 @@ export const SecurityPageTable = () => {
 					<Table.Tbody>{renderRow()}</Table.Tbody>
 				</Table>
 			</div>
+
+			{/* Pagination Component */}
+			<Pagination
+				page={page}
+				totalPages={totalPages}
+				onPageChange={newPage => setPage(newPage)}
+			/>
 		</>
 	)
 }
