@@ -148,3 +148,41 @@ export const updatePassword = async (password: string): Promise<void> => {
 		)
 	}
 }
+
+// ––––––––––––––––––––––––––––––––––Обновление токена –––––––––––––––––––––––––––––––
+
+interface RefreshTokenResponse {
+	accessToken: string
+	refreshToken: string
+}
+
+export const refreshAccessToken = async (): Promise<void> => {
+	try {
+		const refreshToken = localStorage.getItem('refreshToken')
+
+		if (!refreshToken) {
+			throw new Error('Рефреш-токен отсутствует.')
+		}
+
+		const response: RefreshTokenResponse = await baseApi.post('/auth/refresh', {
+			refreshToken,
+		})
+
+		const { accessToken, refreshToken: newRefreshToken } = response
+
+		// Сохраняем обновленные токены
+		setTokens(accessToken, newRefreshToken)
+	} catch (error: any) {
+		console.error('Ошибка обновления токена:', error)
+
+		// В случае ошибки - выходим из системы
+		logout()
+		if (window.location.pathname !== '/auth') {
+			window.location.href = '/auth'
+		}
+
+		throw new Error(
+			error.response?.data?.message || 'Не удалось обновить токен.'
+		)
+	}
+}
