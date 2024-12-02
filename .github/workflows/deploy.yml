@@ -52,5 +52,5 @@ jobs:
             echo "Pulling the latest Docker image"
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/phase-frontend:latest
             echo "Recreating the app container with Docker Compose"
-            sudo docker-compose -f docker-compose.dev.yaml up -d --no-deps frontend || true
+            sudo docker-compose -f docker-compose.dev.yaml up -d --no-deps front || true
           EOF
