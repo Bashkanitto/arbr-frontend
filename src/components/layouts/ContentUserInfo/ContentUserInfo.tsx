@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 // import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SearchIcon } from '../../../assets/icons'
+import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
 import { SignOut } from '../../../assets/icons/SignOut'
 import authStore from '../../../store/AuthStore'
 import { Avatar } from '../../atoms/Avatar'
@@ -56,7 +56,7 @@ export const ContentUserInfo = observer(() => {
 									onClick={() => navigate('/search')}
 									variantColor='secondary'
 								>
-									<SearchIcon />
+									<NotificationIcon />
 								</IconButton>
 								<IconButton onClick={logout} variantColor='danger'>
 									<SignOut />
