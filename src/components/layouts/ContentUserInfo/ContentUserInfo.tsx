@@ -2,10 +2,10 @@ import { useWindowScroll } from '@mantine/hooks'
 import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 // import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
 import { SignOut } from '../../../assets/icons/SignOut'
 import authStore from '../../../store/AuthStore'
+import notificationStore from '../../../store/NotificationStore'
 import { Avatar } from '../../atoms/Avatar'
 import { IconButton } from '../../atoms/Button/IconButton'
 import { Skeleton } from '../../atoms/Skeleton'
@@ -15,8 +15,9 @@ import styles from './ContentUserInfo.module.scss'
 export const ContentUserInfo = observer(() => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
 	const [scroll] = useWindowScroll()
+	const { addNotification } = notificationStore
+
 	const { userProfile } = authStore
-	const navigate = useNavigate()
 	if (!userProfile) return null
 
 	const isScroll = scroll.y > 100
@@ -53,7 +54,7 @@ export const ContentUserInfo = observer(() => {
 						<>
 							<div className={styles['left']}>
 								<IconButton
-									onClick={() => navigate('/search')}
+									onClick={() => notificationStore.openMenu()}
 									variantColor='secondary'
 								>
 									<NotificationIcon />

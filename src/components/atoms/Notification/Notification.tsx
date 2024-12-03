@@ -1,37 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import notificationStore from '../../../store/NotificationStore'
 import styles from './Notification.module.scss'
 
-interface NotificationProps {
-	message: string
-	type: 'success' | 'error'
-	onMenuOpen?: () => void
-}
+export const Notification = observer(() => {
+	const { notifications, isNotification } = notificationStore
 
-const Notification: React.FC<NotificationProps> = ({
-	message,
-	type,
-	onMenuOpen,
-}) => {
-	const [visible, setVisible] = useState(true)
-
-	// Автоматическое скрытие через 5 секунд
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setVisible(false)
-		}, 5000)
-		return () => clearTimeout(timer)
-	}, [])
-
-	if (!visible) return null // Если уведомление скрыто, ничего не рендерим
+	if (!isNotification) return null
+	const lastIndex = notifications.length - 1
 
 	return (
-		<div
-			className={`${styles.notification} ${styles[type]} ${styles.slideIn}`}
-			onClick={onMenuOpen} // Открываем меню при клике
-		>
-			{message}
+		<div className={styles.notification}>
+			<div
+				className={`${styles.notification} ${
+					styles[notifications[lastIndex].type]
+				}`}
+			>
+				{notifications[lastIndex].message}
+			</div>
 		</div>
 	)
-}
-
-export default Notification
+})
