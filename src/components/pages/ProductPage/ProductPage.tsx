@@ -48,9 +48,9 @@ const ProductPage = () => {
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
-				<img src={product.images[0].url} alt='' />
-				<img src={product.images[1].url} alt='' />
-				<img src={product.images[2].url} alt='' />
+				<img src={product.images[0]?.url} alt='' />
+				<img src={product.images[1]?.url} alt='' />
+				<img src={product.images[2]?.url} alt='' />
 			</div>
 			<div className={styles['product-info']}>
 				<div className={styles['container']}>

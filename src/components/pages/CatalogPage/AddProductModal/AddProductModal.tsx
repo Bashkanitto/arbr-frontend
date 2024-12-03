@@ -17,6 +17,7 @@ const AddProductModal = ({
 	onClose: () => void
 }) => {
 	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
+	const [productsId, setProductsId] = useState<number>(0)
 	const [accounts, setAccounts] = useState<{ value: string; label: string }[]>(
 		[]
 	)
@@ -79,7 +80,7 @@ const AddProductModal = ({
 		try {
 			setLoading(true)
 
-			const productResponse = await addProduct({
+			await addProduct({
 				name: formData.name,
 				description: formData.description,
 				quantity: formData.quantity || 0,
@@ -95,16 +96,15 @@ const AddProductModal = ({
 				},
 				amountPrice: 0,
 				rating: 0,
-			})
-
-			const productId = productResponse?.id
+			}).then(productResponse =>
+				addVendorGroup({
+					productId: productResponse?.id,
+					vendorId: parseInt(formData.accountId, 10),
+					price: formData.price.toString(),
+				})
+			)
 
 			// Сразу прикрепляем продукт в поставщику
-			await addVendorGroup({
-				productId: productId,
-				vendorId: parseInt(formData.accountId, 10),
-				price: formData.price.toString(),
-			})
 
 			alert('Товар успешно добавлен!')
 			onClose()
