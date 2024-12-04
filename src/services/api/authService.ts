@@ -51,6 +51,7 @@ export const logout = () => {
 	localStorage.removeItem('refreshToken')
 	Cookies.remove('accessToken')
 	Cookies.remove('refreshToken')
+	window.location.href = '/auth'
 }
 
 // Автоматический выход через 24 часа
@@ -159,26 +160,24 @@ interface RefreshTokenResponse {
 export const refreshAccessToken = async (): Promise<void> => {
 	try {
 		const refreshToken = localStorage.getItem('refreshToken')
-
 		if (!refreshToken) {
 			throw new Error('Рефреш-токен отсутствует.')
 		}
 
+		// Запрос обновления токена
 		const response: RefreshTokenResponse = await baseApi.post('/auth/refresh', {
 			refreshToken,
 		})
 
 		const { accessToken, refreshToken: newRefreshToken } = response
-
-		// Сохраняем обновленные токены
 		setTokens(accessToken, newRefreshToken)
 	} catch (error: any) {
 		console.error('Ошибка обновления токена:', error)
 
-		// В случае ошибки - выходим из системы
-		logout()
-		if (window.location.pathname !== '/auth') {
-			window.location.href = '/auth'
+		// Специфическая проверка на 401 Unauthorized
+		if (error.response?.status === 401) {
+			console.error('Токен отозван или недействителен. Выполняется выход...')
+			logout()
 		}
 
 		throw new Error(
