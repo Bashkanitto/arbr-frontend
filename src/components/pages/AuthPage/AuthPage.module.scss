@@ -86,3 +86,24 @@
 		width: 100%;
 	}
 }
+
+.passwordWrapper {
+	position: relative;
+}
+
+.showPasswordButton {
+	position: absolute;
+	max-width: 15%;
+	display: flex;
+	justify-content: flex-end;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	color: #007bff;
+	font-size: 14px;
+	cursor: pointer;
+	padding: 0;
+	outline: none;
+}

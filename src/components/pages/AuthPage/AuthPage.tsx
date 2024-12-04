@@ -14,6 +14,7 @@ const AuthPage = observer(() => {
 	const navigate = useNavigate()
 	const [error, setError] = useState<string | null>(null)
 	const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
+	const [showPassword, setShowPassword] = useState(false)
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault()
@@ -56,11 +57,21 @@ const AuthPage = observer(() => {
 							name='identifier'
 							placeholder='Ваша Почта'
 						/>
-						<Input
-							className={styles['inputs']}
-							name='password'
-							placeholder='Ваш Пароль'
-						/>
+						<div className={styles.passwordWrapper}>
+							<Input
+								className={styles['inputs']}
+								name='password'
+								placeholder='Ваш Пароль'
+								type={showPassword ? 'text' : 'password'}
+							/>
+							<button
+								type='button'
+								className={styles.showPasswordButton}
+								onClick={() => setShowPassword(prev => !prev)}
+							>
+								{showPassword ? 'Скрыть' : 'Показать'}
+							</button>
+						</div>
 						<a onClick={() => setStep(2)} className={styles.forgetPassword}>
 							Забыли пароль?
 						</a>
