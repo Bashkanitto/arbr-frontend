@@ -21,7 +21,7 @@ export const MainSidebar = () => {
 			}}
 		>
 			<div className={styles['top']}>
-				<h2 className={styles['title']}>Phase</h2>
+				<img src='/images/fullLogo.svg' className={styles.logo} alt='' />
 				<MainSidebarNav />
 			</div>
 			<div style={{ paddingInline: '10px' }}>
