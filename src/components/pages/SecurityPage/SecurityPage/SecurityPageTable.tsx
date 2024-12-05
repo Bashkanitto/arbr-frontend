@@ -1,5 +1,5 @@
 // src/components/SecurityPageTable/SecurityPageTable.tsx
-import { Checkbox, Select } from '@mantine/core'
+import { Checkbox, Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import jsPDF from 'jspdf'
@@ -50,7 +50,7 @@ export const SecurityPageTable = () => {
 		loadAccounts()
 	}, [page, pageSize])
 
-	if (loading) return <div>Loading...</div>
+	if (loading) return <Skeleton />
 	if (error) return <div>Error: {error}</div>
 
 	const handleExport = () => {

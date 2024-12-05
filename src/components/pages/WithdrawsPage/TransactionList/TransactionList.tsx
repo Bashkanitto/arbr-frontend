@@ -1,3 +1,4 @@
+import { Skeleton } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { fetchOperations } from '../../../../services/api/operationService'
 import styles from './TransactionList.module.scss'
@@ -29,9 +30,7 @@ const TransactionList: React.FC = () => {
 		getBalance()
 	}, [])
 
-	if (loading) {
-		return <div className={styles.container}>Загрузка...</div>
-	}
+	if (loading) return <Skeleton />
 
 	if (error) {
 		return <div className={styles.container}>{error}</div>

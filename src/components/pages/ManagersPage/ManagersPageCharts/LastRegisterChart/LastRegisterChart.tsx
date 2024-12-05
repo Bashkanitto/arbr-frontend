@@ -1,4 +1,5 @@
 // components/LastRegisterChart/LastRegisterChart.tsx
+import { Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import {
@@ -36,7 +37,7 @@ const LastRegisterChart = () => {
 		loadLastConfirmedAccounts()
 	}, [])
 
-	if (loading) return <div>Loading...</div>
+	if (loading) return <Skeleton />
 	if (error) return <div>Error: {error}</div>
 
 	return (

@@ -1,3 +1,4 @@
+import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { VendorType } from '../../../services/api/Types'
 import { fetchAllVendors } from '../../../services/api/productService'
@@ -36,7 +37,7 @@ const SearchPage = () => {
 
 	// Toggle catalog modal
 
-	if (loading) return <p>Loading vendor data...</p>
+	if (loading) return <Skeleton />
 	if (error) return <p>Error: {error}</p>
 
 	// Фильтрация данных на основе запроса

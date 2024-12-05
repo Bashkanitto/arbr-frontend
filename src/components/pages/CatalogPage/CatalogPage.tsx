@@ -1,3 +1,4 @@
+import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { fetchProfile } from '../../../services/api/authService'
 import { fetchAllVendors } from '../../../services/api/productService'
@@ -72,7 +73,7 @@ const CatalogPage = () => {
 	const addProduct = () => setIsAddProductOpen(true)
 	const topVendorsQuantity = vendorData.length
 
-	if (loading) return <p>Loading vendor data...</p>
+	if (loading) return <Skeleton />
 	if (error) return <p>Error: {error}</p>
 
 	return (
