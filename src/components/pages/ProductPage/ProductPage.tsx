@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import '../../../assets/fonts/Roboto-Regular.ttf'
 import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
 import { fetchProductById } from '../../../services/api/productService'
+import EditProcentModal from '../CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './ProductPage.module.scss'
 
 interface Product {
@@ -22,6 +23,7 @@ const ProductPage = () => {
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 	const [activeTab, setActiveTab] = useState<string>('описание')
+	const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
 
 	useEffect(() => {
 		const loadProduct = async () => {
@@ -48,6 +50,14 @@ const ProductPage = () => {
 
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab)
+	}
+
+	const openEditModal = () => {
+		setIsEditModalOpen(true)
+	}
+
+	const closeEditModal = () => {
+		setIsEditModalOpen(false)
 	}
 
 	const downloadPDF = () => {
@@ -120,7 +130,7 @@ const ProductPage = () => {
 						<span>Цена за товар</span>
 						<p>{product.price}₸ </p>
 					</div>
-					<button>% ИЗМЕНИТЬ ПРОЦЕНТ</button>
+					<button onClick={openEditModal}>% ИЗМЕНИТЬ ПРОЦЕНТ</button>
 					<div className={styles['product-details']}>
 						<a href='#description'>
 							Доставка <span>{product.order}</span>
@@ -130,6 +140,12 @@ const ProductPage = () => {
 					</div>
 				</div>
 			</div>
+
+			<EditProcentModal
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				user={{ vendorGroups: [{ product }] }}
+			/>
 		</div>
 	)
 }
