@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package.json files
 COPY package*.json ./
 
-# Clear npm cache and install dependencies with legacy peer dependencies
-RUN npm cache clean --force && npm install --legacy-peer-deps
+# Clear npm cache, set the npm registry, and install dependencies with legacy peer dependencies
+RUN npm config set registry https://registry.npmjs.org/ && npm cache clean --force && npm install --legacy-peer-deps
 
 # Copy all files
 COPY . .
