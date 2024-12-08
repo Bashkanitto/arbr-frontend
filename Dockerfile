@@ -1,18 +1,31 @@
-# Use official node image
-FROM node:18
+# Базовый образ
+FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json files
+# Установка зависимостей
 COPY package*.json ./
+RUN npm install
 
-# Clear npm cache, set the npm registry, and install dependencies with legacy peer dependencies
-RUN npm config set registry https://registry.npmjs.org/ && npm cache clean --force && npm install --legacy-peer-deps
-
-# Copy all files
+# Копирование и сборка
 COPY . .
+RUN npm run build
 
-# Expose port and run the app
-EXPOSE 3000
-CMD ["npm", "start"]
+# Подготовка минимального образа для продакшн
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Копирование собранных файлов
+ENV BASE_URL $BASE_URL
+COPY --from=builder /app/package*.json ./
+RUN npm ci --only=production
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
+# COPY --from=builder /app/.env .env
+
+RUN npm install -g vite
+
+EXPOSE 8000
+# Используйте vite для запуска приложения
+CMD ["npm", "run", "preview"]
