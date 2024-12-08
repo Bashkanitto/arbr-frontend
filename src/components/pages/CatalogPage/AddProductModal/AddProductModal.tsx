@@ -18,7 +18,6 @@ const AddProductModal = ({
 	onClose: () => void
 }) => {
 	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
-	const [productId, setProductId] = useState(0)
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 	const [accounts, setAccounts] = useState<{ value: string; label: string }[]>(
 		[]
