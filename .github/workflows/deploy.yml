@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/phase-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/phase-frontend
 
   deploy:
     needs: build
