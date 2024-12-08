@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
 import { SignOut } from '../../../assets/icons/SignOut'
 import authStore from '../../../store/AuthStore'
-import notificationStore from '../../../store/NotificationStore'
+import { default as notificationStore } from '../../../store/NotificationStore'
 import { Avatar } from '../../atoms/Avatar'
 import { IconButton } from '../../atoms/Button/IconButton'
 import { Skeleton } from '../../atoms/Skeleton'
@@ -15,7 +15,6 @@ import styles from './ContentUserInfo.module.scss'
 export const ContentUserInfo = observer(() => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
 	const [scroll] = useWindowScroll()
-	const { addNotification } = notificationStore
 
 	const { userProfile } = authStore
 	if (!userProfile) return null

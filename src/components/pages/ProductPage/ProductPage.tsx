@@ -135,8 +135,11 @@ const ProductPage = () => {
 						<a href='#description'>
 							Доставка <span>{product.order}</span>
 						</a>
-						<a href='#description'>Описание</a>
 						<a href='#description'>Характеристики</a>
+						<a href='#description'>Описание</a>
+						<a href='#description'>ЕНС ТРУ</a>
+						<a href='#description'>GTIN (штрихкод)</a>
+						<a href='#description'>KZTIN (для гос. закупок)</a>
 					</div>
 				</div>
 			</div>

@@ -2,6 +2,7 @@ import { Loader } from '@mantine/core'
 import { Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../components/layouts/MainLayout'
+import ApplicationPage from '../components/pages/ApplicationPage/ApplicationPage'
 import AuthPage from '../components/pages/AuthPage/AuthPage'
 import CatalogPage from '../components/pages/CatalogPage/CatalogPage'
 import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
@@ -62,6 +63,13 @@ export const AppRouter = () => {
 								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
 							>
 								<Route path='' element={<CatalogPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.applications}
+								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+							>
+								<Route path='' element={<ApplicationPage />} />
 							</Route>
 
 							<Route

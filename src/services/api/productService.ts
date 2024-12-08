@@ -32,7 +32,7 @@ export const fetchProductById = async (productId: any) => {
 export const addProduct = async (productData: addProductType): Promise<any> => {
 	try {
 		const response = await baseApi.post('/product', productData)
-		return response.data
+		return response
 	} catch (error) {
 		console.error('Error adding product:', error)
 		throw new Error(
@@ -72,28 +72,43 @@ export const addVendorGroup = async ({
 }
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
-export const uploadImage = async (
-	file: File,
-	productId: string,
-	cartItemId: string
+export const uploadMultipleImages = async (
+	files: File[],
+	productId: number
 ): Promise<any> => {
 	try {
 		const formData = new FormData()
-		formData.append('file', file)
-		formData.append('product', productId)
-		formData.append('cartItem', cartItemId)
+		formData.append('product', String(productId))
 
-		const response = await baseApi.post('/upload/single', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
+		// Добавление файлов в FormData
+		files.forEach((file, index) => {
+			formData.append('files', file, file.name)
 		})
 
-		return response.data
+		// Отправка данных на сервер
+		const response = await baseApi.post('/upload/multiple', formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		})
+
+		return response
 	} catch (error) {
-		console.error('Error uploading image:', error)
+		console.error('Ошибка при отправке файлов:', error)
 		throw new Error(
-			`Failed to upload image: ${
+			`Не удалось загрузить файлы: ${
+				error instanceof Error ? error.message : 'Неизвестная ошибка'
+			}`
+		)
+	}
+}
+
+export const fetchAllProducts = async (): Promise<VendorResponse> => {
+	try {
+		const response: any = await baseApi.get('/product')
+		return response
+	} catch (error) {
+		console.error('Error fetching vendors:', error)
+		throw new Error(
+			`Failed to fetch vendors: ${
 				error instanceof Error ? error.message : 'Unknown error'
 			}`
 		)

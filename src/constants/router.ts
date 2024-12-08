@@ -1,5 +1,6 @@
 export const RouteNavList = {
 	managers: () => '/managers',
+	applications: () => '/applications',
 	search: () => '/search',
 	withdraws: () => '/withdraws',
 	supplies: () => '/supplies',
@@ -14,6 +15,7 @@ export const RoutePathList = {
 	managers: '/managers',
 	search: '/search',
 	supplies: '/supplies',
+	applications: '/applications',
 	history: '/history',
 	auth: '/auth',
 	notfound: '/notfound',

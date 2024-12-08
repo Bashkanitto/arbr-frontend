@@ -5,6 +5,7 @@ import {
 	addProduct,
 	addVendorGroup,
 	fetchAllVendors,
+	uploadMultipleImages,
 } from '../../../../services/api/productService'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './AddProductModal.module.scss'
@@ -17,7 +18,8 @@ const AddProductModal = ({
 	onClose: () => void
 }) => {
 	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
-	const [productsId, setProductsId] = useState<number>(0)
+	const [productId, setProductId] = useState(0)
+	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 	const [accounts, setAccounts] = useState<{ value: string; label: string }[]>(
 		[]
 	)
@@ -37,9 +39,15 @@ const AddProductModal = ({
 		discount: 0,
 	})
 
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files) {
+			setSelectedFiles(Array.from(event.target.files))
+		}
+	}
+
 	useEffect(() => {
 		if (isOpen) {
-			// загрузка бренды
+			// Загрузка брендов
 			const loadBrands = async () => {
 				try {
 					const response = await fetchBrands()
@@ -49,7 +57,7 @@ const AddProductModal = ({
 					}))
 					setBrands(brandOptions)
 				} catch (error) {
-					console.error('Error fetching brands:', error)
+					console.error('Ошибка загрузки брендов:', error)
 				}
 			}
 
@@ -63,10 +71,9 @@ const AddProductModal = ({
 					}))
 					setAccounts(vendorOptions)
 				} catch (error) {
-					console.error('Error fetching vendors:', error)
+					console.error('Ошибка загрузки поставщиков:', error)
 				}
 			}
-
 			loadBrands()
 			loadVendors()
 		}
@@ -80,7 +87,8 @@ const AddProductModal = ({
 		try {
 			setLoading(true)
 
-			await addProduct({
+			// Шаг 1: Создание продукта
+			const productResponse = await addProduct({
 				name: formData.name,
 				description: formData.description,
 				quantity: formData.quantity || 0,
@@ -96,21 +104,22 @@ const AddProductModal = ({
 				},
 				amountPrice: 0,
 				rating: 0,
-			}).then(productResponse =>
-				addVendorGroup({
-					productId: productResponse?.id,
-					vendorId: parseInt(formData.accountId, 10),
-					price: formData.price.toString(),
-				})
-			)
+			})
 
-			// Сразу прикрепляем продукт в поставщику
+			// Шаг 2: Загрузка изображений для созданного продукта
+			await uploadMultipleImages(selectedFiles, productResponse.id)
+
+			await addVendorGroup({
+				productId: productResponse.id,
+				vendorId: parseInt(formData.accountId, 10),
+				price: formData.price.toString(),
+			})
 
 			alert('Товар успешно добавлен!')
 			onClose()
 		} catch (error) {
-			alert('Ошибка при добавлении товара')
-			console.error(error)
+			alert('Ошибка при добавлении товара.')
+			console.error('Ошибка:', error)
 		} finally {
 			setLoading(false)
 		}
@@ -154,6 +163,15 @@ const AddProductModal = ({
 				value={formData.price}
 				onChange={value => handleInputChange('price', value ?? 0)}
 			/>
+			<div className={styles.fileUpload}>
+				<label htmlFor='file-input'>Загрузите фотографии</label>
+				<input
+					type='file'
+					id='file-input'
+					multiple
+					onChange={handleFileChange}
+				/>
+			</div>
 			<Select
 				label='Бренд'
 				data={brands}

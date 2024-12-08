@@ -30,9 +30,7 @@ const AuthPage = observer(() => {
 				navigate('/managers')
 			}
 		} catch (error: unknown) {
-			setError(
-				((error as Error).message = 'Ошибка: Неправильные данные для входа')
-			)
+			setError(((error as Error).message = 'Неправильные данные для входа'))
 		}
 	}
 	return (

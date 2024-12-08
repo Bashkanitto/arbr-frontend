@@ -5,6 +5,7 @@ import {
 	SearchIcon,
 	StatusIcon,
 } from '../../../../assets/icons'
+import { CalendarIcon } from '../../../../assets/icons/CalendarIcon'
 import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
 import { HistoryIcon } from '../../../../assets/icons/HistoryIcon'
 import { UserIcon } from '../../../../assets/icons/UserIcon'
@@ -48,6 +49,11 @@ const navItems = [
 		title: 'Безопасность',
 		route: RouteNavList.security(),
 	},
+	{
+		icon: <CalendarIcon />,
+		title: 'Заявки',
+		route: RouteNavList.applications(),
+	},
 ]
 
 export const MainSidebarNav = () => {
@@ -59,7 +65,7 @@ export const MainSidebarNav = () => {
 		if (!userProfile) return false
 		if (userProfile.role === 'admin') return true
 		if (userProfile.role === 'vendor') {
-			return ['Каталог', 'Мои сделки', 'История'].includes(item.title)
+			return ['Каталог', 'Мои сделки', 'История', 'Заявки'].includes(item.title)
 		}
 		return false
 	})

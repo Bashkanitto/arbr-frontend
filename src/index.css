@@ -27,9 +27,26 @@ body,
 body {
 	margin: 0;
 }
+.active {
+	color: #3e9970;
+}
+
+.activebg {
+	background: #eaf6f4;
+}
+
+.warning {
+	color: #f9a60c;
+}
+.warningbg {
+	background: #f8f2ec;
+}
 
 .danger {
 	color: red;
+}
+.dangerbg {
+	background: #f8eef0;
 }
 .mantine-Paper-root {
 	padding: 20px 0;

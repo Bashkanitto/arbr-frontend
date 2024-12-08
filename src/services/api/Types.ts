@@ -19,9 +19,31 @@ export interface UserType {
 	transactions: string[]
 }
 
+export interface Product {
+	amountPrice: string
+	brand: any[]
+	createdAt: string
+	deletedAt: string
+	description: string
+	id: number
+	images: any[]
+	name: string
+	price: number
+	quantity: number
+	rating: string
+	status: string
+	updatedAt: string
+}
+
+export interface VendorGroups {
+	id: number
+	price: number
+	product: Product
+}
+
 export interface VendorType {
-	createdAt: string | number | Date
-	id: number | null | undefined
+	createdAt: string
+	id: number
 	email: string
 	phone: string
 	role: string
@@ -48,8 +70,7 @@ export interface VendorType {
 		ownerName: string
 	}>
 	transactions: string[]
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	vendorGroups: any[]
+	vendorGroups: VendorGroups[]
 }
 
 export interface VendorResponse {
