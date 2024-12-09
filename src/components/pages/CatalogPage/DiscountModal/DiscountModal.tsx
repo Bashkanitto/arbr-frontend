@@ -1,6 +1,7 @@
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
 import { updateDiscount } from '../../../../services/api/procentService'
+import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './DiscountModal.module.scss'
 
@@ -24,8 +25,18 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 			try {
 				await updateDiscount(selectedProductId, sliderValue)
 				onClose()
+				NotificationStore.addNotification(
+					'Изменение бонуса',
+					'Бонус успешно изменен',
+					'success'
+				)
 			} catch (error) {
 				console.error('Error updating bonus:', error)
+				NotificationStore.addNotification(
+					'Изменение бонуса',
+					'Что то пошло не так',
+					'error'
+				)
 			}
 		} else {
 			console.error('No product selected')
