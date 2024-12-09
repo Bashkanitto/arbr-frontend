@@ -4,7 +4,8 @@ import notificationStore from '../../../store/NotificationStore'
 import styles from './NotificationMenu.module.scss'
 
 export const NotificationMenu = observer(() => {
-	const { notifications, isMenuOpen, closeMenu } = notificationStore
+	const { notifications, isMenuOpen, closeMenu, clearNotifications } =
+		notificationStore
 
 	return (
 		<div
@@ -29,6 +30,12 @@ export const NotificationMenu = observer(() => {
 					</li>
 				))}
 			</ul>
+			{/* Add Clear Notifications button */}
+			{notifications.length > 0 && (
+				<button className={styles.clearButton} onClick={clearNotifications}>
+					Очистить все уведомления
+				</button>
+			)}
 		</div>
 	)
 })

@@ -8,20 +8,26 @@ interface Notification {
 }
 
 class NotificationStore {
-	notifications: Notification[] = [
-		{
-			id: 0,
-			message:
-				'Уважаемый, Самса Сенсей! Ваш продукт по номеру ‘2225865’ нарушает правила политики безопасности, и нам приходится отказать добавлять этот товар в ваш профиль',
-			title: 'Ваш продукт не одобрен',
-			type: 'error',
-		},
-	]
+	notifications: Notification[] = []
 	isMenuOpen = false
 	isNotification = false
 
 	constructor() {
 		makeAutoObservable(this)
+		this.loadNotificationsFromLocalStorage()
+	}
+
+	// Загрузка уведомлений из localStorage
+	loadNotificationsFromLocalStorage() {
+		const storedNotifications = localStorage.getItem('notifications')
+		if (storedNotifications) {
+			this.notifications = JSON.parse(storedNotifications)
+		}
+	}
+
+	// Сохранение уведомлений в localStorage
+	saveNotificationsToLocalStorage() {
+		localStorage.setItem('notifications', JSON.stringify(this.notifications))
 	}
 
 	// Добавить уведомление
@@ -32,13 +38,23 @@ class NotificationStore {
 	) => {
 		const id = Date.now()
 		this.isNotification = true
-		this.notifications.push({ id, message, title, type })
+		const newNotification = { id, message, title, type }
+		this.notifications.push(newNotification)
+		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
 	}
 
 	// Удалить уведомление
 	removeNotification = (id: number) => {
 		this.isNotification = false
 		this.notifications = this.notifications.filter(notif => notif.id !== id)
+		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
+	}
+
+	// Очистить все уведомления
+	clearNotifications = () => {
+		this.isNotification = false
+		this.notifications = []
+		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
 	}
 
 	// Открыть меню уведомлений
