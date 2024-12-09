@@ -40,7 +40,7 @@ const AddProductModal = ({
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			setSelectedFiles(Array.from(event.target.files))
+			setSelectedFiles(Array.from(event.target.files)) // Сохраняем файлы в состояние
 		}
 	}
 
@@ -82,6 +82,20 @@ const AddProductModal = ({
 		setFormData(prev => ({ ...prev, [field]: value }))
 	}
 
+	const convertFilesToBase64 = async (files: File[]): Promise<string[]> => {
+		const filePromises = files.map(
+			file =>
+				new Promise<string>((resolve, reject) => {
+					const reader = new FileReader()
+					reader.onload = () => resolve(reader.result as string)
+					reader.onerror = () => reject('Ошибка чтения файла')
+					reader.readAsDataURL(file) // Преобразуем файл в Base64
+				})
+		)
+
+		return Promise.all(filePromises)
+	}
+
 	const handleAddProduct = async () => {
 		try {
 			setLoading(true)
@@ -105,8 +119,11 @@ const AddProductModal = ({
 				rating: 0,
 			})
 
-			// Шаг 2: Загрузка изображений для созданного продукта
-			await uploadMultipleImages(selectedFiles, productResponse.id)
+			// Шаг 2: Конвертация файлов в Base64
+			const base64Files = await convertFilesToBase64(selectedFiles)
+
+			// Шаг 3: Загрузка изображений для созданного продукта
+			await uploadMultipleImages(base64Files, productResponse.id)
 
 			await addVendorGroup({
 				productId: productResponse.id,

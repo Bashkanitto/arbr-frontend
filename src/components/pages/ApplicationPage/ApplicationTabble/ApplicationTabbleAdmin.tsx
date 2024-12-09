@@ -13,6 +13,7 @@ export const ApplicationTableAdmin = () => {
 	const [productData, setProductData] = useState<VendorType[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
+	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [error, setError] = useState<string | null>(null)
 	const [page, setPage] = useState<number>(1)
 	const [pageSize] = useState<number>(10)
@@ -23,9 +24,9 @@ export const ApplicationTableAdmin = () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const { records, meta }: any = await fetchAllVendors()
+				const { records, meta } = await fetchAllVendors(page, pageSize)
 				setProductData(records)
-				setTotalPages(meta.totalPages)
+				setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
 			} catch (err) {
 				setError('Не удалось загрузить данные аккаунтов')
 				console.error(err)
@@ -37,13 +38,12 @@ export const ApplicationTableAdmin = () => {
 		loadVendors()
 	}, [page, pageSize])
 
-	if (loading) return <Skeleton />
-	if (error) return <div>Ошибка: {error}</div>
-
-	// Получаем все vendorGroups из всех vendors
 	const allVendorGroups: VendorGroups[] = productData.flatMap(
 		vendor => vendor.vendorGroups
 	)
+
+	if (loading) return <Skeleton />
+	if (error) return <div>Ошибка: {error}</div>
 
 	// Логика выделения всех строк
 	const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +54,16 @@ export const ApplicationTableAdmin = () => {
 			setSelectRows([])
 		}
 	}
+
+	const filteredData = allVendorGroups.filter(group => {
+		const vendor = productData.find(vendor => vendor.id === group.id)
+		const vendorName = vendor?.firstName || 'Неизвестно'
+		const productName = group.product?.name || ''
+		return (
+			productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			vendorName.toLowerCase().includes(searchQuery.toLowerCase())
+		)
+	})
 
 	const handleSelectRowChange =
 		(id: number) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,13 +76,13 @@ export const ApplicationTableAdmin = () => {
 		}
 
 	const renderRow = () => {
-		const filteredData = statusFilter
-			? allVendorGroups.filter(group => group.product.status === statusFilter)
-			: allVendorGroups
+		const filteredByStatus = statusFilter
+			? filteredData.filter(group => group.product.status === statusFilter)
+			: filteredData
 
-		return filteredData.map(group => {
-			const vendor = productData.find(vendor => vendor.id === group.id) // Find matching vendor
-			const vendorName = vendor?.firstName || 'Неизвестно' // Default to 'Unknown' if no vendor found
+		return filteredByStatus.map(group => {
+			const vendor = productData.find(vendor => vendor.id === group.id)
+			const vendorName = vendor?.firstName || 'Неизвестно'
 
 			return (
 				<Table.Tr key={group.id}>
@@ -85,7 +95,7 @@ export const ApplicationTableAdmin = () => {
 					</Table.Td>
 					<Table.Td>{group.id}</Table.Td>
 					<Table.Td>{group.product?.name}</Table.Td>
-					<Table.Td>{vendorName}</Table.Td> {/* Display the vendor name */}
+					<Table.Td>{vendorName}</Table.Td>
 					<Table.Td>
 						{group.product?.createdAt
 							? format(new Date(group.product.createdAt), 'dd MMMM, yyyy', {
@@ -110,7 +120,12 @@ export const ApplicationTableAdmin = () => {
 		<>
 			<div className={styles['security-page-table-head']}>
 				<div>
-					<input type='text' placeholder='Поиск' />
+					<input
+						type='text'
+						placeholder='Поиск'
+						value={searchQuery}
+						onChange={e => setSearchQuery(e.target.value)}
+					/>
 					<Select
 						placeholder='Статус'
 						data={[

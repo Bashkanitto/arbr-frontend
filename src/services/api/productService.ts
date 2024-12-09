@@ -3,9 +3,14 @@ import baseApi from './base'
 import { addProductType, VendorResponse } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
-export const fetchAllVendors = async (): Promise<VendorResponse> => {
+export const fetchAllVendors = async (
+	page: number = 1,
+	pageSize: number = 10
+): Promise<VendorResponse> => {
 	try {
-		const response: VendorResponse = await baseApi.get('/account/vendors')
+		const response: VendorResponse = await baseApi.get(
+			`/account/vendors?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+		)
 		return response
 	} catch (error) {
 		console.error('Error fetching vendors:', error)
@@ -73,23 +78,16 @@ export const addVendorGroup = async ({
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadMultipleImages = async (
-	files: File[],
+	files: string[], // теперь массив строк Base64
 	productId: number
 ): Promise<any> => {
 	try {
-		const formData = new FormData()
-		formData.append('product', String(productId))
+		const body = {
+			product: productId,
+			files, // Отправляем массив строк
+		}
 
-		// Добавление файлов в FormData
-		files.forEach(file => {
-			formData.append('files', file, file.name)
-		})
-
-		// Отправка данных на сервер
-		const response = await baseApi.post('/upload/multiple', formData, {
-			headers: { 'Content-Type': 'multipart/form-data' },
-		})
-
+		const response = await baseApi.post('/upload/multiple', body)
 		return response
 	} catch (error) {
 		console.error('Ошибка при отправке файлов:', error)
