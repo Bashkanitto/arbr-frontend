@@ -7,6 +7,7 @@ import {
 	fetchAllVendors,
 	uploadMultipleImages,
 } from '../../../../services/api/productService'
+import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './AddProductModal.module.scss'
 
@@ -131,10 +132,18 @@ const AddProductModal = ({
 				price: formData.price.toString(),
 			})
 
-			alert('Товар успешно добавлен!')
+			NotificationStore.addNotification(
+				'Добавление товара',
+				'Товар успешно добавлен',
+				'success'
+			)
 			onClose()
 		} catch (error) {
-			alert('Ошибка при добавлении товара.')
+			NotificationStore.addNotification(
+				'Добавление товара',
+				'Что то пошло не так',
+				'error'
+			)
 			console.error('Ошибка:', error)
 		} finally {
 			setLoading(false)
