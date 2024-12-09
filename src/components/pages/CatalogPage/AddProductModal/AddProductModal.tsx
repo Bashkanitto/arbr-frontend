@@ -130,12 +130,12 @@ const AddProductModal = ({
 				productId: productResponse.id,
 				vendorId: parseInt(formData.accountId, 10),
 				price: formData.price.toString(),
-			})
-
-			NotificationStore.addNotification(
-				'Добавление товара',
-				'Товар успешно добавлен',
-				'success'
+			}).then(() =>
+				NotificationStore.addNotification(
+					'Добавление товара',
+					'Товар успешно добавлен',
+					'success'
+				)
 			)
 			onClose()
 		} catch (error) {
