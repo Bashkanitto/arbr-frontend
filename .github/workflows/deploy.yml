@@ -39,7 +39,7 @@ jobs:
           HOST: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/phase-frontend:latest
+          IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/phase-frontend
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
@@ -50,7 +50,7 @@ jobs:
           ssh $USERNAME@$HOST <<EOF
             cd ~/phase
             echo "Pulling the latest Docker image"
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/phase-frontend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/phase-frontend
             echo "Recreating the app container with Docker Compose"
             sudo docker-compose -f docker-compose.dev.yaml up -d --no-deps front || true
           EOF
