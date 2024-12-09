@@ -1,6 +1,7 @@
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
 import { updateBonus } from '../../../../services/api/procentService'
+import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './EditProcentModal.module.scss'
 
@@ -21,12 +22,21 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 
 	const handleSave = async () => {
 		if (selectedProductId !== null) {
-			// Ensure valid product is selected
 			try {
 				await updateBonus(selectedProductId, sliderValue)
+				NotificationStore.addNotification(
+					'Изменение процента',
+					'Процент успешно изменен',
+					'success'
+				)
 				onClose()
 			} catch (error) {
 				console.error('Error updating bonus:', error)
+				NotificationStore.addNotification(
+					'Изменение процента',
+					'Что то пошло не так',
+					'error'
+				)
 			}
 		} else {
 			console.error('No product selected')
