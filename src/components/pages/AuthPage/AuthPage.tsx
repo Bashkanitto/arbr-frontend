@@ -46,7 +46,7 @@ const AuthPage = observer(() => {
 					}}
 				>
 					<form className={styles.authForm} onSubmit={e => handleSubmit(e)}>
-						<h4>Авторизация</h4>
+						<h4>Авторизацияzzzz</h4>
 						<p>Введите ваш номер телефона для входа в личный кабинет.</p>
 						{error && <p className={styles.error}>{error}</p>}
 
