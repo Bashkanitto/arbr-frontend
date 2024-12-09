@@ -29,7 +29,12 @@ const AuthPage = observer(() => {
 			if (authStore.isLoggedIn) {
 				navigate('/managers')
 			}
-		} catch (error: unknown) {
+		} catch (error: any) {
+			if (error.status) {
+				setError(
+					((error as Error).message = 'Ошибка на сервере, попробуйте позже')
+				)
+			}
 			setError(((error as Error).message = 'Неправильные данные для входа'))
 		}
 	}
