@@ -1,4 +1,4 @@
-import { Checkbox, Modal, NumberInput, Select, TextInput } from '@mantine/core'
+import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { fetchBrands } from '../../../../services/api/brandService'
 import {
@@ -80,7 +80,13 @@ const AddProductModal = ({
 	}, [isOpen])
 
 	const handleInputChange = (field: string, value: any) => {
-		setFormData(prev => ({ ...prev, [field]: value }))
+		setFormData(prev => ({
+			...prev,
+			[field]: value,
+			// Автоматическая активация флагов на основе полей бонуса и скидки
+			isBonus: field === 'bonus' ? value > 0 : prev.isBonus,
+			isDiscount: field === 'discount' ? value > 0 : prev.isDiscount,
+		}))
 	}
 
 	const convertFilesToBase64 = async (files: File[]): Promise<string[]> => {
@@ -162,29 +168,25 @@ const AddProductModal = ({
 				data={accounts}
 				value={formData.accountId}
 				onChange={value => handleInputChange('accountId', value ?? '')}
-				placeholder='Выберите поставщика'
+				placeholder='Выберите имя поставщика'
 			/>
 			<TextInput
 				label='Название товара'
-				placeholder='Введите название'
 				value={formData.name}
 				onChange={e => handleInputChange('name', e.currentTarget.value)}
 			/>
 			<TextInput
 				label='Описание'
-				placeholder='Введите описание'
 				value={formData.description}
 				onChange={e => handleInputChange('description', e.currentTarget.value)}
 			/>
 			<NumberInput
 				label='Количество'
-				placeholder='Введите количество'
 				value={formData.quantity}
 				onChange={value => handleInputChange('quantity', value ?? 0)}
 			/>
 			<NumberInput
 				label='Цена'
-				placeholder='Введите цену'
 				value={formData.price}
 				onChange={value => handleInputChange('price', value ?? 0)}
 			/>
@@ -204,37 +206,16 @@ const AddProductModal = ({
 				onChange={value => handleInputChange('brandId', value ?? '')}
 				placeholder='Выберите бренд'
 			/>
-
-			<Checkbox
-				label='Бонусный товар'
-				checked={formData.isBonus}
-				onChange={e => handleInputChange('isBonus', e.currentTarget.checked)}
-			/>
-			<Checkbox
-				label='Бесплатная доставка'
-				checked={formData.isFreeDelivery}
-				onChange={e =>
-					handleInputChange('isFreeDelivery', e.currentTarget.checked)
-				}
-			/>
-			<Checkbox
-				label='Скидка'
-				checked={formData.isDiscount}
-				onChange={e => handleInputChange('isDiscount', e.currentTarget.checked)}
-			/>
 			<NumberInput
 				label='Бонус'
-				placeholder='Введите бонус'
 				value={formData.bonus}
 				onChange={value => handleInputChange('bonus', value ?? 0)}
 			/>
 			<NumberInput
 				label='Скидка'
-				placeholder='Введите скидку'
 				value={formData.discount}
 				onChange={value => handleInputChange('discount', value ?? 0)}
 			/>
-
 			<BaseButton
 				className={styles['AddCatalog-button']}
 				variantColor='primary'
