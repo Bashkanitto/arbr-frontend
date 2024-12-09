@@ -3,20 +3,14 @@ import notificationStore from '../../../store/NotificationStore'
 import styles from './Notification.module.scss'
 
 export const Notification = observer(() => {
-	const { notifications, isNotification } = notificationStore
+	const { notifications } = notificationStore
 
-	if (!isNotification) return null
-	const lastIndex = notifications.length - 1
+	if (!notifications.length) return null
+	const lastNotification = notifications[notifications.length - 1]
 
 	return (
-		<div className={styles.notification}>
-			<div
-				className={`${styles.notification} ${
-					styles[notifications[lastIndex].type]
-				}`}
-			>
-				{notifications[lastIndex].message}
-			</div>
+		<div className={`${styles.notification} ${styles[lastNotification.type]}`}>
+			{lastNotification.message}
 		</div>
 	)
 })

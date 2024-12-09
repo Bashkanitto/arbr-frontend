@@ -32,21 +32,28 @@ class NotificationStore {
 
 	// Добавить уведомление
 	addNotification = (
-		message: string,
 		title: string,
+		message: string,
 		type: 'success' | 'error'
 	) => {
 		const id = Date.now()
 		this.isNotification = true
-		const newNotification = { id, message, title, type }
+		const newNotification = { id, title, message, type }
 		this.notifications.push(newNotification)
 		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
+
+		// Удалить уведомление через 5 секунд
+		setTimeout(() => {
+			this.removeNotification(id)
+		}, 5000)
 	}
 
 	// Удалить уведомление
 	removeNotification = (id: number) => {
-		this.isNotification = false
 		this.notifications = this.notifications.filter(notif => notif.id !== id)
+		if (this.notifications.length === 0) {
+			this.isNotification = false
+		}
 		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
 	}
 
