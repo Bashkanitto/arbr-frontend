@@ -1,19 +1,20 @@
 import { Checkbox, Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS, ru } from 'date-fns/locale'
+import { jsPDF } from 'jspdf' // Импортируем jsPDF
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
-	fetchAllVendors,
+	fetchVendorGroups,
 	patchStatus,
 } from '../../../../services/api/productService'
-import { VendorGroups, VendorType } from '../../../../services/api/Types'
+import { VendorGroups } from '../../../../services/api/Types'
 import { Table } from '../../../atoms/Table'
 import { Pagination } from '../../../molecules/Pagination/Pagination'
 import styles from './ApplicationTabble.module.scss'
 
 export const ApplicationTableAdmin = () => {
 	const [selectRows, setSelectRows] = useState<number[]>([])
-	const [productData, setProductData] = useState<VendorType[]>([])
+	const [productData, setProductData] = useState<any[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
@@ -23,16 +24,16 @@ export const ApplicationTableAdmin = () => {
 	const [totalPages, setTotalPages] = useState<number>(1)
 
 	useEffect(() => {
-		// загрузка продуктов
+		// загрузка данных
 		const loadVendors = async () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const { records, meta } = await fetchAllVendors(page, pageSize)
+				const { records, meta } = await fetchVendorGroups(page, pageSize)
 				setProductData(records)
 				setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
 			} catch (err) {
-				setError('Не удалось загрузить данные аккаунтов')
+				setError('Не удалось загрузить данные')
 				console.error(err)
 			} finally {
 				setLoading(false)
@@ -41,7 +42,6 @@ export const ApplicationTableAdmin = () => {
 
 		loadVendors()
 	}, [page, pageSize])
-
 	const handleStatusChange = async (
 		productId: number,
 		newStatus: 'active' | 'inactive'
@@ -49,6 +49,14 @@ export const ApplicationTableAdmin = () => {
 		try {
 			setLoading(true)
 			await patchStatus(productId, newStatus)
+			// Обновляем статус в локальном состоянии
+			setProductData(prevData =>
+				prevData.map(item =>
+					item.id === productId
+						? { ...item, product: { ...item.product, status: newStatus } }
+						: item
+				)
+			)
 		} catch (error) {
 			setError('Не удалось изменить статус продукта')
 			console.error(error)
@@ -56,13 +64,24 @@ export const ApplicationTableAdmin = () => {
 			setLoading(false)
 		}
 	}
-
+	// Список всех групп поставщиков
 	const allVendorGroups: VendorGroups[] = productData.flatMap(
 		vendor => vendor.vendorGroups
 	)
 
 	if (loading) return <Skeleton />
 	if (error) return <div>Ошибка: {error}</div>
+
+	// Логика фильтрации данных по запросу поиска
+	const filteredData = productData.filter(item => {
+		const productName = item.product?.name.toLowerCase() || ''
+		return productName.includes(searchQuery.toLowerCase())
+	})
+
+	// Логика фильтрации по статусу
+	const filteredByStatus = statusFilter
+		? filteredData.filter(group => group.product.status === statusFilter)
+		: filteredData
 
 	// Логика выделения всех строк
 	const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,16 +93,7 @@ export const ApplicationTableAdmin = () => {
 		}
 	}
 
-	const filteredData = allVendorGroups.filter(group => {
-		const vendor = productData.find(vendor => vendor.id === group.id)
-		const vendorName = vendor?.firstName || 'Неизвестно'
-		const productName = group.product?.name || ''
-		return (
-			productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			vendorName.toLowerCase().includes(searchQuery.toLowerCase())
-		)
-	})
-
+	// Логика выбора строки
 	const handleSelectRowChange =
 		(id: number) => (event: ChangeEvent<HTMLInputElement>) => {
 			const { checked } = event.target
@@ -94,36 +104,57 @@ export const ApplicationTableAdmin = () => {
 			}
 		}
 
+	// Функция для создания и скачивания PDF
+	const downloadPDF = (product: any) => {
+		const doc = new jsPDF()
+
+		// Добавляем информацию о продукте в PDF
+		doc.text(`Product: ${product.product?.name}`, 10, 10)
+		doc.text(`ID: ${product.id}`, 10, 20)
+		doc.text(`Vendor: ${product.vendor.firstName}`, 10, 30)
+		doc.text(`Price: ${product.product?.price}`, 10, 40)
+		doc.text(`Description: ${product.product?.desription}`, 10, 50)
+		doc.text(
+			`Date: ${format(new Date(product.product?.createdAt), 'dd MMMM, yyyy', {
+				locale: enUS,
+			})}`,
+			10,
+			60
+		)
+		doc.text(`Quantity: ${product.product?.quantity}`, 10, 70)
+		doc.text(`Status: ${product.product?.status}`, 10, 80)
+
+		// Добавить другие данные, если необходимо
+
+		// Генерируем и скачиваем PDF
+		doc.save(`product_${product.id}.pdf`)
+	}
+
 	const renderRow = () => {
-		const filteredByStatus = statusFilter
-			? filteredData.filter(group => group.product.status === statusFilter)
-			: filteredData
-
-		return filteredByStatus.map(group => {
-			const vendor = productData.find(vendor => vendor.id === group.id)
-			const vendorName = vendor?.firstName || 'Неизвестно'
-
+		return filteredByStatus.map(item => {
 			return (
-				<Table.Tr key={group.id}>
+				<Table.Tr key={item.id}>
 					<Table.Td style={{ width: '16px' }}>
 						<Checkbox
 							size='xs'
-							checked={selectRows.includes(group.id)}
-							onChange={handleSelectRowChange(group.id)}
+							checked={selectRows.includes(item.id)}
+							onChange={handleSelectRowChange(item.id)}
 						/>
 					</Table.Td>
-					<Table.Td>{group.id}</Table.Td>
-					<Table.Td>{group.product?.name}</Table.Td>
-					<Table.Td>{vendorName}</Table.Td>
+					<Table.Td>{item.id}</Table.Td>
+					<Table.Td>{item.product?.name}</Table.Td>
+					<Table.Td>{item.vendor.firstName}</Table.Td>
 					<Table.Td>
-						{group.product?.createdAt
-							? format(new Date(group.product.createdAt), 'dd MMMM, yyyy', {
+						{item.product?.createdAt
+							? format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
 									locale: ru,
 							  })
 							: '—'}
 					</Table.Td>
 					<Table.Td style={{ width: '50px', padding: '0' }}>
-						<a href={`/profile/${group.id}`}>Посмотреть документы</a>
+						<a href='#' onClick={() => downloadPDF(item)}>
+							Посмотреть документы
+						</a>
 					</Table.Td>
 					<Table.Td
 						style={{
@@ -135,13 +166,13 @@ export const ApplicationTableAdmin = () => {
 					>
 						<button
 							className={styles.statusNotBtn}
-							onClick={() => handleStatusChange(group.id, 'inactive')}
+							onClick={() => handleStatusChange(item.id, 'inactive')}
 						>
 							<img src='/images/diskLike_photo.svg' alt='' />
 						</button>
 						<button
 							className={styles.statusYesBtn}
-							onClick={() => handleStatusChange(group.id, 'active')}
+							onClick={() => handleStatusChange(item.id, 'active')}
 						>
 							<img src='/images/like_photo.svg' alt='' />
 						</button>
@@ -151,7 +182,6 @@ export const ApplicationTableAdmin = () => {
 		})
 	}
 
-	// head таблицы
 	return (
 		<>
 			<div className={styles['security-page-table-head']}>

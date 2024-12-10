@@ -132,3 +132,22 @@ export const patchStatus = async (
 		)
 	}
 }
+
+export const fetchVendorGroups = async (
+	page: number = 1,
+	pageSize: number = 10
+): Promise<VendorResponse> => {
+	try {
+		const response: VendorResponse = await baseApi.get(
+			`/vendor-group?relations=vendor,product&&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching vendor-groups:', error)
+		throw new Error(
+			`Failed to fetch vendor-groups: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
+	}
+}
