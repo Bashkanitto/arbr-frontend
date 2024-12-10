@@ -191,13 +191,20 @@ const AddProductModal = ({
 				onChange={value => handleInputChange('price', value ?? 0)}
 			/>
 			<div className={styles.fileUpload}>
-				<label htmlFor='file-input'>Загрузите фотографии</label>
+				<label htmlFor='fileInput' className={styles.uploadButton}>
+					Загрузить файлы
+				</label>
 				<input
 					type='file'
-					id='file-input'
+					id='fileInput'
 					multiple
 					onChange={handleFileChange}
 				/>
+				<span className={styles.fileInfo}>
+					{selectedFiles.length > 0
+						? `${selectedFiles.length} файл(ов) выбрано`
+						: 'Файлы не выбраны'}
+				</span>
 			</div>
 			<Select
 				label='Бренд'

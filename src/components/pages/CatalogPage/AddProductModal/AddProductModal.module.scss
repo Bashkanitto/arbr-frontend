@@ -8,7 +8,38 @@
 	}
 
 	.AddCatalog-button {
+		margin-top: 20px;
 		display: flex;
 		width: 100%;
 	}
+}
+
+.fileUpload {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.uploadButton {
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #fff;
+	background-color: #4a90e2;
+	border-radius: 5px;
+	cursor: pointer;
+	text-align: center;
+	transition: background-color 0.3s ease;
+}
+
+.uploadButton:hover {
+	background-color: #357ab7;
+}
+
+.fileInfo {
+	font-size: 14px;
+	color: #555;
 }
