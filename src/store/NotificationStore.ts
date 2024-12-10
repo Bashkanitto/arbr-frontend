@@ -5,6 +5,7 @@ interface Notification {
 	message: string
 	title: string
 	type: 'success' | 'error'
+	isRead: boolean // Добавлено поле для определения, было ли уведомление показано
 }
 
 class NotificationStore {
@@ -22,12 +23,22 @@ class NotificationStore {
 		const storedNotifications = localStorage.getItem('notifications')
 		if (storedNotifications) {
 			this.notifications = JSON.parse(storedNotifications)
+			this.markAllAsRead() // Отмечаем все уведомления как прочитанные
 		}
 	}
 
 	// Сохранение уведомлений в localStorage
 	saveNotificationsToLocalStorage() {
 		localStorage.setItem('notifications', JSON.stringify(this.notifications))
+	}
+
+	// Пометить все уведомления как прочитанные
+	markAllAsRead() {
+		this.notifications = this.notifications.map(notification => ({
+			...notification,
+			isRead: true, // Отмечаем все уведомления как прочитанные
+		}))
+		this.saveNotificationsToLocalStorage()
 	}
 
 	// Добавить уведомление
@@ -38,14 +49,22 @@ class NotificationStore {
 	) => {
 		const id = Date.now()
 		this.isNotification = true
-		const newNotification = { id, title, message, type }
+		const newNotification = { id, title, message, type, isRead: false }
 		this.notifications.push(newNotification)
-		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
+		this.saveNotificationsToLocalStorage()
 
-		// Удалить уведомление через 5 секунд
+		// Помечаем уведомление как прочитанное через 5 секунд, вместо удаления
 		setTimeout(() => {
-			this.removeNotification(id)
+			this.markAsRead(id)
 		}, 5000)
+	}
+
+	// Пометить уведомление как прочитанное
+	markAsRead = (id: number) => {
+		this.notifications = this.notifications.map(notif =>
+			notif.id === id ? { ...notif, isRead: true } : notif
+		)
+		this.saveNotificationsToLocalStorage()
 	}
 
 	// Удалить уведомление
@@ -54,14 +73,14 @@ class NotificationStore {
 		if (this.notifications.length === 0) {
 			this.isNotification = false
 		}
-		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
+		this.saveNotificationsToLocalStorage()
 	}
 
 	// Очистить все уведомления
 	clearNotifications = () => {
 		this.isNotification = false
 		this.notifications = []
-		this.saveNotificationsToLocalStorage() // Сохранить в localStorage
+		this.saveNotificationsToLocalStorage()
 	}
 
 	// Открыть меню уведомлений

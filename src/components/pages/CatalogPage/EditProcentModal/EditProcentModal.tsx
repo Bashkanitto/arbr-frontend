@@ -26,7 +26,7 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 				await updateBonus(selectedProductId, sliderValue)
 				NotificationStore.addNotification(
 					'Изменение процента',
-					'Процент успешно изменен',
+					`Процент для продукта %${selectedProductId} успешно изменен`,
 					'success'
 				)
 				onClose()

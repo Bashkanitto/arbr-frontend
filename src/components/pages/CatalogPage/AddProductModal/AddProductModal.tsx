@@ -136,14 +136,13 @@ const AddProductModal = ({
 				productId: productResponse.id,
 				vendorId: parseInt(formData.accountId, 10),
 				price: formData.price.toString(),
-			}).then(() =>
-				NotificationStore.addNotification(
-					'Добавление товара',
-					'Товар успешно добавлен',
-					'success'
-				)
+			})
+
+			NotificationStore.addNotification(
+				'Добавление товара',
+				`Товар c номером ${productResponse.id} успешно добавлен`,
+				'success'
 			)
-			onClose()
 		} catch (error) {
 			NotificationStore.addNotification(
 				'Добавление товара',
@@ -153,6 +152,10 @@ const AddProductModal = ({
 			console.error('Ошибка:', error)
 		} finally {
 			setLoading(false)
+			onClose()
+			setTimeout(() => {
+				window.location.reload()
+			}, 1000)
 		}
 	}
 
