@@ -16,7 +16,7 @@ interface User {
 	id: number
 	role: string
 	customer: string
-	status: 'Создано' | 'Подтверждено'
+	status: 'active' | 'inactive'
 	updatedAt: string
 	createdAt: string
 }
@@ -80,9 +80,9 @@ export const SecurityPageTable = () => {
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case 'Создано':
-				return 'secondary'
-			case 'Подтверждено':
+			case 'active':
+				return 'success'
+			case 'inactive':
 				return 'success'
 		}
 	}
@@ -114,7 +114,7 @@ export const SecurityPageTable = () => {
 				<Table.Td>{item.firstName}</Table.Td>
 				<Table.Td>
 					<DateItem variantColor={getStatusColor(item.status)}>
-						{item.status}
+						{item.status == 'active' ? 'активные' : 'неактивные'}
 					</DateItem>
 				</Table.Td>
 				<Table.Td>
@@ -123,7 +123,7 @@ export const SecurityPageTable = () => {
 				<Table.Td style={{ width: '50px', padding: '0' }}>
 					<a
 						style={{
-							color: item.status === 'Подтверждено' ? '#23B96C' : 'secondary',
+							color: item.status === 'active' ? '#23B96C' : 'secondary',
 						}}
 						href={`/profile/${item.id}`}
 					>
