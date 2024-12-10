@@ -2,7 +2,10 @@ import { Checkbox, Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { fetchAllVendors } from '../../../../services/api/productService'
+import {
+	fetchAllVendors,
+	patchStatus,
+} from '../../../../services/api/productService'
 import { VendorGroups, VendorType } from '../../../../services/api/Types'
 import { Table } from '../../../atoms/Table'
 import { Pagination } from '../../../molecules/Pagination/Pagination'
@@ -20,6 +23,7 @@ export const ApplicationTableAdmin = () => {
 	const [totalPages, setTotalPages] = useState<number>(1)
 
 	useEffect(() => {
+		// загрузка продуктов
 		const loadVendors = async () => {
 			setLoading(true)
 			setError(null)
@@ -37,6 +41,21 @@ export const ApplicationTableAdmin = () => {
 
 		loadVendors()
 	}, [page, pageSize])
+
+	const handleStatusChange = async (
+		productId: number,
+		newStatus: 'active' | 'inactive'
+	) => {
+		try {
+			setLoading(true)
+			await patchStatus(productId, newStatus)
+		} catch (error) {
+			setError('Не удалось изменить статус продукта')
+			console.error(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	const allVendorGroups: VendorGroups[] = productData.flatMap(
 		vendor => vendor.vendorGroups
@@ -106,9 +125,26 @@ export const ApplicationTableAdmin = () => {
 					<Table.Td style={{ width: '50px', padding: '0' }}>
 						<a href={`/profile/${group.id}`}>Посмотреть документы</a>
 					</Table.Td>
-					<Table.Td style={{ textAlign: 'end' }}>
-						<button>Нет</button>
-						<button>Да</button>
+					<Table.Td
+						style={{
+							textAlign: 'end',
+							display: 'flex',
+							gap: '5px',
+							justifyContent: 'flex-end',
+						}}
+					>
+						<button
+							className={styles.statusNotBtn}
+							onClick={() => handleStatusChange(group.id, 'inactive')}
+						>
+							<img src='/images/diskLike_photo.svg' alt='' />
+						</button>
+						<button
+							className={styles.statusYesBtn}
+							onClick={() => handleStatusChange(group.id, 'active')}
+						>
+							<img src='/images/like_photo.svg' alt='' />
+						</button>
 					</Table.Td>
 				</Table.Tr>
 			)

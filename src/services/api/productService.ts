@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
-import { addProductType, VendorResponse } from './Types'
+import { addProductType, VendorResponse, VendorType } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (
@@ -49,7 +49,6 @@ export const addProduct = async (productData: addProductType): Promise<any> => {
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
-
 export const addVendorGroup = async ({
 	productId,
 	vendorId,
@@ -99,6 +98,7 @@ export const uploadMultipleImages = async (
 	}
 }
 
+// –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const fetchAllProducts = async (): Promise<VendorResponse> => {
 	try {
 		const response: any = await baseApi.get('/product')
@@ -107,6 +107,26 @@ export const fetchAllProducts = async (): Promise<VendorResponse> => {
 		console.error('Error fetching vendors:', error)
 		throw new Error(
 			`Failed to fetch vendors: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
+	}
+}
+
+// –––––––––––––––––- Привязка продукта поставщику –––––––––––––
+export const patchStatus = async (
+	productId: number,
+	status: string
+): Promise<VendorType> => {
+	try {
+		const response: any = await baseApi.patch(`/product/${productId}`, {
+			status,
+		})
+		return response
+	} catch (error) {
+		console.error('Error patching product status:', error)
+		throw new Error(
+			`Failed patching product status: ${
 				error instanceof Error ? error.message : 'Unknown error'
 			}`
 		)
