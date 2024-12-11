@@ -63,7 +63,17 @@ export const MainSidebarNav = () => {
 	// Фильтрация пунктов меню на основе роли(админ видит все, vedor - массив)
 	const filteredNavItems = navItems.filter(item => {
 		if (!userProfile) return false
-		if (userProfile.role === 'admin') return true
+		if (userProfile.role === 'admin') {
+			return [
+				'Менеджеры',
+				'Каталог',
+				'Поиск',
+				'Выплаты',
+				'Безопасность',
+				'История',
+				'Заявки',
+			].includes(item.title)
+		}
 		if (userProfile.role === 'vendor') {
 			return ['Каталог', 'Мои сделки', 'История', 'Заявки'].includes(item.title)
 		}

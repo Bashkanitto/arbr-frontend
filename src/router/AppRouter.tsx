@@ -11,6 +11,7 @@ import ProductPage from '../components/pages/ProductPage/ProductPage'
 import SearchPage from '../components/pages/SearchPage/SearchPage'
 import SecurityPage from '../components/pages/SecurityPage/SecurityPage'
 import SuppliesPage from '../components/pages/SuppliesPage/SuppliesPage'
+import VendorPage from '../components/pages/VendorPage/VendorPage'
 import WithdrawsPage from '../components/pages/WithdrawsPage/WithdrawsPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
 import authStore from '../store/AuthStore'
@@ -41,7 +42,7 @@ export const AppRouter = () => {
 							userProfile?.role == 'admin' ? (
 								<Navigate to={RouteNavList.managers()} />
 							) : (
-								<Navigate to={RouteNavList.catalog()} />
+								<Navigate to={RouteNavList.vendor()} />
 							)
 						}
 					/>
@@ -60,9 +61,16 @@ export const AppRouter = () => {
 							{/* Vendor and Admin shared routes */}
 							<Route
 								path={RoutePathList.catalog}
-								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+								element={<AuthProtect allowedRoles={['admin']} />}
 							>
 								<Route path='' element={<CatalogPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.vendor}
+								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+							>
+								<Route path='' element={<VendorPage />} />
 							</Route>
 
 							<Route
@@ -88,7 +96,7 @@ export const AppRouter = () => {
 
 							<Route
 								path={RoutePathList.supplies}
-								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
+								element={<AuthProtect allowedRoles={['vendor']} />}
 							>
 								<Route path='' element={<SuppliesPage />} />
 							</Route>
