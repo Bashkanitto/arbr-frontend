@@ -1,4 +1,5 @@
 export interface UserType {
+	id(id: any): unknown
 	email: string
 	phone: string
 	role: string
