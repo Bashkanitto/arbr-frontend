@@ -93,19 +93,18 @@ export const addVendorGroup = async ({
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadMultipleImages = async (
-	files: any,
+	files: any[],
 	productId: number
-): Promise<any> => {
+): Promise<void> => {
 	try {
 		const formData = new FormData()
-		formData.append('product', productId.toString())
-		files.forEach((file: string | Blob) => formData.append('files', file)) // убедитесь, что 'files' совпадает с сервером
+		formData.append('product', JSON.stringify(productId))
+		files.forEach(file => formData.append('files', file))
 
-		const response = await baseApi.post('/upload/multiple', formData, {
+		await baseApi.post('/upload/multiple', formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
-			timeout: 10000, // Увеличенный таймаут
+			timeout: 10000,
 		})
-		return response
 	} catch (error) {
 		console.error('Ошибка при отправке файлов:', error)
 		throw new Error(

@@ -105,19 +105,6 @@ const AddProductModal = ({
 		}))
 	}
 
-	const convertFilesToBase64 = async (files: File[]): Promise<string[]> => {
-		const filePromises = files.map(
-			file =>
-				new Promise<string>((resolve, reject) => {
-					const reader = new FileReader()
-					reader.onload = () => resolve(reader.result as string)
-					reader.onerror = () => reject('Ошибка чтения файла')
-					reader.readAsDataURL(file)
-				})
-		)
-		return Promise.all(filePromises)
-	}
-
 	const handleAddProduct = async () => {
 		setError('')
 
@@ -129,12 +116,10 @@ const AddProductModal = ({
 			setError('Выберите название товара')
 			return
 		}
-
 		if (!formData.price) {
-			setError('Выберите цену товару')
+			setError('Выберите цену товара')
 			return
 		}
-
 		if (selectedFiles.length === 0) {
 			setError('Загрузите хотя бы одно изображение')
 			return
@@ -142,7 +127,7 @@ const AddProductModal = ({
 
 		try {
 			setLoading(true)
-			const productResponse: any = await addProduct({
+			const productResponse = await addProduct({
 				name: formData.name,
 				description: formData.description,
 				quantity: formData.quantity || 0,
@@ -159,16 +144,18 @@ const AddProductModal = ({
 				amountPrice: 0,
 				rating: 0,
 			})
-			const base64Files = await convertFilesToBase64(selectedFiles)
-			await uploadMultipleImages(base64Files, productResponse.id)
+
+			await uploadMultipleImages(selectedFiles, productResponse.id)
+
 			await addVendorGroup({
 				productId: productResponse.id,
 				vendorId: parseInt(formData.accountId, 10),
 				price: formData.price.toString(),
 			})
+
 			NotificationStore.addNotification(
 				'Добавление товара',
-				'Товар c номером ${productResponse.id} успешно добавлен',
+				`Товар c номером ${productResponse.id} успешно добавлен`,
 				'success'
 			)
 		} catch (error) {
