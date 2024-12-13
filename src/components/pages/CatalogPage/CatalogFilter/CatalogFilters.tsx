@@ -8,7 +8,7 @@ const CatalogFilters = ({
 	filterPeriod,
 	addProduct,
 }: {
-	disabled: true | false
+	disabled?: true | false
 	addCatalog: () => void
 	addProduct: () => void
 	onFilterChange: (filter: string) => void
