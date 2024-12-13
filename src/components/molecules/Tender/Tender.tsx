@@ -29,11 +29,13 @@ const Tender = ({ user }: { user: any }) => {
 		<div className={styles['tender']}>
 			<div className={styles['tender-user']}>
 				<div className={styles['tender-user-info']}>
-					<Avatar />
-					<div>
-						<p className={styles['tender-user-name']}>{user.firstName}</p>
-						<p className={styles['tender-user-role']}>Поставщик</p>
-					</div>
+					<a href={`vendor/${user.id}`}>
+						<Avatar />
+						<div>
+							<p className={styles['tender-user-name']}>{user.firstName}</p>
+							<p className={styles['tender-user-role']}>Поставщик</p>
+						</div>
+					</a>
 					{isAdmin && (
 						<>
 							<button

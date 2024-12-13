@@ -20,6 +20,12 @@
 				width: 70px;
 				height: 70px;
 			}
+
+			a {
+				display: flex;
+				gap: 10px;
+				text-decoration: none;
+			}
 		}
 
 		.tender-user-name {
