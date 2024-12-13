@@ -40,7 +40,8 @@ const VendorPage = () => {
 				let filteredVendors = response.records
 				if (profileData.role !== 'admin') {
 					filteredVendors = filteredVendors.filter(
-						vendor => vendor.firstName === profileData.firstName
+						(vendor: { firstName: string }) =>
+							vendor.firstName === profileData.firstName
 					)
 				}
 

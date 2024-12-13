@@ -24,7 +24,7 @@ export const fetchAllVendors = async (
 
 // –––––––––––––––––- Получение один вендор –––––––––––––
 
-export const fetchVendorById = async (id: number): Promise<any> => {
+export const fetchVendorById = async (id: any): Promise<any> => {
 	try {
 		const response: any = await baseApi.get(`/account/vendors/${id}`)
 		return response
