@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import '../../../assets/fonts/Roboto-Regular.ttf'
 import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
-import { fetchProductById } from '../../../services/api/productService'
+import { fetchVendorGroupById } from '../../../services/api/productService'
 import EditProcentModal from '../CatalogPage/EditProcentModal/EditProcentModal'
+import NotFoundPage from '../NotFoundPage/NotFoundPage'
 import styles from './ProductPage.module.scss'
 
 interface Product {
@@ -19,7 +20,7 @@ interface Product {
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
-	const [product, setProduct] = useState<Product | null>(null)
+	const [vendorGroup, setVendorGroup] = useState<Product | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 	const [activeTab, setActiveTab] = useState<string>('описание')
@@ -29,8 +30,8 @@ const ProductPage = () => {
 		const loadProduct = async () => {
 			try {
 				setLoading(true)
-				const fetchedProduct: any = await fetchProductById(id)
-				setProduct(fetchedProduct)
+				const fetchedProduct: any = await fetchVendorGroupById(id)
+				setVendorGroup(fetchedProduct)
 			} catch (err: unknown) {
 				setError(
 					err instanceof Error
@@ -46,7 +47,17 @@ const ProductPage = () => {
 
 	if (loading) return <Skeleton />
 	if (error) return <div>{error}</div>
-	if (!product) return <div>Product not found.</div>
+	if (!vendorGroup) {
+		return <NotFoundPage />
+	}
+
+	const { product }: any = vendorGroup
+
+	const getTextColor = (quantity: number): string => {
+		if (quantity < 20) return 'danger' // красный цвет
+		if (quantity < 60) return 'warning' // зеленый цвет
+		return 'active'
+	}
 
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab)
@@ -77,9 +88,12 @@ const ProductPage = () => {
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
-				<img src={product.images[0]?.url} alt='' />
-				<img src={product.images[1]?.url} alt='' />
-				<img src={product.images[2]?.url} alt='' />
+				{/* {product.images?.map(image => (
+					<img src={image?.url} alt='' />
+				))} */}
+				<img src={product.images?.url} alt='' />
+				<img src={product.images?.url} alt='' />
+				<img src={product.images?.url} alt='' />
 				<div className={styles.tabs}>
 					<ul>
 						<li
@@ -124,7 +138,10 @@ const ProductPage = () => {
 					</p>
 					<h4>{product.name}</h4>
 					<p className={styles['product-count']}>
-						<span>{product.quantity} </span>в наличии
+						<span className={`${getTextColor(product.quantity)}`}>
+							{product.quantity}
+						</span>{' '}
+						в наличии
 					</p>
 					<div className={styles['product-price']}>
 						<span>Цена за товар</span>

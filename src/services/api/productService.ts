@@ -22,6 +22,22 @@ export const fetchAllVendors = async (
 	}
 }
 
+// –––––––––––––––––- Получение один вендор –––––––––––––
+
+export const fetchVendorById = async (id: number): Promise<any> => {
+	try {
+		const response: any = await baseApi.get(`/account/vendors/${id}`)
+		return response
+	} catch (error) {
+		console.error('Error fetching vendors:', error)
+		throw new Error(
+			`Failed to fetch vendors: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
+	}
+}
+
 // –––––––––––––––––- Получение конкретного продукта –––––––––––––
 export const fetchProductById = async (productId: any) => {
 	try {
@@ -77,16 +93,18 @@ export const addVendorGroup = async ({
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadMultipleImages = async (
-	files: string[], // теперь массив строк Base64
+	files: any,
 	productId: number
 ): Promise<any> => {
 	try {
-		const body = {
-			product: productId,
-			files, // Отправляем массив строк
-		}
+		const formData = new FormData()
+		formData.append('product', productId.toString())
+		files.forEach((file: string | Blob) => formData.append('files', file)) // убедитесь, что 'files' совпадает с сервером
 
-		const response = await baseApi.post('/upload/multiple', body)
+		const response = await baseApi.post('/upload/multiple', formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+			timeout: 10000, // Увеличенный таймаут
+		})
 		return response
 	} catch (error) {
 		console.error('Ошибка при отправке файлов:', error)
@@ -133,13 +151,26 @@ export const patchStatus = async (
 	}
 }
 
+// –––––––––––––––––- Получение список продуктов  –––––––––––––
+export const fetchVendorGroupById = async (productId: any) => {
+	try {
+		const response = await baseApi.get(
+			`/vendor-group/${productId}?relations=product`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching product:', error)
+		throw new Error('Failed to fetch product details.')
+	}
+}
+// –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchVendorGroups = async (
 	page: number = 1,
 	pageSize: number = 10
 ): Promise<VendorResponse> => {
 	try {
 		const response: VendorResponse = await baseApi.get(
-			`/vendor-group?relations=vendor,product&&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+			`/vendor-group?relations=vendor,product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		)
 		return response
 	} catch (error) {

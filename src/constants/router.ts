@@ -8,6 +8,7 @@ export const RouteNavList = {
 	list: () => '/list',
 	notfound: () => '/notfound',
 	catalog: () => '/catalog',
+	vendor: () => '/vendor/:id',
 	security: () => '/security',
 }
 
@@ -24,4 +25,5 @@ export const RoutePathList = {
 	withdraws: '/withdraws',
 	security: '/security',
 	catalog: '/catalog',
+	vendor: '/vendor/:id',
 }

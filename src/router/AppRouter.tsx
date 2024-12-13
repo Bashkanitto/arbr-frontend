@@ -11,7 +11,6 @@ import ProductPage from '../components/pages/ProductPage/ProductPage'
 import SearchPage from '../components/pages/SearchPage/SearchPage'
 import SecurityPage from '../components/pages/SecurityPage/SecurityPage'
 import SuppliesPage from '../components/pages/SuppliesPage/SuppliesPage'
-import VendorPage from '../components/pages/VendorPage/VendorPage'
 import WithdrawsPage from '../components/pages/WithdrawsPage/WithdrawsPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
 import authStore from '../store/AuthStore'
@@ -64,13 +63,6 @@ export const AppRouter = () => {
 								element={<AuthProtect allowedRoles={['admin']} />}
 							>
 								<Route path='' element={<CatalogPage />} />
-							</Route>
-
-							<Route
-								path={RoutePathList.vendor}
-								element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
-							>
-								<Route path='' element={<VendorPage />} />
 							</Route>
 
 							<Route

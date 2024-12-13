@@ -11,6 +11,26 @@ import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './AddProductModal.module.scss'
 
+interface BrandOption {
+	value: string
+	label: string
+}
+
+interface FormData {
+	accountId: string
+	name: string
+	description: string
+	quantity: number
+	price: number
+	brandId: string
+	subcategoryId: string
+	isBonus: boolean
+	isFreeDelivery: boolean
+	isDiscount: boolean
+	bonus: number
+	discount: number
+}
+
 const AddProductModal = ({
 	isOpen,
 	onClose,
@@ -18,17 +38,16 @@ const AddProductModal = ({
 	isOpen: boolean
 	onClose: () => void
 }) => {
-	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
+	const [brands, setBrands] = useState<BrandOption[]>([])
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-	const [accounts, setAccounts] = useState<{ value: string; label: string }[]>(
-		[]
-	)
-	const [loading, setLoading] = useState(false)
-	const [formData, setFormData] = useState({
+	const [error, setError] = useState<string>('')
+	const [accounts, setAccounts] = useState<BrandOption[]>([])
+	const [loading, setLoading] = useState<boolean>(false)
+	const [formData, setFormData] = useState<FormData>({
 		accountId: '',
 		name: '',
 		description: '',
-		quantity: 0,
+		quantity: 1,
 		price: 0,
 		brandId: '',
 		subcategoryId: '1',
@@ -41,16 +60,15 @@ const AddProductModal = ({
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			setSelectedFiles(Array.from(event.target.files)) // Сохраняем файлы в состояние
+			setSelectedFiles(Array.from(event.target.files))
 		}
 	}
 
 	useEffect(() => {
 		if (isOpen) {
-			// Загрузка брендов
 			const loadBrands = async () => {
 				try {
-					const response = await fetchBrands()
+					const response: any = await fetchBrands()
 					const brandOptions = response.records.map((brand: any) => ({
 						value: brand.id.toString(),
 						label: brand.name,
@@ -61,10 +79,9 @@ const AddProductModal = ({
 				}
 			}
 
-			// загрузка поставщики
 			const loadVendors = async () => {
 				try {
-					const response = await fetchAllVendors()
+					const response: any = await fetchAllVendors()
 					const vendorOptions = response.records.map((vendor: any) => ({
 						value: vendor.id.toString(),
 						label: vendor.firstName,
@@ -79,11 +96,10 @@ const AddProductModal = ({
 		}
 	}, [isOpen])
 
-	const handleInputChange = (field: string, value: any) => {
+	const handleInputChange = (field: keyof FormData, value: any) => {
 		setFormData(prev => ({
 			...prev,
 			[field]: value,
-			// Автоматическая активация флагов на основе полей бонуса и скидки
 			isBonus: field === 'bonus' ? value > 0 : prev.isBonus,
 			isDiscount: field === 'discount' ? value > 0 : prev.isDiscount,
 		}))
@@ -96,19 +112,37 @@ const AddProductModal = ({
 					const reader = new FileReader()
 					reader.onload = () => resolve(reader.result as string)
 					reader.onerror = () => reject('Ошибка чтения файла')
-					reader.readAsDataURL(file) // Преобразуем файл в Base64
+					reader.readAsDataURL(file)
 				})
 		)
-
 		return Promise.all(filePromises)
 	}
 
 	const handleAddProduct = async () => {
+		setError('')
+
+		if (!formData.accountId) {
+			setError('Выберите поставщика')
+			return
+		}
+		if (!formData.name) {
+			setError('Выберите название товара')
+			return
+		}
+
+		if (!formData.price) {
+			setError('Выберите цену товару')
+			return
+		}
+
+		if (selectedFiles.length === 0) {
+			setError('Загрузите хотя бы одно изображение')
+			return
+		}
+
 		try {
 			setLoading(true)
-
-			// Шаг 1: Создание продукта
-			const productResponse = await addProduct({
+			const productResponse: any = await addProduct({
 				name: formData.name,
 				description: formData.description,
 				quantity: formData.quantity || 0,
@@ -125,37 +159,28 @@ const AddProductModal = ({
 				amountPrice: 0,
 				rating: 0,
 			})
-
-			// Шаг 2: Конвертация файлов в Base64
 			const base64Files = await convertFilesToBase64(selectedFiles)
-
-			// Шаг 3: Загрузка изображений для созданного продукта
 			await uploadMultipleImages(base64Files, productResponse.id)
-
 			await addVendorGroup({
 				productId: productResponse.id,
 				vendorId: parseInt(formData.accountId, 10),
 				price: formData.price.toString(),
 			})
-
 			NotificationStore.addNotification(
 				'Добавление товара',
-				`Товар c номером ${productResponse.id} успешно добавлен`,
+				'Товар c номером ${productResponse.id} успешно добавлен',
 				'success'
 			)
 		} catch (error) {
 			NotificationStore.addNotification(
 				'Добавление товара',
-				'Что то пошло не так',
+				'Что-то пошло не так',
 				'error'
 			)
 			console.error('Ошибка:', error)
 		} finally {
 			setLoading(false)
 			onClose()
-			setTimeout(() => {
-				window.location.reload()
-			}, 1000)
 		}
 	}
 
@@ -168,12 +193,14 @@ const AddProductModal = ({
 		>
 			<Select
 				label='Поставщик'
+				required
 				data={accounts}
 				value={formData.accountId}
 				onChange={value => handleInputChange('accountId', value ?? '')}
 				placeholder='Выберите имя поставщика'
 			/>
 			<TextInput
+				required
 				label='Название товара'
 				value={formData.name}
 				onChange={e => handleInputChange('name', e.currentTarget.value)}
@@ -198,6 +225,7 @@ const AddProductModal = ({
 					Загрузить файлы
 				</label>
 				<input
+					required
 					type='file'
 					id='fileInput'
 					multiple
@@ -226,6 +254,7 @@ const AddProductModal = ({
 				value={formData.discount}
 				onChange={value => handleInputChange('discount', value ?? 0)}
 			/>
+			{error && <p className='danger'>{error}</p>}
 			<BaseButton
 				className={styles['AddCatalog-button']}
 				variantColor='primary'
