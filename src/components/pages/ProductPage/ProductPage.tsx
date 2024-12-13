@@ -88,12 +88,9 @@ const ProductPage = () => {
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
-				{/* {product.images?.map(image => (
-					<img src={image?.url} alt='' />
-				))} */}
-				<img src={product.images?.url} alt='' />
-				<img src={product.images?.url} alt='' />
-				<img src={product.images?.url} alt='' />
+				{product.images?.map(image => (
+					<img src={image.url} alt='' />
+				))}
 				<div className={styles.tabs}>
 					<ul>
 						<li

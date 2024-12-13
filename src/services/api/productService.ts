@@ -155,7 +155,7 @@ export const patchStatus = async (
 export const fetchVendorGroupById = async (productId: any) => {
 	try {
 		const response = await baseApi.get(
-			`/vendor-group/${productId}?relations=product`
+			`/vendor-group/${productId}?relations=product,product.images`
 		)
 		return response
 	} catch (error) {
@@ -171,6 +171,32 @@ export const fetchVendorGroups = async (
 	try {
 		const response: VendorResponse = await baseApi.get(
 			`/vendor-group?relations=vendor,product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching vendor-groups:', error)
+		throw new Error(
+			`Failed to fetch vendor-groups: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
+	}
+}
+
+// –––––––––––––––––- Получение список продуктов  –––––––––––––
+export const sendCatalogList = async (file: File): Promise<any> => {
+	try {
+		const formData = new FormData()
+		formData.append('file', file)
+
+		const response: any = await baseApi.post(
+			'/product/import/google-sheet',
+			formData,
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			}
 		)
 		return response
 	} catch (error) {

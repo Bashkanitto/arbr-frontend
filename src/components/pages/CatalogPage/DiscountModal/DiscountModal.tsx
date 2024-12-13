@@ -27,7 +27,7 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 				onClose()
 				NotificationStore.addNotification(
 					'Изменение бонуса',
-					'Бонус успешно изменен',
+					`Бонус для продукта c номером ${selectedProductId}  успешно изменен`,
 					'success'
 				)
 			} catch (error) {
