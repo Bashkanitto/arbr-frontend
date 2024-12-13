@@ -3,10 +3,12 @@ import styles from './CatalogFilters.module.scss'
 
 const CatalogFilters = ({
 	addCatalog,
+	disabled,
 	onFilterChange,
 	filterPeriod,
 	addProduct,
 }: {
+	disabled: true | false
 	addCatalog: () => void
 	addProduct: () => void
 	onFilterChange: (filter: string) => void
@@ -35,10 +37,18 @@ const CatalogFilters = ({
 				</BaseButton>
 			</div>
 			<div className={styles['catalog-actions']}>
-				<BaseButton onClick={addCatalog} variantColor='secondary'>
+				<BaseButton
+					disabled={disabled}
+					onClick={addCatalog}
+					variantColor='secondary'
+				>
 					Добавить каталог
 				</BaseButton>
-				<BaseButton onClick={addProduct} variantColor='primary'>
+				<BaseButton
+					disabled={disabled}
+					onClick={addProduct}
+					variantColor='primary'
+				>
 					Создать товар
 				</BaseButton>
 			</div>

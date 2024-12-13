@@ -18,7 +18,6 @@ const VendorPage = () => {
 	const [error, setError] = useState<string | null>(null)
 	const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>(false)
 	const navigate = useNavigate()
-	// Получаем id из параметров URL
 	const { id } = useParams<{ id: string }>()
 
 	useEffect(() => {
@@ -29,24 +28,22 @@ const VendorPage = () => {
 				const profileData = await fetchProfile()
 				const vendorId = profileData.id
 				let response
-				if (id && !isNaN(Number(id))) {
-					// Если id — это число, используем его
-					response = await fetchVendorById(id)
-				} else {
-					// Если id не число, используем vendorId из профиля
-					response = await fetchVendorById(vendorId)
-				}
 
-				// Фильтрация данных по роли (если роль не admin)
-				let filteredVendors = response.records
+				// Если роль не admin, показываем только свои данные
 				if (profileData.role !== 'admin') {
-					filteredVendors = filteredVendors.filter(
-						(vendor: { firstName: string }) =>
-							vendor.firstName === profileData.firstName
-					)
+					response = await fetchVendorById(vendorId)
+				} else {
+					// Для админов — если в URL есть id и это число, используем его
+					if (id && !isNaN(Number(id))) {
+						response = await fetchVendorById(id)
+					} else {
+						// Иначе используем vendorId из профиля
+						response = await fetchVendorById(vendorId)
+					}
 				}
 
-				setVendorData(filteredVendors)
+				// Устанавливаем данные о вендоре
+				setVendorData(response.records)
 			} catch (err: unknown) {
 				setError(
 					`Failed to load vendor data: ${
@@ -71,34 +68,45 @@ const VendorPage = () => {
 
 	return (
 		<div className={styles['catalog-page']}>
-			<p className={styles['catalog-title']}>Каталог</p>
-			<Avatar w={200} h={200} />
-			{vendorData[0].firstName}
+			{vendorData.length > 0 && (
+				<>
+					<Avatar w={100} h={100} />
+					<p>{vendorData[0]?.firstName}</p>
+				</>
+			)}
+
 			<CatalogFilters
+				disabled
 				onFilterChange={setFilterPeriod}
 				addCatalog={addCatalog}
 				addProduct={addProduct}
 				filterPeriod={filterPeriod}
 			/>
+
 			<div className={styles['catalog-tenders']}>
-				{vendorData.length > 0 &&
+				{vendorData.length > 0 ? (
 					vendorData[0]?.vendorGroups.map(vendor => (
 						<div
-							onClick={item => navigate(`product/${vendor.id}`)}
+							onClick={() => navigate(`/product/${vendor.id}`)}
 							className={styles.catalogItem}
 							key={vendor.id}
 						>
 							<img src={vendor.product?.images[0]?.url} alt='' />
 							<p>{vendor.product.name}</p>
 						</div>
-					))}
+					))
+				) : (
+					<p>Нет доступных товаров</p>
+				)}
 			</div>
+
 			{isAddCatalogOpen && (
 				<AddCatalogModal
 					isOpen={isAddCatalogOpen}
 					onClose={() => setIsAddCatalogOpen(false)}
 				/>
 			)}
+
 			{isAddProductOpen && (
 				<AddProductModal
 					isOpen={isAddProductOpen}
