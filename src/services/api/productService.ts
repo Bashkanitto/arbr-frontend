@@ -118,12 +118,14 @@ export const uploadMultipleImages = async (
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const fetchAllProducts = async (): Promise<VendorResponse> => {
 	try {
-		const response: any = await baseApi.get('/product')
+		const response: any = await baseApi.get(
+			'/product?search[vendorGroups[0].vendor.id]'
+		)
 		return response
 	} catch (error) {
-		console.error('Error fetching vendors:', error)
+		console.error('Error fetching products:', error)
 		throw new Error(
-			`Failed to fetch vendors: ${
+			`Failed to fetch products: ${
 				error instanceof Error ? error.message : 'Unknown error'
 			}`
 		)
