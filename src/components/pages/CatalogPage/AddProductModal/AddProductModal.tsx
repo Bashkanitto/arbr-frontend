@@ -153,9 +153,11 @@ const AddProductModal = ({
 				price: formData.price.toString(),
 			})
 
+			const id = productResponse.id
+
 			NotificationStore.addNotification(
 				'Добавление товара',
-				`Товар c номером ${productResponse.id} успешно добавлен`,
+				`Товар c номером ${id} успешно добавлен`,
 				'success'
 			)
 		} catch (error) {

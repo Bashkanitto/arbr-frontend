@@ -8,6 +8,7 @@ import {
 	patchStatus,
 } from '../../../../services/api/productService'
 import { VendorGroups } from '../../../../services/api/Types'
+import NotificationStore from '../../../../store/NotificationStore'
 import { Table } from '../../../atoms/Table'
 import { Pagination } from '../../../molecules/Pagination/Pagination'
 import styles from './ApplicationTabble.module.scss'
@@ -15,7 +16,7 @@ import styles from './ApplicationTabble.module.scss'
 export const ApplicationTableAdmin = () => {
 	const [selectRows, setSelectRows] = useState<number[]>([])
 	const [productData, setProductData] = useState<any[]>([])
-	const [statusFilter, setStatusFilter] = useState<string | null>('')
+	const [statusFilter, setStatusFilter] = useState<string | null>('pending')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [error, setError] = useState<string | null>(null)
@@ -57,9 +58,18 @@ export const ApplicationTableAdmin = () => {
 						: item
 				)
 			)
+			NotificationStore.addNotification(
+				'Заявка',
+				`Заявка продукта под номером ${productId} успешно принята`,
+				'success'
+			)
 		} catch (error) {
 			setError('Не удалось изменить статус продукта')
-			console.error(error)
+			NotificationStore.addNotification(
+				'Заявка',
+				`Произошла ошибка при попытке принять заявку`,
+				'error'
+			)
 		} finally {
 			setLoading(false)
 		}
@@ -194,6 +204,7 @@ export const ApplicationTableAdmin = () => {
 					/>
 					<Select
 						placeholder='Статус'
+						defaultValue={statusFilter}
 						data={[
 							{ value: '', label: 'Все' },
 							{ value: 'active', label: 'Разрешено' },

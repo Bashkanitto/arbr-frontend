@@ -157,31 +157,47 @@ interface RefreshTokenResponse {
 	refreshToken: string
 }
 
+let isRefreshing = false // Флаг для контроля текущего обновления токена
+let retryCount = 0 // Счетчик повторных попыток обновления токена
+const MAX_RETRY_ATTEMPTS = 1 // Количество попыток обновления токена
+
 export const refreshAccessToken = async (): Promise<void> => {
+	if (isRefreshing) {
+		console.warn('Обновление токена уже выполняется...')
+		return
+	}
+
 	try {
+		isRefreshing = true
 		const refreshToken = localStorage.getItem('refreshToken')
 		if (!refreshToken) {
 			throw new Error('Рефреш-токен отсутствует.')
 		}
 
-		// Запрос обновления токена
 		const response: RefreshTokenResponse = await baseApi.post('/auth/refresh', {
 			refreshToken,
 		})
 
 		const { accessToken, refreshToken: newRefreshToken } = response
 		setTokens(accessToken, newRefreshToken)
+
+		// Сброс флагов и счетчиков
+		isRefreshing = false
+		retryCount = 0
 	} catch (error: any) {
 		console.error('Ошибка обновления токена:', error)
+		isRefreshing = false
 
-		// Специфическая проверка на 401 Unauthorized
 		if (error.response?.status === 401) {
 			console.error('Токен отозван или недействителен. Выполняется выход...')
 			logout()
+		} else if (retryCount < MAX_RETRY_ATTEMPTS) {
+			retryCount++
+			console.warn(`Повторная попытка обновления токена (${retryCount})`)
+			await refreshAccessToken() // Рекурсивный вызов
+		} else {
+			console.error('Превышено количество попыток обновления токена.')
+			logout()
 		}
-
-		throw new Error(
-			error.response?.data?.message || 'Не удалось обновить токен.'
-		)
 	}
 }

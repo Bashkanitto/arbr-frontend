@@ -15,7 +15,7 @@ interface ProductType {
 	role: string
 	customer: string
 	quantity: string
-	status: 'active' | 'pending' | 'inactive'
+	status: '' | 'active' | 'pending' | 'inactive'
 	rating: string
 	deletedAt: string
 	description: string
@@ -24,24 +24,25 @@ interface ProductType {
 }
 
 export const ApplicationTable = () => {
-	const [productData, setProductData] = useState<ProductType[]>([])
+	const [productData, setProductData] = useState<any[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string | null>(null)
 	const [page, setPage] = useState<number>(1)
 	const [pageSize] = useState<number>(10)
 	const [totalPages, setTotalPages] = useState<number>(1)
+	// const {userProfile} = authStore
 
 	useEffect(() => {
 		const loadProducts = async () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const { records, meta }: any = await fetchAllProducts()
-				setProductData(records)
-				setTotalPages(meta.totalPages)
+				const response: any = await fetchAllProducts()
+				setProductData(response)
+				setTotalPages(response.meta.totalPages)
 			} catch (err) {
-				setError('Failed to load accounts')
+				setError('Failed to load products')
 				console.error(err)
 			} finally {
 				setLoading(false)
@@ -77,7 +78,6 @@ export const ApplicationTable = () => {
 		}
 	}
 
-	// тело таблицы
 	const renderRow = () => {
 		const filteredData = statusFilter
 			? productData.filter(item => item.status === statusFilter)
@@ -88,7 +88,7 @@ export const ApplicationTable = () => {
 				<Table.Td>{item.id}</Table.Td>
 				<Table.Td>{item.name}</Table.Td>
 				<Table.Td>
-					{format(item.updatedAt, 'dd MMMM, yyyy', { locale: ru })}
+					{format(new Date(item.updatedAt), 'dd MMMM, yyyy', { locale: ru })}
 				</Table.Td>
 				<Table.Td className={styles.statusRow} style={{ textAlign: 'end' }}>
 					<p
@@ -103,7 +103,6 @@ export const ApplicationTable = () => {
 		))
 	}
 
-	// head таблицы
 	return (
 		<>
 			<div className={styles['security-page-table-head']}>
