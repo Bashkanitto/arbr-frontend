@@ -116,11 +116,11 @@ export const uploadMultipleImages = async (
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
-export const fetchAllProducts = async (): Promise<VendorResponse> => {
+export const fetchMyProducts = async (
+	vendorId: number | string
+): Promise<VendorResponse> => {
 	try {
-		const response: any = await baseApi.get(
-			'/product?search[vendorGroups[0].vendor.id]'
-		)
+		const response: any = await baseApi.get(`/vendor-group/vendor/${vendorId}`)
 		return response
 	} catch (error) {
 		console.error('Error fetching products:', error)

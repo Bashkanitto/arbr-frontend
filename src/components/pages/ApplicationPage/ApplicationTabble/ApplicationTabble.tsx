@@ -2,54 +2,36 @@ import { Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
-import { fetchAllProducts } from '../../../../services/api/productService'
+import { fetchMyProducts } from '../../../../services/api/productService'
+import authStore from '../../../../store/AuthStore'
 import { Table } from '../../../atoms/Table'
-import { Pagination } from '../../../molecules/Pagination/Pagination'
 import styles from './ApplicationTabble.module.scss'
-
-interface ProductType {
-	id: number
-	amountPrice: number
-	price: number
-	name: string
-	role: string
-	customer: string
-	quantity: string
-	status: '' | 'active' | 'pending' | 'inactive'
-	rating: string
-	deletedAt: string
-	description: string
-	updatedAt: string
-	createdAt: string
-}
 
 export const ApplicationTable = () => {
 	const [productData, setProductData] = useState<any[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string | null>(null)
-	const [page, setPage] = useState<number>(1)
-	const [pageSize] = useState<number>(10)
-	const [totalPages, setTotalPages] = useState<number>(1)
-	// const {userProfile} = authStore
+	const { userProfile }: any = authStore
+	const vendorId = userProfile.id
 
 	useEffect(() => {
 		const loadProducts = async () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const response: any = await fetchAllProducts()
+				const response: any = await fetchMyProducts(vendorId)
 				setProductData(response)
-				setTotalPages(response.meta.totalPages)
 			} catch (err) {
 				setError('Failed to load products')
 				console.error(err)
+				setProductData([])
 			} finally {
 				setLoading(false)
 			}
 		}
 		loadProducts()
-	}, [page, pageSize])
+	}, [])
 
 	if (loading) return <Skeleton />
 	if (error) return <div>Error: {error}</div>
@@ -62,6 +44,8 @@ export const ApplicationTable = () => {
 				return 'warning'
 			case 'inactive':
 				return 'danger'
+			default:
+				return ''
 		}
 	}
 
@@ -78,25 +62,30 @@ export const ApplicationTable = () => {
 		}
 	}
 
+	console.log(productData)
 	const renderRow = () => {
 		const filteredData = statusFilter
-			? productData.filter(item => item.status === statusFilter)
+			? productData.filter(item => item.product.status === statusFilter)
 			: productData
+
+		if (!Array.isArray(filteredData)) return null
 
 		return filteredData.map(item => (
 			<Table.Tr key={item.id}>
 				<Table.Td>{item.id}</Table.Td>
-				<Table.Td>{item.name}</Table.Td>
+				<Table.Td>{item.product.name}</Table.Td>
 				<Table.Td>
-					{format(new Date(item.updatedAt), 'dd MMMM, yyyy', { locale: ru })}
+					{format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
+						locale: ru,
+					})}
 				</Table.Td>
 				<Table.Td className={styles.statusRow} style={{ textAlign: 'end' }}>
 					<p
 						className={`${styles.status} ${getStatusColor(
-							item.status
-						)} ${getStatusColor(item.status)}bg`}
+							item.product.status
+						)} ${getStatusColor(item.product.status)}bg`}
 					>
-						{getLocalizedStatus(item.status)}
+						{getLocalizedStatus(item.product.status)}
 					</p>
 				</Table.Td>
 			</Table.Tr>
@@ -133,12 +122,6 @@ export const ApplicationTable = () => {
 					<Table.Tbody>{renderRow()}</Table.Tbody>
 				</Table>
 			</div>
-
-			<Pagination
-				page={page}
-				totalPages={totalPages}
-				onPageChange={newPage => setPage(newPage)}
-			/>
 		</>
 	)
 }
