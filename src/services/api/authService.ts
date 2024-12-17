@@ -51,12 +51,10 @@ export const logout = () => {
 	localStorage.removeItem('refreshToken')
 	Cookies.remove('accessToken')
 	Cookies.remove('refreshToken')
-	window.location.href = '/auth'
-}
 
-// Автоматический выход через 24 часа
-export const setLogoutTimer = () => {
-	setTimeout(logout, 24 * 60 * 60 * 1000)
+	if (window.location.pathname !== '/auth') {
+		window.location.href = '/auth'
+	}
 }
 
 // –––––––––––––––––––––––––––––––Данные пользователя–––––––––––––––––––––––––––––––
@@ -147,57 +145,5 @@ export const updatePassword = async (password: string): Promise<void> => {
 		throw new Error(
 			error.response?.data?.message || 'Не удалось обновить пароль.'
 		)
-	}
-}
-
-// ––––––––––––––––––––––––––––––––––Обновление токена –––––––––––––––––––––––––––––––
-
-interface RefreshTokenResponse {
-	accessToken: string
-	refreshToken: string
-}
-
-let isRefreshing = false // Флаг для контроля текущего обновления токена
-let retryCount = 0 // Счетчик повторных попыток обновления токена
-const MAX_RETRY_ATTEMPTS = 1 // Количество попыток обновления токена
-
-export const refreshAccessToken = async (): Promise<void> => {
-	if (isRefreshing) {
-		console.warn('Обновление токена уже выполняется...')
-		return
-	}
-
-	try {
-		isRefreshing = true
-		const refreshToken = localStorage.getItem('refreshToken')
-		if (!refreshToken) {
-			throw new Error('Рефреш-токен отсутствует.')
-		}
-
-		const response: RefreshTokenResponse = await baseApi.post('/auth/refresh', {
-			refreshToken,
-		})
-
-		const { accessToken, refreshToken: newRefreshToken } = response
-		setTokens(accessToken, newRefreshToken)
-
-		// Сброс флагов и счетчиков
-		isRefreshing = false
-		retryCount = 0
-	} catch (error: any) {
-		console.error('Ошибка обновления токена:', error)
-		isRefreshing = false
-
-		if (error.response?.status === 401) {
-			console.error('Токен отозван или недействителен. Выполняется выход...')
-			logout()
-		} else if (retryCount < MAX_RETRY_ATTEMPTS) {
-			retryCount++
-			console.warn(`Повторная попытка обновления токена (${retryCount})`)
-			await refreshAccessToken() // Рекурсивный вызов
-		} else {
-			console.error('Превышено количество попыток обновления токена.')
-			logout()
-		}
 	}
 }

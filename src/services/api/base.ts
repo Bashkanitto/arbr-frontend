@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { env } from '../../configs/env.config'
 import authStore from '../../store/AuthStore'
-import { logout, refreshAccessToken } from './authService'
+import { logout } from './authService'
 
 export const baseApi = axios.create({
 	baseURL: env.baseUrl,
@@ -29,22 +29,12 @@ baseApi.interceptors.response.use(
 		) {
 			originalRequest._retry = true
 
-			try {
-				await refreshAccessToken()
-
-				// Повторяем оригинальный запрос с новым токеном
-				originalRequest.headers[
-					'Authorization'
-				] = `Bearer ${authStore.accessToken}`
-				return baseApi(originalRequest)
-			} catch (refreshError) {
-				// Если обновление токена не удалось - выходим из системы
-				logout()
-				if (window.location.pathname !== '/auth') {
-					window.location.href = '/auth'
-				}
-				throw refreshError
+			logout()
+			if (window.location.pathname !== '/auth') {
+				window.location.href = '/auth'
 			}
+
+			throw error
 		}
 
 		return Promise.reject(error)

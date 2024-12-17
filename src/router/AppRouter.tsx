@@ -6,6 +6,7 @@ import ApplicationPage from '../components/pages/ApplicationPage/ApplicationPage
 import AuthPage from '../components/pages/AuthPage/AuthPage'
 import CatalogPage from '../components/pages/CatalogPage/CatalogPage'
 import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
+import MyOrdersPage from '../components/pages/MyOrdersPage/MyOrdersPage'
 import NotFoundPage from '../components/pages/NotFoundPage/NotFoundPage'
 import ProductPage from '../components/pages/ProductPage/ProductPage'
 import SearchPage from '../components/pages/SearchPage/SearchPage'
@@ -64,6 +65,13 @@ export const AppRouter = () => {
 								element={<AuthProtect allowedRoles={['admin']} />}
 							>
 								<Route path='' element={<CatalogPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.order}
+								element={<AuthProtect allowedRoles={['vendor']} />}
+							>
+								<Route path='' element={<MyOrdersPage />} />
 							</Route>
 
 							<Route
