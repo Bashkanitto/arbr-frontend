@@ -209,3 +209,21 @@ export const sendCatalogList = async (file: File): Promise<any> => {
 		)
 	}
 }
+// –––––––––––––––––- Получение список продуктов  –––––––––––––
+export const fetchMyOrders = async (
+	vendorId: number | string
+): Promise<VendorResponse> => {
+	try {
+		const response: any = await baseApi.get(
+			`/cart-item?relations=owner,vendorGroup.vendor&search[vendorGroup][vendor][id]=${vendorId}`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching order:', error)
+		throw new Error(
+			`Failed to fetch order: ${
+				error instanceof Error ? error.message : 'Unknown error'
+			}`
+		)
+	}
+}
