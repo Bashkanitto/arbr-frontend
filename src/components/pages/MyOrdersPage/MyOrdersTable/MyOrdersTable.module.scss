@@ -44,13 +44,9 @@
 	}
 }
 
-.statusRow {
-	display: flex;
-	justify-content: flex-end;
-}
-
 .status {
 	padding: 5px 10px;
+	width: 60%;
 	border-radius: 10px;
 }
 
@@ -75,4 +71,12 @@
 	align-items: center;
 	background: #eaf6f4;
 	color: $success-color;
+}
+
+.actionButton {
+	background: #f8eef0;
+	border: none;
+	padding: 5px 10px;
+	color: $danger-color;
+	border-radius: 15px;
 }
