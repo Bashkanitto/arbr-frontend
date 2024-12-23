@@ -99,7 +99,7 @@ export const uploadMultipleImages = async (
 	try {
 		const formData = new FormData()
 		formData.append('product', JSON.stringify(productId))
-		files.forEach(file => formData.append('files', file))
+		files.forEach((file) => formData.append('files', file))
 
 		await baseApi.post('/upload/multiple', formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -210,13 +210,9 @@ export const sendCatalogList = async (file: File): Promise<any> => {
 	}
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
-export const fetchMyOrders = async (
-	vendorId: number | string
-): Promise<VendorResponse> => {
+export const fetchMyOrders = async (): Promise<VendorResponse> => {
 	try {
-		const response: any = await baseApi.get(
-			`/cart-item?relations=owner,vendorGroup.vendor&search[vendorGroup][vendor][id]=${vendorId}`
-		)
+		const response: any = await baseApi.get(`/order/admin?relations=user`)
 		return response
 	} catch (error) {
 		console.error('Error fetching order:', error)

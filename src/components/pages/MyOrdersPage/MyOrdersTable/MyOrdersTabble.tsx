@@ -3,7 +3,6 @@ import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import { fetchMyOrders } from '../../../../services/api/productService'
-import authStore from '../../../../store/AuthStore'
 import { Table } from '../../../atoms/Table'
 import styles from './MyOrdersTable.module.scss'
 
@@ -12,16 +11,14 @@ export const MyOrdersTable = () => {
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string | null>(null)
-	const { userProfile }: any = authStore
-	const vendorId = userProfile.id
 
 	useEffect(() => {
 		const loadProducts = async () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const response: any = await fetchMyOrders(vendorId)
-				setProductData(response)
+				const response: any = await fetchMyOrders()
+				setProductData(response.records)
 			} catch (err) {
 				setError('Failed to load products')
 				console.error(err)
@@ -62,31 +59,31 @@ export const MyOrdersTable = () => {
 		}
 	}
 
-	console.log(productData)
 	const renderRow = () => {
 		const filteredData = statusFilter
-			? productData.filter(item => item.product.status === statusFilter)
+			? productData.filter((item) => item.product.status === statusFilter)
 			: productData
 
 		if (!Array.isArray(filteredData)) return null
 
-		return filteredData.map(item => (
+		return filteredData.map((item) => (
 			<Table.Tr key={item.id}>
 				<Table.Td>{item.id}</Table.Td>
-				<Table.Td>{item.product.name}</Table.Td>
-				<Table.Td>
-					{format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
-						locale: ru,
-					})}
-				</Table.Td>
-				<Table.Td className={styles.statusRow} style={{ textAlign: 'end' }}>
+				<Table.Td>{item.user.firstName ?? 'Неизвестно'}</Table.Td>
+				<Table.Td className={styles.statusRow}>
 					<p
 						className={`${styles.status} ${getStatusColor(
-							item.product.status
-						)} ${getStatusColor(item.product.status)}bg`}
+							item.status
+						)} ${getStatusColor(item.status)}bg`}
 					>
-						{getLocalizedStatus(item.product.status)}
+						{getLocalizedStatus(item.status)}
 					</p>
+				</Table.Td>
+				<Table.Td>{item.productPrice} ₸</Table.Td>
+				<Table.Td>
+					{format(new Date(item.createdAt), 'dd MMMM, yyyy', {
+						locale: ru,
+					})}
 				</Table.Td>
 			</Table.Tr>
 		))
@@ -105,7 +102,7 @@ export const MyOrdersTable = () => {
 							{ value: 'pending', label: 'В ожидании' },
 							{ value: 'inactive', label: 'Отклонено' },
 						]}
-						onChange={value => setStatusFilter(value)}
+						onChange={(value) => setStatusFilter(value)}
 					/>
 				</div>
 			</div>
@@ -114,9 +111,10 @@ export const MyOrdersTable = () => {
 					<Table.Thead>
 						<Table.Tr>
 							<Table.Th>ID заказа</Table.Th>
-							<Table.Th>Продукт</Table.Th>
-							<Table.Th>Дата</Table.Th>
-							<Table.Th style={{ textAlign: 'end' }}>Статус</Table.Th>
+							<Table.Th>Покупатель</Table.Th>
+							<Table.Th>Статус</Table.Th>
+							<Table.Th>Сумма</Table.Th>
+							<Table.Th style={{ textAlign: 'end' }}>Дата</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
 					<Table.Tbody>{renderRow()}</Table.Tbody>

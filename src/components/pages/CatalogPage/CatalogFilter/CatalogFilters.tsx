@@ -36,22 +36,24 @@ const CatalogFilters = ({
 					За год
 				</BaseButton>
 			</div>
-			<div className={styles['catalog-actions']}>
-				<BaseButton
-					disabled={disabled}
-					onClick={addCatalog}
-					variantColor='secondary'
-				>
-					Добавить каталог
-				</BaseButton>
-				<BaseButton
-					disabled={disabled}
-					onClick={addProduct}
-					variantColor='primary'
-				>
-					Создать товар
-				</BaseButton>
-			</div>
+			{disabled ?? (
+				<div className={styles['catalog-actions']}>
+					<BaseButton
+						disabled={disabled}
+						onClick={addCatalog}
+						variantColor='secondary'
+					>
+						Добавить каталог
+					</BaseButton>
+					<BaseButton
+						disabled={disabled}
+						onClick={addProduct}
+						variantColor='primary'
+					>
+						Создать товар
+					</BaseButton>
+				</div>
+			)}
 		</div>
 	)
 }
