@@ -38,7 +38,7 @@ const AddCatalogModal = ({
 			title='Добавьте Товар'
 		>
 			<TextInput type='file' onChange={handleFileChange} />
-			<p style={{ color: 'grey' }}>Допустимые форматы: xlx, pdf, samsa</p>
+			<p style={{ color: 'grey' }}>Допустимые форматы: png, jpeg</p>
 			<BaseButton
 				className={styles['AddCatalog-button']}
 				variantColor='primary'

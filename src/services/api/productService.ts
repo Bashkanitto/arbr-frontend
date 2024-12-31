@@ -115,6 +115,30 @@ export const uploadMultipleImages = async (
 	}
 }
 
+// –––––––––––––––––- Загрузка изображения –––––––––––––
+export const uploadProductDocument = async (
+	files: any[],
+	id: null | number
+): Promise<void> => {
+	try {
+		const formData = new FormData()
+		formData.append('vendorGroup', JSON.stringify(id))
+		files.forEach((file) => formData.append('files', file))
+
+		await baseApi.post('/upload/multiple', formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+			timeout: 10000,
+		})
+	} catch (error) {
+		console.error('Ошибка при отправке файлов:', error)
+		throw new Error(
+			`Не удалось загрузить файлы: ${
+				error instanceof Error ? error.message : 'Неизвестная ошибка'
+			}`
+		)
+	}
+}
+
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const fetchMyProducts = async (
 	vendorId: number | string
