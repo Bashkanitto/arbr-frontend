@@ -37,12 +37,12 @@ const ProductPage = () => {
 			setSelectedFiles(Array.from(event.target.files))
 		}
 	}
-	const vendorId = vendorGroup ? vendorGroup.id : null
+	const vendorGroupId = vendorGroup ? vendorGroup.id : null
 
 	const handleSubmit = async () => {
 		if (selectedFiles) {
 			try {
-				await uploadProductDocument(selectedFiles, vendorId)
+				await uploadProductDocument(selectedFiles, vendorGroupId)
 				console.log('first')
 			} catch (error) {
 				console.error(error)

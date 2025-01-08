@@ -118,11 +118,11 @@ export const uploadMultipleImages = async (
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadProductDocument = async (
 	files: any[],
-	id: null | number
+	vendorGroupId: null | number
 ): Promise<void> => {
 	try {
 		const formData = new FormData()
-		formData.append('vendorGroup', JSON.stringify(id))
+		formData.append('vendorGroup', JSON.stringify(vendorGroupId))
 		files.forEach((file) => formData.append('files', file))
 
 		await baseApi.post('/upload/multiple', formData, {
