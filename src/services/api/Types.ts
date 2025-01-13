@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface UserType {
 	id(id: any): unknown
 	email: string
@@ -20,18 +21,45 @@ export interface UserType {
 	transactions: string[]
 }
 
-export interface Product {
-	amountPrice: string
-	brand: any[]
-	createdAt: string
-	deletedAt: string
-	description: string
-	id: number
-	images: any[]
+export interface BrandType {
 	name: string
-	price: number
+	products: any[]
+	image: any[]
+	rating: number
+	features: {
+		isBonus: boolean
+		isFreeDelivery: boolean
+		isDiscount: boolean
+		bonus: number
+		discount: number
+	}
+}
+
+export interface ProductType {
+	name: string
+	brand?: BrandType
+	createdAt: string
+	deletedAt?: string
+	features?: {
+		isBonus: boolean
+		isFreeDelivery: boolean
+		isDiscount: boolean
+		bonus: string
+		discount: string
+	}
+	id: number | null
+	images?: any[]
+	price: number | null
 	quantity: number
 	rating: string
+	code?: string
+	ENSTRU?: string | null
+	GTIN?: string | null
+	KZTIN?: string | null
+	options?: string | null
+	options2?: string | null
+	options3?: string | null
+	package?: number | null
 	status: string
 	updatedAt: string
 }
@@ -39,7 +67,7 @@ export interface Product {
 export interface VendorGroups {
 	id: number
 	price: number
-	product: Product
+	product: ProductType
 }
 
 export interface VendorType {
