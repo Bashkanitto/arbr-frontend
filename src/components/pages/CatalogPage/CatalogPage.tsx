@@ -1,4 +1,3 @@
-import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { fetchProfile } from '../../../services/api/authService'
 import { fetchAllVendors } from '../../../services/api/productService'
@@ -9,6 +8,7 @@ import AddProductModal from './AddProductModal/AddProductModal'
 import CatalogFilters from './CatalogFilter/CatalogFilters'
 import styles from './CatalogPage.module.scss'
 import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
+import { Skeleton } from '@mantine/core'
 
 const CatalogPage = () => {
 	// Local state for vendors, loading, and errors
@@ -48,13 +48,13 @@ const CatalogPage = () => {
 					}
 
 					filteredVendors = filteredVendors.filter(
-						vendor => new Date(vendor.createdAt) >= periodStart
+						(vendor) => new Date(vendor.createdAt) >= periodStart
 					)
 				}
 
 				if (profileData.role != 'admin') {
 					filteredVendors = filteredVendors.filter(
-						vendor => vendor.firstName === profileData.firstName
+						(vendor) => vendor.firstName === profileData.firstName
 					)
 				}
 
@@ -73,7 +73,7 @@ const CatalogPage = () => {
 	const addProduct = () => setIsAddProductOpen(true)
 	const topVendorsQuantity = vendorData.length
 
-	if (loading) return <Skeleton />
+	// if (loading) return <Skeleton />
 	if (error) return <p>Error: {error}</p>
 
 	return (
@@ -90,9 +90,19 @@ const CatalogPage = () => {
 				filterPeriod={filterPeriod}
 			/>
 			<div className={styles['catalog-tenders']}>
-				{vendorData.map(vendor => (
-					<Tender key={vendor.id} user={vendor} />
-				))}
+				{vendorData.map((vendor) =>
+					loading ? (
+						<Skeleton
+							style={{ marginBottom: '30px' }}
+							width={'100%'}
+							h={200}
+							radius={30}
+							key={vendor.id}
+						/>
+					) : (
+						<Tender key={vendor.id} user={vendor} />
+					)
+				)}
 			</div>
 			{isAddCatalogOpen && (
 				<AddCatalogModal

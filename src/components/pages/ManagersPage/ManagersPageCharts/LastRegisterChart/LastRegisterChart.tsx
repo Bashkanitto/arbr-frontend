@@ -37,7 +37,6 @@ const LastRegisterChart = () => {
 		loadLastConfirmedAccounts()
 	}, [])
 
-	if (loading) return <Skeleton />
 	if (error) return <div>Error: {error}</div>
 
 	return (
@@ -46,27 +45,37 @@ const LastRegisterChart = () => {
 
 			<Table stickyHeader className={styles.tablee}>
 				<Table.Tbody className={styles.tablee}>
-					{lastConfirmedAccounts.map(item => (
-						<Table.Tr key={item.id}>
-							<Table.Td>
-								<Avatar />
-							</Table.Td>
-							<Table.Td className={styles.nameRole}>
-								<p>{item.firstName || 'Неизвестный'}</p>
-								<p>{item.role}</p>
-							</Table.Td>
-							<Table.Td>
-								<DateItem variantColor='secondary'>
-									{format(new Date(item.createdAt), 'dd.MM.yy - HH:mm')}
-								</DateItem>
-							</Table.Td>
-							<Table.Td>
-								<a href='/' className={styles.profileLink}>
-									Смотреть профиль
-								</a>
-							</Table.Td>
-						</Table.Tr>
-					))}
+					{lastConfirmedAccounts.map((item) =>
+						loading ? (
+							<Skeleton
+								key={item.id}
+								width={'100%'}
+								height={100}
+								radius={15}
+								style={{ marginBottom: '10px' }}
+							/>
+						) : (
+							<Table.Tr key={item.id}>
+								<Table.Td>
+									<Avatar />
+								</Table.Td>
+								<Table.Td className={styles.nameRole}>
+									<p>{item.firstName || 'Неизвестный'}</p>
+									<p>{item.role}</p>
+								</Table.Td>
+								<Table.Td>
+									<DateItem variantColor='secondary'>
+										{format(new Date(item.createdAt), 'dd.MM.yy - HH:mm')}
+									</DateItem>
+								</Table.Td>
+								<Table.Td>
+									<a href='/' className={styles.profileLink}>
+										Смотреть профиль
+									</a>
+								</Table.Td>
+							</Table.Tr>
+						)
+					)}
 				</Table.Tbody>
 			</Table>
 		</div>
