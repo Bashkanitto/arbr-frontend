@@ -85,13 +85,22 @@ const VendorPage = () => {
 
 			<div className={styles['catalog-tenders']}>
 				{vendorData.length > 0 ? (
-					vendorData[0]?.vendorGroups.map(vendor => (
+					vendorData[0]?.vendorGroups.map((vendor) => (
 						<div
 							onClick={() => navigate(`/product/${vendor.id}`)}
 							className={styles.catalogItem}
 							key={vendor.id}
 						>
-							<img src={vendor.product?.images[0]?.url} alt='' />
+							<img
+								src={
+									vendor.product.images && vendor.product.images.length > 0 ? (
+										vendor.product.images[0].url
+									) : (
+										<Skeleton width={200} height={200} radius={300} />
+									)
+								}
+								alt={vendor.product.name || 'Product image'}
+							/>
 							<p>{vendor.product.name}</p>
 						</div>
 					))
