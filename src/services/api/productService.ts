@@ -180,7 +180,7 @@ export const patchStatus = async (
 export const fetchVendorGroupById = async (productId: any) => {
 	try {
 		const response = await baseApi.get(
-			`/vendor-group/${productId}?relations=product,product.images`
+			`/vendor-group/${productId}?relations=product,product.images,productDocuments`
 		)
 		return response
 	} catch (error) {
