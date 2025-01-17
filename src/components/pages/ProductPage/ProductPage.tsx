@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Skeleton, TextInput } from '@mantine/core'
-import jsPDF from 'jspdf'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
 import {
 	fetchVendorGroupById,
 	uploadProductDocument,
 } from '../../../services/api/productService'
 import EditProcentModal from '../CatalogPage/EditProcentModal/EditProcentModal'
-import NotFoundPage from '../NotFoundPage/NotFoundPage'
 import styles from './ProductPage.module.scss'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import { ProductType } from '../../../services/api/Types'
@@ -62,12 +59,8 @@ const ProductPage = () => {
 				setLoading(true)
 				const fetchedProduct: any = await fetchVendorGroupById(id)
 				setVendorGroup(fetchedProduct)
-			} catch (err: unknown) {
-				setError(
-					err instanceof Error
-						? `Failed to load product: ${err.message}`
-						: 'An unknown error occurred'
-				)
+			} catch (err: any) {
+				setError(err.message || 'An unknown error occurred')
 			} finally {
 				setLoading(false)
 			}
@@ -77,7 +70,7 @@ const ProductPage = () => {
 
 	if (error) return <div>{error}</div>
 	if (!vendorGroup) {
-		return <NotFoundPage />
+		return <Skeleton />
 	}
 
 	const product: ProductType = vendorGroup.product
@@ -98,18 +91,6 @@ const ProductPage = () => {
 
 	const closeEditModal = () => {
 		setIsEditModalOpen(false)
-	}
-
-	const downloadPDF = () => {
-		const doc = new jsPDF()
-		doc.setFontSize(16)
-		doc.text('Product Details', 10, 10)
-		doc.setFontSize(12)
-		doc.text(`Name: ${product.name}`, 10, 20)
-		doc.text(`Price: ${product.price}₸`, 10, 30)
-		doc.text(`Quantity: ${product.quantity} шт`, 10, 40)
-		doc.text(`Description ${product.options}:`, 10, 50)
-		doc.save(`${product.name}_details.pdf`)
 	}
 
 	return (
@@ -151,15 +132,16 @@ const ProductPage = () => {
 					)}
 					{activeTab === 'Документы' && (
 						<div className={styles.tabBody}>
-							<button className={styles.downloadBtn} onClick={downloadPDF}>
-								<DownloadIcon />
-								Скачать документ
-							</button>
 							<TextInput type='file' onChange={handleFileChange} />
 							<p style={{ color: 'grey' }}>Допустимые форматы: xlsx, pdf</p>
 							<BaseButton variantColor='primary' onClick={handleSubmit}>
 								Добавить документ
 							</BaseButton>
+							<ul className='flex col'>
+								{vendorGroup.productDocuments.map((productDocument: any) => (
+									<li key={productDocument.id}>{productDocument.bucket}</li>
+								))}
+							</ul>
 						</div>
 					)}
 				</div>
