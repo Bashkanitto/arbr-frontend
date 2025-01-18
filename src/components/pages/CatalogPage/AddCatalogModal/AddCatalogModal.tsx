@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { sendCatalogList } from '../../../../services/api/productService'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './AddCatalogModal.module.scss'
+import NotificationStore from '../../../../store/NotificationStore'
 
 const AddCatalogModal = ({
 	isOpen,
@@ -24,8 +25,19 @@ const AddCatalogModal = ({
 			try {
 				await sendCatalogList(file)
 				onClose()
+				NotificationStore.addNotification(
+					'Каталог',
+					'Каталог успешно добавлен',
+					'success'
+				)
 			} catch (error) {
 				console.error(error)
+				onClose()
+				NotificationStore.addNotification(
+					'Каталог',
+					'Ошибка при добавлении коталога',
+					'error'
+				)
 			}
 		}
 	}

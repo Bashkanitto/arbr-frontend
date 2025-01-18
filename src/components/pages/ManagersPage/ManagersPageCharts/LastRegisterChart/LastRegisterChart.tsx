@@ -69,7 +69,7 @@ const LastRegisterChart = () => {
 									</DateItem>
 								</Table.Td>
 								<Table.Td>
-									<a href='/' className={styles.profileLink}>
+									<a href={`/vendor/${item.id}`} className={styles.profileLink}>
 										Смотреть профиль
 									</a>
 								</Table.Td>

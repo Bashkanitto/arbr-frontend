@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Skeleton, TextInput } from '@mantine/core'
+import { Modal, Skeleton, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -11,6 +11,8 @@ import styles from './ProductPage.module.scss'
 import { BaseButton } from '../../atoms/Button/BaseButton'
 import { ProductType } from '../../../services/api/Types'
 import FullViewImageModal from '../../molecules/FullViewImageModal/FullViewImageModal'
+import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
+import NotificationStore from '../../../store/NotificationStore'
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
@@ -20,6 +22,7 @@ const ProductPage = () => {
 	const [error, setError] = useState<string | null>(null)
 	const [activeTab, setActiveTab] = useState<string>('описание')
 	const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+	const [isDocumentModalOpen, setIsDocumentModalOpen] = useState<boolean>(false)
 	const [isViewModalOpen, setIsViewModalOpen] = useState<boolean>(false)
 	const [selectedImage, setSelectedImage] = useState<string>('')
 
@@ -47,8 +50,21 @@ const ProductPage = () => {
 			try {
 				await uploadProductDocument(selectedFiles, vendorGroupId)
 				console.log('first')
+				NotificationStore.addNotification(
+					'Документы',
+					'Документы успешно добавлены!',
+					'success'
+				)
+				setIsDocumentModalOpen(false)
+				window.location.reload()
 			} catch (error) {
 				console.error(error)
+				NotificationStore.addNotification(
+					'Документы',
+					'Произошла ошибка!',
+					'error'
+				)
+				setIsDocumentModalOpen(false)
 			}
 		}
 	}
@@ -132,14 +148,20 @@ const ProductPage = () => {
 					)}
 					{activeTab === 'Документы' && (
 						<div className={styles.tabBody}>
-							<TextInput type='file' onChange={handleFileChange} />
-							<p style={{ color: 'grey' }}>Допустимые форматы: xlsx, pdf</p>
-							<BaseButton variantColor='primary' onClick={handleSubmit}>
+							<BaseButton
+								variantColor='primary'
+								onClick={() => setIsDocumentModalOpen(true)}
+							>
 								Добавить документ
 							</BaseButton>
-							<ul className='flex col'>
+							<ul className='flex '>
 								{vendorGroup.productDocuments.map((productDocument: any) => (
-									<li key={productDocument.id}>{productDocument.bucket}</li>
+									<li key={productDocument.id}>
+										{productDocument.bucket}{' '}
+										<a href={productDocument.url}>
+											<DownloadIcon />
+										</a>
+									</li>
 								))}
 							</ul>
 						</div>
@@ -210,6 +232,24 @@ const ProductPage = () => {
 				isOpen={isViewModalOpen}
 				onClose={closeViewModal}
 			/>
+
+			<Modal
+				opened={isDocumentModalOpen}
+				onClose={() => setIsDocumentModalOpen(false)}
+				withCloseButton={false}
+			>
+				<TextInput type='file' onChange={handleFileChange} />
+				<p style={{ color: 'grey', margin: '10px 0' }}>
+					Допустимые форматы: xlsx, pdf
+				</p>
+				<BaseButton
+					style={{ width: '100%' }}
+					variantColor='primary'
+					onClick={handleSubmit}
+				>
+					Отправить
+				</BaseButton>
+			</Modal>
 		</div>
 	)
 }
