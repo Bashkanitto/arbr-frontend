@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
@@ -61,12 +62,12 @@ export const MyOrdersTable = () => {
 
 	const renderRow = () => {
 		const filteredData = statusFilter
-			? productData.filter((item) => item.product.status === statusFilter)
+			? productData.filter(item => item.product.status === statusFilter)
 			: productData
 
 		if (!Array.isArray(filteredData)) return null
 
-		return filteredData.map((item) => (
+		return filteredData.map(item => (
 			<Table.Tr key={item.id}>
 				<Table.Td>{item.id}</Table.Td>
 				<Table.Td>{item.user.firstName ?? 'Неизвестно'}</Table.Td>
@@ -96,13 +97,14 @@ export const MyOrdersTable = () => {
 					<input type='text' placeholder='Поиск' />
 					<Select
 						placeholder='Статус'
+						value={statusFilter}
 						data={[
 							{ value: '', label: 'Все' },
 							{ value: 'active', label: 'Разрешено' },
 							{ value: 'pending', label: 'В ожидании' },
 							{ value: 'inactive', label: 'Отклонено' },
 						]}
-						onChange={(value) => setStatusFilter(value)}
+						onChange={value => setStatusFilter(value)}
 					/>
 				</div>
 			</div>

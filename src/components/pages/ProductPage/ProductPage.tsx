@@ -3,6 +3,7 @@ import { Modal, Skeleton, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
+	deleteDocument,
 	fetchVendorGroupById,
 	uploadProductDocument,
 } from '../../../services/api/productService'
@@ -13,6 +14,7 @@ import { ProductType } from '../../../services/api/Types'
 import FullViewImageModal from '../../molecules/FullViewImageModal/FullViewImageModal'
 import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
 import NotificationStore from '../../../store/NotificationStore'
+import { DeleteIcon } from '../../../assets/icons'
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
@@ -45,11 +47,28 @@ const ProductPage = () => {
 
 	const vendorGroupId = vendorGroup ? vendorGroup.id : null
 
+	const deleteProduct = async (fileName: string) => {
+		try {
+			await deleteDocument(fileName)
+			NotificationStore.addNotification(
+				'Документы',
+				'Документы успешно уделен!',
+				'success'
+			)
+		} catch (err) {
+			console.log(err)
+			NotificationStore.addNotification(
+				'Документы',
+				'Произошла ошибка при удалении документа!',
+				'error'
+			)
+		}
+	}
+
 	const handleSubmit = async () => {
 		if (selectedFiles) {
 			try {
 				await uploadProductDocument(selectedFiles, vendorGroupId)
-				console.log('first')
 				NotificationStore.addNotification(
 					'Документы',
 					'Документы успешно добавлены!',
@@ -61,7 +80,7 @@ const ProductPage = () => {
 				console.error(error)
 				NotificationStore.addNotification(
 					'Документы',
-					'Произошла ошибка!',
+					'Произошла ошибка при добавлении документа!',
 					'error'
 				)
 				setIsDocumentModalOpen(false)
@@ -83,6 +102,22 @@ const ProductPage = () => {
 		}
 		loadProduct()
 	}, [id])
+
+	const handleDownload = (url: string, customFileName: string) => {
+		fetch(url)
+			.then(response => response.blob())
+			.then(blob => {
+				const link = document.createElement('a')
+				const objectURL = URL.createObjectURL(blob)
+				link.href = objectURL
+				link.download = `${customFileName}.pdf`
+				link.click()
+				URL.revokeObjectURL(objectURL)
+			})
+			.catch(error => {
+				console.error('Error downloading the file', error)
+			})
+	}
 
 	if (error) return <div>{error}</div>
 	if (!vendorGroup) {
@@ -157,10 +192,27 @@ const ProductPage = () => {
 							<ul className='flex '>
 								{vendorGroup.productDocuments.map((productDocument: any) => (
 									<li key={productDocument.id}>
-										{productDocument.bucket}{' '}
-										<a href={productDocument.url}>
-											<DownloadIcon />
-										</a>
+										{productDocument.bucket}
+										<div className={styles.documentAction}>
+											<a
+												href='#'
+												onClick={() =>
+													handleDownload(
+														productDocument.url,
+														productDocument.bucket
+													)
+												}
+											>
+												<DownloadIcon />
+											</a>
+
+											<a
+												href='#'
+												onClick={() => deleteProduct(productDocument.filename)}
+											>
+												<DeleteIcon />
+											</a>
+										</div>
 									</li>
 								))}
 							</ul>

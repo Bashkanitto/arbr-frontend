@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { fetchBrands } from '../../../../services/api/brandService'

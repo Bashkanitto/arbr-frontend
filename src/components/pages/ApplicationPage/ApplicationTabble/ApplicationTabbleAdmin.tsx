@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
-import { enUS, ru } from 'date-fns/locale'
-import { jsPDF } from 'jspdf' // Импортируем jsPDF
+import { ru } from 'date-fns/locale'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
 	fetchVendorGroups,
@@ -12,11 +12,12 @@ import NotificationStore from '../../../../store/NotificationStore'
 import { Table } from '../../../atoms/Table'
 import { Pagination } from '../../../molecules/Pagination/Pagination'
 import styles from './ApplicationTabble.module.scss'
+import Status from '../../../../helpers/status'
 
 export const ApplicationTableAdmin = () => {
 	const [selectRows, setSelectRows] = useState<number[]>([])
 	const [productData, setProductData] = useState<any[]>([])
-	const [statusFilter, setStatusFilter] = useState<string | null>('pending')
+	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [error, setError] = useState<string | null>(null)
@@ -63,8 +64,9 @@ export const ApplicationTableAdmin = () => {
 				`Заявка продукта под номером ${productId} успешно принята`,
 				'success'
 			)
-		} catch (error) {
+		} catch (error: any) {
 			setError('Не удалось изменить статус продукта')
+			console.log(error)
 			NotificationStore.addNotification(
 				'Заявка',
 				`Произошла ошибка при попытке принять заявку`,
@@ -114,30 +116,20 @@ export const ApplicationTableAdmin = () => {
 			}
 		}
 
-	// Функция для создания и скачивания PDF
-	const downloadPDF = (product: any) => {
-		const doc = new jsPDF()
-
-		// Добавляем информацию о продукте в PDF
-		doc.text(`Product: ${product.product?.name}`, 10, 10)
-		doc.text(`ID: ${product.id}`, 10, 20)
-		doc.text(`Vendor: ${product.vendor.firstName}`, 10, 30)
-		doc.text(`Price: ${product.product?.price}`, 10, 40)
-		doc.text(`Description: ${product.product?.desription}`, 10, 50)
-		doc.text(
-			`Date: ${format(new Date(product.product?.createdAt), 'dd MMMM, yyyy', {
-				locale: enUS,
-			})}`,
-			10,
-			60
-		)
-		doc.text(`Quantity: ${product.product?.quantity}`, 10, 70)
-		doc.text(`Status: ${product.product?.status}`, 10, 80)
-
-		// Добавить другие данные, если необходимо
-
-		// Генерируем и скачиваем PDF
-		doc.save(`product_${product.id}.pdf`)
+	const handleDownload = (url: string, customFileName: string) => {
+		fetch(url)
+			.then(response => response.blob())
+			.then(blob => {
+				const link = document.createElement('a')
+				const objectURL = URL.createObjectURL(blob)
+				link.href = objectURL
+				link.download = `${customFileName}.pdf`
+				link.click()
+				URL.revokeObjectURL(objectURL)
+			})
+			.catch(error => {
+				console.error('Error downloading the file', error)
+			})
 	}
 
 	const renderRow = () => {
@@ -155,6 +147,9 @@ export const ApplicationTableAdmin = () => {
 					<Table.Td>{item.product?.name}</Table.Td>
 					<Table.Td>{item.vendor.firstName}</Table.Td>
 					<Table.Td>
+						<Status>{item.product.status}</Status>
+					</Table.Td>
+					<Table.Td>
 						{item.product?.createdAt
 							? format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
 									locale: ru,
@@ -162,7 +157,15 @@ export const ApplicationTableAdmin = () => {
 							: '—'}
 					</Table.Td>
 					<Table.Td style={{ width: '50px', padding: '0' }}>
-						<a href='#' onClick={() => downloadPDF(item)}>
+						<a
+							href='#'
+							onClick={() =>
+								handleDownload(
+									item.productDocuments[0].url,
+									item.productDocuments[0].bucket
+								)
+							}
+						>
 							Посмотреть документы
 						</a>
 					</Table.Td>
@@ -233,6 +236,7 @@ export const ApplicationTableAdmin = () => {
 							<Table.Th>ID заказа</Table.Th>
 							<Table.Th>Продукт</Table.Th>
 							<Table.Th>Продавец</Table.Th>
+							<Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>
 							<Table.Th>Дата</Table.Th>
 							<Table.Th>Просмотр документов</Table.Th>
 							<Table.Th style={{ textAlign: 'end' }}>Действие</Table.Th>

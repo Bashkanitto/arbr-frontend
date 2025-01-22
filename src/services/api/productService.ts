@@ -99,7 +99,7 @@ export const uploadMultipleImages = async (
 	try {
 		const formData = new FormData()
 		formData.append('product', JSON.stringify(productId))
-		files.forEach((file) => formData.append('files', file))
+		files.forEach(file => formData.append('files', file))
 
 		await baseApi.post('/upload/multiple', formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -123,7 +123,7 @@ export const uploadProductDocument = async (
 	try {
 		const formData = new FormData()
 		formData.append('vendorGroup', JSON.stringify(vendorGroupId))
-		files.forEach((file) => formData.append('files', file))
+		files.forEach(file => formData.append('files', file))
 
 		await baseApi.post('/upload/multiple', formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -195,7 +195,7 @@ export const fetchVendorGroups = async (
 ): Promise<VendorResponse> => {
 	try {
 		const response: VendorResponse = await baseApi.get(
-			`/vendor-group?relations=vendor,product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		)
 		return response
 	} catch (error) {
@@ -245,5 +245,14 @@ export const fetchMyOrders = async (): Promise<VendorResponse> => {
 				error instanceof Error ? error.message : 'Unknown error'
 			}`
 		)
+	}
+}
+
+export const deleteDocument = async (filename: string) => {
+	try {
+		const response = await baseApi.delete(`/upload/${filename}`)
+		return response
+	} catch (error) {
+		console.log(error)
 	}
 }

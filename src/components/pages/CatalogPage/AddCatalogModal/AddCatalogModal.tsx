@@ -35,7 +35,7 @@ const AddCatalogModal = ({
 				onClose()
 				NotificationStore.addNotification(
 					'Каталог',
-					'Ошибка при добавлении коталога',
+					'Ошибка при добавлении каталога',
 					'error'
 				)
 			}
@@ -50,7 +50,7 @@ const AddCatalogModal = ({
 			title='Добавьте Товар'
 		>
 			<TextInput type='file' onChange={handleFileChange} />
-			<p style={{ color: 'grey' }}>Допустимые форматы: png, jpeg</p>
+			<p style={{ color: 'grey' }}>Допустимые форматы: xlsx, pdf</p>
 			<BaseButton
 				className={styles['AddCatalog-button']}
 				variantColor='primary'
