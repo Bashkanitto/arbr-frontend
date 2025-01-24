@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
 import { updateBonus } from '../../../../services/api/procentService'
 import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './EditProcentModal.module.scss'
+import { fetchProductById } from '../../../../services/api/productService'
 
 interface EditProcentModalProps {
 	isOpen: boolean
@@ -14,47 +16,47 @@ interface EditProcentModalProps {
 const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 	const [sliderValue, setSliderValue] = useState<number>(0)
 	const [bonus, setBonus] = useState<number>(0)
-	const [error, setError] = useState<string>('')
+	const [userPrice, setUserPrice] = useState<number>(0)
 	const [selectedProductId, setSelectedProductId] = useState<number | null>(
 		null
-	) // Allow null as initial state
+	)
 	const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false)
 
 	const handleSave = async () => {
-		if (selectedProductId !== null) {
-			try {
-				await updateBonus(selectedProductId, sliderValue)
-				NotificationStore.addNotification(
-					'Изменение процента',
-					`Процент для продукта c номером ${selectedProductId} успешно изменен`,
-					'success'
-				)
-				onClose()
-			} catch (error) {
-				console.error('Error updating bonus:', error)
-				NotificationStore.addNotification(
-					'Изменение процента',
-					'Что то пошло не так',
-					'error'
-				)
-			}
-		} else {
-			console.error('No product selected')
-			setError('Выберите продукт')
+		try {
+			await updateBonus(selectedProductId, sliderValue)
+			NotificationStore.addNotification(
+				'Изменение процента',
+				`Процент для продукта c номером ${selectedProductId} успешно изменен`,
+				'success'
+			)
+			onClose()
+		} catch (error) {
+			console.error('Error updating bonus:', error)
+			NotificationStore.addNotification(
+				'Изменение процента',
+				'Что то пошло не так',
+				'error'
+			)
 		}
 	}
 
 	const handleSliderChange = (value: number) => {
 		setSliderValue(value)
-		setBonus(value)
+		setBonus(Number((userPrice * (value / 100)).toFixed(2)))
 	}
 
-	const handleSelectChange = (value: string | null) => {
-		if (value !== null) {
-			setError('')
-			setSelectedProductId(Number(value))
-		} else {
-			setSelectedProductId(null)
+	const handleSelectChange = async (value: string | null) => {
+		const productId = Number(value)
+
+		try {
+			const response: any = await fetchProductById(productId)
+			setSelectedProductId(productId)
+			setSliderValue(response.features?.bonus || 0)
+			setUserPrice(response.price)
+			setBonus(response.price * (response.features?.bonus / 100))
+		} catch (err) {
+			console.log(err)
 		}
 	}
 
@@ -72,7 +74,6 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 					label: group.product.name,
 				}))}
 			/>
-			{error && <p className='danger'>{error}</p>}
 			<div className={styles['checkbox']}>
 				<Checkbox
 					size='xs'
@@ -88,7 +89,7 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 				min={0}
 				max={100}
 			/>
-			<p className={styles.bonus}>Процент {bonus}%</p>
+			<p className={styles.bonus}>Процент {bonus}₸ </p>
 			<BaseButton
 				onClick={handleSave}
 				className={styles['editProcent-button']}

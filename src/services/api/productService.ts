@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
-import { addProductType, VendorResponse, VendorType } from './Types'
+import { addProductType, VendorResponse } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (
 	page: number = 1,
 	pageSize: number = 10
-): Promise<VendorResponse> => {
+) => {
 	try {
 		const response: VendorResponse = await baseApi.get(
 			`/account/vendors?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
@@ -14,53 +14,39 @@ export const fetchAllVendors = async (
 		return response
 	} catch (error) {
 		console.error('Error fetching vendors:', error)
-		throw new Error(
-			`Failed to fetch vendors: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
 // –––––––––––––––––- Получение один вендор –––––––––––––
 
-export const fetchVendorById = async (id: any): Promise<any> => {
+export const fetchVendorById = async (id: any) => {
 	try {
 		const response: any = await baseApi.get(`/account/vendors/${id}`)
 		return response
 	} catch (error) {
 		console.error('Error fetching vendors:', error)
-		throw new Error(
-			`Failed to fetch vendors: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
 // –––––––––––––––––- Получение конкретного продукта –––––––––––––
 export const fetchProductById = async (productId: any) => {
 	try {
-		const response = await baseApi.get(`/product/${productId}?relations=images`)
+		const response = await baseApi.get(
+			`/product/${productId}?relations=images,features`
+		)
 		return response
 	} catch (error) {
 		console.error('Error fetching product:', error)
-		throw new Error('Failed to fetch product details.')
 	}
 }
 
 // –––––––––––––––––- Добавление продукта –––––––––––––
-export const addProduct = async (productData: addProductType): Promise<any> => {
+export const addProduct = async (productData: addProductType) => {
 	try {
 		const response = await baseApi.post('/product', productData)
 		return response
 	} catch (error) {
 		console.error('Error adding product:', error)
-		throw new Error(
-			`Failed to add product: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
@@ -73,7 +59,7 @@ export const addVendorGroup = async ({
 	productId: number
 	vendorId: number
 	price: string
-}): Promise<any> => {
+}) => {
 	try {
 		const response = await baseApi.post('/vendor-group/add', {
 			productId,
@@ -83,19 +69,11 @@ export const addVendorGroup = async ({
 		return response
 	} catch (error) {
 		console.error('Error adding to vendor group:', error)
-		throw new Error(
-			`Failed to add to vendor group: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
-export const uploadMultipleImages = async (
-	files: any[],
-	productId: number
-): Promise<void> => {
+export const uploadMultipleImages = async (files: any[], productId: number) => {
 	try {
 		const formData = new FormData()
 		formData.append('product', JSON.stringify(productId))
@@ -103,15 +81,10 @@ export const uploadMultipleImages = async (
 
 		await baseApi.post('/upload/multiple', formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
-			timeout: 10000,
+			timeout: 60000,
 		})
 	} catch (error) {
 		console.error('Ошибка при отправке файлов:', error)
-		throw new Error(
-			`Не удалось загрузить файлы: ${
-				error instanceof Error ? error.message : 'Неизвестная ошибка'
-			}`
-		)
 	}
 }
 
@@ -119,7 +92,7 @@ export const uploadMultipleImages = async (
 export const uploadProductDocument = async (
 	files: any[],
 	vendorGroupId: null | number
-): Promise<void> => {
+) => {
 	try {
 		const formData = new FormData()
 		formData.append('vendorGroup', JSON.stringify(vendorGroupId))
@@ -131,36 +104,21 @@ export const uploadProductDocument = async (
 		})
 	} catch (error) {
 		console.error('Ошибка при отправке файлов:', error)
-		throw new Error(
-			`Не удалось загрузить файлы: ${
-				error instanceof Error ? error.message : 'Неизвестная ошибка'
-			}`
-		)
 	}
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
-export const fetchMyProducts = async (
-	vendorId: number | string
-): Promise<VendorResponse> => {
+export const fetchMyProducts = async (vendorId: number | string) => {
 	try {
 		const response: any = await baseApi.get(`/vendor-group/vendor/${vendorId}`)
 		return response
 	} catch (error) {
 		console.error('Error fetching products:', error)
-		throw new Error(
-			`Failed to fetch products: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
-export const patchStatus = async (
-	productId: number,
-	status: string
-): Promise<VendorType> => {
+export const patchStatus = async (productId: number, status: string) => {
 	try {
 		const response: any = await baseApi.patch(`/product/${productId}`, {
 			status,
@@ -168,11 +126,6 @@ export const patchStatus = async (
 		return response
 	} catch (error) {
 		console.error('Error patching product status:', error)
-		throw new Error(
-			`Failed patching product status: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
@@ -180,31 +133,37 @@ export const patchStatus = async (
 export const fetchVendorGroupById = async (productId: any) => {
 	try {
 		const response = await baseApi.get(
-			`/vendor-group/${productId}?relations=product,product.images,productDocuments`
+			`/vendor-group/${productId}?relations=product,features,product.images,productDocuments`
 		)
 		return response
 	} catch (error) {
 		console.error('Error fetching product:', error)
-		throw new Error('Failed to fetch product details.')
+	}
+}
+
+// –––––––––––––––––- Получение список продуктов  –––––––––––––
+export const fetchUserById = async (userId: any) => {
+	try {
+		const response = await baseApi.get(
+			`/vendor-group/?relations=product,features&search[vendor][id]=${userId}`
+		)
+		return response
+	} catch (error) {
+		console.error('Error fetching /vendor-group/:', error)
 	}
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchVendorGroups = async (
 	page: number = 1,
 	pageSize: number = 10
-): Promise<VendorResponse> => {
+) => {
 	try {
 		const response: VendorResponse = await baseApi.get(
-			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=ab`
 		)
 		return response
 	} catch (error) {
 		console.error('Error fetching vendor-groups:', error)
-		throw new Error(
-			`Failed to fetch vendor-groups: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 
@@ -226,25 +185,15 @@ export const sendCatalogList = async (file: File): Promise<any> => {
 		return response
 	} catch (error) {
 		console.error('Error fetching vendor-groups:', error)
-		throw new Error(
-			`Failed to fetch vendor-groups: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
-export const fetchMyOrders = async (): Promise<VendorResponse> => {
+export const fetchMyOrders = async () => {
 	try {
 		const response: any = await baseApi.get(`/order/admin?relations=user`)
 		return response
 	} catch (error) {
 		console.error('Error fetching order:', error)
-		throw new Error(
-			`Failed to fetch order: ${
-				error instanceof Error ? error.message : 'Unknown error'
-			}`
-		)
 	}
 }
 

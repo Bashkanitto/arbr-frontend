@@ -68,11 +68,17 @@
 	display: flex;
 	align-items: flex-start;
 	overflow-x: scroll;
+	gap: 10px;
 
-	.tender-item p {
-		margin: 5px;
-		font-size: 14px;
+	.tender-item {
+		max-width: 140px;
+
+		p {
+			margin: 5px;
+			font-size: 14px;
+		}
 	}
+
 	&::-webkit-scrollbar {
 		display: none;
 	}

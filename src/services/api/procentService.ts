@@ -1,18 +1,15 @@
 import baseApi from './base'
 
-export const updateBonus = async (productId: number, bonus: number) => {
+export const updateBonus = async (productId: number | null, bonus: number) => {
 	try {
 		const updatedData = {
 			features: {
-				isBonus: true,
+				isBonus: bonus !== 0 ? true : false,
 				bonus,
 			},
 		}
 
-		const response = await baseApi.patch(
-			`/vendor-group/${productId}`,
-			updatedData
-		)
+		const response = await baseApi.patch(`/product/${productId}`, updatedData)
 		return response.data
 	} catch (error) {
 		console.error('Error updating bonus:', error)
