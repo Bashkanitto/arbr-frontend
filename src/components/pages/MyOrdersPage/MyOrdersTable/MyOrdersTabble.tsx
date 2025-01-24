@@ -81,7 +81,7 @@ export const MyOrdersTable = () => {
 					</p>
 				</Table.Td>
 				<Table.Td>{item.productPrice} ₸</Table.Td>
-				<Table.Td>
+				<Table.Td style={{ textAlign: 'end' }}>
 					{format(new Date(item.createdAt), 'dd MMMM, yyyy', {
 						locale: ru,
 					})}

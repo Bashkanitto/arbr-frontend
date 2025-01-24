@@ -20,7 +20,7 @@ interface BrandOption {
 interface FormData {
 	accountId: string
 	name: string
-	description: string
+	options: string
 	quantity: number
 	price: number
 	brandId: string
@@ -47,7 +47,7 @@ const AddProductModal = ({
 	const [formData, setFormData] = useState<FormData>({
 		accountId: '',
 		name: '',
-		description: '',
+		options: '',
 		quantity: 1,
 		price: 0,
 		brandId: '',
@@ -128,9 +128,9 @@ const AddProductModal = ({
 
 		try {
 			setLoading(true)
-			const productResponse = await addProduct({
+			const productResponse: any = await addProduct({
 				name: formData.name,
-				description: formData.description,
+				options: formData.options,
 				quantity: formData.quantity || 0,
 				price: formData.price || 0,
 				brandId: parseInt(formData.brandId, 10),
@@ -146,19 +146,19 @@ const AddProductModal = ({
 				rating: 0,
 			})
 
-			await uploadMultipleImages(selectedFiles, productResponse.id)
+			const productId = productResponse.id
+
+			await uploadMultipleImages(selectedFiles, productId)
 
 			await addVendorGroup({
-				productId: productResponse.id,
+				productId: productId,
 				vendorId: parseInt(formData.accountId, 10),
 				price: formData.price.toString(),
 			})
 
-			const id = productResponse.id
-
 			NotificationStore.addNotification(
 				'Добавление товара',
-				`Товар c номером ${id} успешно добавлен`,
+				`Товар c номером ${productId} успешно добавлен`,
 				'success'
 			)
 		} catch (error) {
@@ -197,8 +197,8 @@ const AddProductModal = ({
 			/>
 			<TextInput
 				label='Описание'
-				value={formData.description}
-				onChange={e => handleInputChange('description', e.currentTarget.value)}
+				value={formData.options}
+				onChange={e => handleInputChange('options', e.currentTarget.value)}
 			/>
 			<NumberInput
 				label='Количество'

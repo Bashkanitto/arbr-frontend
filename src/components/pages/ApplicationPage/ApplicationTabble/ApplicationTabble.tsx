@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
-import { fetchMyProducts } from '../../../../services/api/productService'
+import {
+	fetchMyProducts,
+	patchStatus,
+} from '../../../../services/api/productService'
 import authStore from '../../../../store/AuthStore'
 import { Table } from '../../../atoms/Table'
 import styles from './ApplicationTabble.module.scss'
+import Status from '../../../../helpers/status'
+import NotificationStore from '../../../../store/NotificationStore'
 
 export const ApplicationTable = () => {
 	const [productData, setProductData] = useState<any[]>([])
@@ -33,36 +39,49 @@ export const ApplicationTable = () => {
 		loadProducts()
 	}, [])
 
+	const handleStatusChange = async (
+		productId: number,
+		newStatus: 'inactive'
+	) => {
+		try {
+			setLoading(true)
+			// Обновляем статус в локальном состоянии
+			setProductData(prevData =>
+				prevData.map(item =>
+					item.id === productId
+						? { ...item, product: { ...item.product, status: newStatus } }
+						: item
+				)
+			)
+
+			await patchStatus(productId, newStatus)
+
+			NotificationStore.addNotification(
+				'Заявка',
+				`Заявка продукта под номером ${productId} успешно изменена`,
+				'success'
+			)
+
+			setTimeout(() => {
+				window.location.reload()
+			}, 1500)
+		} catch (error: any) {
+			setError('Не удалось изменить статус продукта')
+			console.log(error)
+
+			NotificationStore.addNotification(
+				'Заявка',
+				`Произошла ошибка при попытке измененить заявку`,
+				'error'
+			)
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	if (loading) return <Skeleton />
-	if (error) return <div>Error: {error}</div>
+	if (error) return <div>Ошибка: {error}</div>
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case 'active':
-				return 'success'
-			case 'pending':
-				return 'warning'
-			case 'inactive':
-				return 'danger'
-			default:
-				return ''
-		}
-	}
-
-	const getLocalizedStatus = (status: string): string => {
-		switch (status) {
-			case 'active':
-				return 'Активен'
-			case 'pending':
-				return 'В ожидании'
-			case 'inactive':
-				return 'Отклонён'
-			default:
-				return 'Неизвестно'
-		}
-	}
-
-	console.log(productData)
 	const renderRow = () => {
 		const filteredData = statusFilter
 			? productData.filter(item => item.product.status === statusFilter)
@@ -79,14 +98,17 @@ export const ApplicationTable = () => {
 						locale: ru,
 					})}
 				</Table.Td>
-				<Table.Td className={styles.statusRow} style={{ textAlign: 'end' }}>
-					<p
-						className={`${styles.status} ${getStatusColor(
-							item.product.status
-						)} ${getStatusColor(item.product.status)}bg`}
+				<Table.Td>
+					<Status>{item.product.status}</Status>
+				</Table.Td>
+				<Table.Td>
+					<button
+						style={{ float: 'right' }}
+						className={styles.statusNotBtn}
+						onClick={() => handleStatusChange(item.product.id, 'inactive')}
 					>
-						{getLocalizedStatus(item.product.status)}
-					</p>
+						<img src='/images/diskLike_photo.svg' alt='' />
+					</button>
 				</Table.Td>
 			</Table.Tr>
 		))
@@ -116,7 +138,8 @@ export const ApplicationTable = () => {
 							<Table.Th>ID заказа</Table.Th>
 							<Table.Th>Продукт</Table.Th>
 							<Table.Th>Дата</Table.Th>
-							<Table.Th style={{ textAlign: 'end' }}>Статус</Table.Th>
+							<Table.Th>Статус</Table.Th>
+							<Table.Th style={{ textAlign: 'end' }}>Действие</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
 					<Table.Tbody>{renderRow()}</Table.Tbody>

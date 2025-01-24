@@ -103,20 +103,24 @@ const ProductPage = () => {
 		loadProduct()
 	}, [id])
 
-	const handleDownload = (url: string, customFileName: string) => {
-		fetch(url)
-			.then(response => response.blob())
-			.then(blob => {
-				const link = document.createElement('a')
-				const objectURL = URL.createObjectURL(blob)
-				link.href = objectURL
-				link.download = `${customFileName}.pdf`
-				link.click()
-				URL.revokeObjectURL(objectURL)
-			})
-			.catch(error => {
-				console.error('Error downloading the file', error)
-			})
+	const downloadFile = async (url: string, customFileName: string) => {
+		try {
+			const response = await fetch(url)
+
+			if (!response.ok) {
+				throw new Error(`Failed to fetch file: ${response.statusText}`)
+			}
+
+			const blob = await response.blob()
+			const link = document.createElement('a')
+			const objectUrl = URL.createObjectURL(blob)
+			link.href = objectUrl
+			link.download = `${customFileName}.xlsx` // Use your custom name
+			link.click()
+			URL.revokeObjectURL(objectUrl)
+		} catch (error) {
+			console.error('Error while downloading file:', error)
+		}
 	}
 
 	if (error) return <div>{error}</div>
@@ -195,12 +199,8 @@ const ProductPage = () => {
 										{productDocument.bucket}
 										<div className={styles.documentAction}>
 											<a
-												href='#'
 												onClick={() =>
-													handleDownload(
-														productDocument.url,
-														productDocument.bucket
-													)
+													downloadFile(productDocument.url, productDocument.id)
 												}
 											>
 												<DownloadIcon />

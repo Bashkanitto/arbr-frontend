@@ -31,7 +31,7 @@ export const ApplicationTableAdmin = () => {
 			setLoading(true)
 			setError(null)
 			try {
-				const { records, meta } = await fetchVendorGroups(page, pageSize)
+				const { records, meta }: any = await fetchVendorGroups(page, pageSize)
 				setProductData(records)
 				setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
 			} catch (err) {
@@ -44,13 +44,13 @@ export const ApplicationTableAdmin = () => {
 
 		loadVendors()
 	}, [page, pageSize])
+
 	const handleStatusChange = async (
 		productId: number,
 		newStatus: 'active' | 'inactive'
 	) => {
 		try {
 			setLoading(true)
-			await patchStatus(productId, newStatus)
 			// Обновляем статус в локальном состоянии
 			setProductData(prevData =>
 				prevData.map(item =>
@@ -59,17 +59,24 @@ export const ApplicationTableAdmin = () => {
 						: item
 				)
 			)
+
+			await patchStatus(productId, newStatus)
+
 			NotificationStore.addNotification(
 				'Заявка',
-				`Заявка продукта под номером ${productId} успешно принята`,
+				`Заявка продукта под номером ${productId} успешно изменена`,
 				'success'
 			)
+
+			setTimeout(() => {
+				window.location.reload()
+			}, 1500)
 		} catch (error: any) {
 			setError('Не удалось изменить статус продукта')
 			console.log(error)
 			NotificationStore.addNotification(
 				'Заявка',
-				`Произошла ошибка при попытке принять заявку`,
+				`Произошла ошибка при попытке измененить заявку`,
 				'error'
 			)
 		} finally {
@@ -116,20 +123,24 @@ export const ApplicationTableAdmin = () => {
 			}
 		}
 
-	const handleDownload = (url: string, customFileName: string) => {
-		fetch(url)
-			.then(response => response.blob())
-			.then(blob => {
-				const link = document.createElement('a')
-				const objectURL = URL.createObjectURL(blob)
-				link.href = objectURL
-				link.download = `${customFileName}.pdf`
-				link.click()
-				URL.revokeObjectURL(objectURL)
-			})
-			.catch(error => {
-				console.error('Error downloading the file', error)
-			})
+	const handleDownload = async (url: string, customFileName: string) => {
+		try {
+			const response = await fetch(url)
+
+			if (!response.ok) {
+				throw new Error(`Failed to fetch file: ${response.statusText}`)
+			}
+
+			const blob = await response.blob()
+			const link = document.createElement('a')
+			const objectUrl = URL.createObjectURL(blob)
+			link.href = objectUrl
+			link.download = `${customFileName}.xlsx` // Use your custom name
+			link.click()
+			URL.revokeObjectURL(objectUrl)
+		} catch (error) {
+			console.error('Error while downloading file:', error)
+		}
 	}
 
 	const renderRow = () => {
@@ -179,13 +190,13 @@ export const ApplicationTableAdmin = () => {
 					>
 						<button
 							className={styles.statusNotBtn}
-							onClick={() => handleStatusChange(item.id, 'inactive')}
+							onClick={() => handleStatusChange(item.product.id, 'inactive')}
 						>
 							<img src='/images/diskLike_photo.svg' alt='' />
 						</button>
 						<button
 							className={styles.statusYesBtn}
-							onClick={() => handleStatusChange(item.id, 'active')}
+							onClick={() => handleStatusChange(item.product.id, 'active')}
 						>
 							<img src='/images/like_photo.svg' alt='' />
 						</button>

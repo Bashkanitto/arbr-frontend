@@ -113,7 +113,7 @@ export interface VendorResponse {
 
 export interface addProductType {
 	name: string
-	description: string
+	options: string
 	quantity: number
 	price: number
 	amountPrice: number

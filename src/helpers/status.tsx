@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type StatusProps = {
-	children: 'active' | 'pending' | 'inactive' // restrict values to specific strings
+	children: 'active' | 'pending' | 'inactive'
 }
 
 const Status: React.FC<StatusProps> = ({ children }) => {
