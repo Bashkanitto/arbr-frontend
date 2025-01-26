@@ -11,7 +11,7 @@ const CatalogFilters = ({
 	disabled?: true | false
 	addCatalog: () => void
 	addProduct: () => void
-	onFilterChange: (filter: string) => void
+	onFilterChange: (filter: '3_months' | '6_months' | '1_year') => void
 	filterPeriod: string | null
 }) => {
 	return (
