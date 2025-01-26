@@ -28,8 +28,8 @@ interface FormData {
 	isBonus: boolean
 	isFreeDelivery: boolean
 	isDiscount: boolean
-	bonus: number
-	discount: number
+	bonus: null | number
+	discount: null | number
 }
 
 const AddProductModal = ({
@@ -55,8 +55,8 @@ const AddProductModal = ({
 		isBonus: false,
 		isFreeDelivery: false,
 		isDiscount: false,
-		bonus: 0,
-		discount: 0,
+		bonus: null,
+		discount: null,
 	})
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,11 +98,18 @@ const AddProductModal = ({
 	}, [isOpen])
 
 	const handleInputChange = (field: keyof FormData, value: any) => {
+		// Преобразуем значение в число и ограничиваем его максимумом 100, если это бонус или скидка
+		let newValue = value;
+
+		if (field === 'bonus' || field === 'discount') {
+			newValue = Math.min(100, Math.max(0, value));
+		}
+
 		setFormData(prev => ({
 			...prev,
-			[field]: value,
-			isBonus: field === 'bonus' ? value > 0 : prev.isBonus,
-			isDiscount: field === 'discount' ? value > 0 : prev.isDiscount,
+			[field]: newValue,
+			isBonus: field === 'bonus' ? newValue > 0 : prev.isBonus,
+			isDiscount: field === 'discount' ? newValue > 0 : prev.isDiscount,
 		}))
 	}
 
@@ -139,8 +146,8 @@ const AddProductModal = ({
 					isBonus: formData.isBonus,
 					isFreeDelivery: formData.isFreeDelivery,
 					isDiscount: formData.isDiscount,
-					bonus: formData.bonus || 0,
-					discount: formData.discount || 0,
+					bonus: formData.bonus || null,
+					discount: formData.discount || null,
 				},
 				amountPrice: 0,
 				rating: 0,
@@ -235,13 +242,17 @@ const AddProductModal = ({
 				placeholder='Выберите бренд'
 			/>
 			<NumberInput
-				label='Бонус'
-				value={formData.bonus}
+				label='Бонус %'
+				max={100}
+				min={0}
+				placeholder="Введите бонус (0 - 100)"
 				onChange={value => handleInputChange('bonus', value ?? 0)}
 			/>
 			<NumberInput
-				label='Скидка'
-				value={formData.discount}
+				label='Скидка %'
+				max={100}
+				min={0}
+				placeholder="Введите бонус (0 - 100)"
 				onChange={value => handleInputChange('discount', value ?? 0)}
 			/>
 			{error && <p className='danger'>{error}</p>}
