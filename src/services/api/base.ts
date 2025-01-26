@@ -37,7 +37,6 @@ baseApi.interceptors.response.use(
 			throw error
 		}
 
-		return Promise.reject(error)
 	}
 )
 

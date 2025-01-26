@@ -124,7 +124,7 @@ export interface addProductType {
 		isBonus: boolean
 		isFreeDelivery: boolean
 		isDiscount: boolean
-		bonus: number
-		discount: number
+		bonus: number | null
+		discount: number | null
 	}
 }
