@@ -1,124 +1,102 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react'
-import { fetchProfile } from '../../../services/api/authService'
-import { fetchAllVendors } from '../../../services/api/productService'
-import { VendorType } from '../../../services/api/Types'
-import Tender from '../../molecules/Tender/Tender'
-import AddCatalogModal from './AddCatalogModal/AddCatalogModal'
-import AddProductModal from './AddProductModal/AddProductModal'
-import CatalogFilters from './CatalogFilter/CatalogFilters'
-import styles from './CatalogPage.module.scss'
-import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
-import { Skeleton } from '@mantine/core'
+import { useEffect, useState, useCallback } from 'react';
+import { fetchProfile } from '../../../services/api/authService';
+import { fetchAllVendors } from '../../../services/api/productService';
+import { VendorType } from '../../../services/api/Types';
+import Tender from '../../molecules/Tender/Tender';
+import AddCatalogModal from './AddCatalogModal/AddCatalogModal';
+import AddProductModal from './AddProductModal/AddProductModal';
+import CatalogFilters from './CatalogFilter/CatalogFilters';
+import styles from './CatalogPage.module.scss';
+import CatalogSwitch from './CatalogSwitch/CatalogSwitch';
+import { Skeleton } from '@mantine/core';
 
 const CatalogPage = () => {
-	// Local state for vendors, loading, and errors
-	const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
-	const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
-	const [vendorData, setVendorData] = useState<VendorType[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
-	const [error, setError] = useState<string | null>(null)
-	const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>(false)
+	const [filterPeriod, setFilterPeriod] = useState<'3_months' | '6_months' | '1_year'>('3_months');
+	const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+	const [isAddCatalogOpen, setIsAddCatalogOpen] = useState(false);
+	const [vendorData, setVendorData] = useState<VendorType[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-	// Fetch vendor details on component mount
-	useEffect(() => {
-		const loadVendors = async () => {
-			try {
-				setLoading(true)
-				const response: any = await fetchAllVendors()
-				const profileData = await fetchProfile()
-				let filteredVendors = response.records
+	const calculateStartDate = useCallback((period: string): Date => {
+		const date = new Date();
+		if (period === '3_months') date.setMonth(date.getMonth() - 3);
+		else if (period === '6_months') date.setMonth(date.getMonth() - 6);
+		else if (period === '1_year') date.setFullYear(date.getFullYear() - 1);
+		return date;
+	}, []);
 
-				// Применяем фильтр периода
-				if (filterPeriod) {
-					const currentDate = new Date()
-					const periodStart = new Date()
+	const loadVendors = useCallback(async () => {
+		try {
+			setLoading(true);
+			const [vendorsResponse, profileData] = await Promise.all([
+				fetchAllVendors(),
+				fetchProfile(),
+			]);
 
-					switch (filterPeriod) {
-						case '3_months':
-							periodStart.setMonth(currentDate.getMonth() - 3)
-							break
-						case '6_months':
-							periodStart.setMonth(currentDate.getMonth() - 6)
-							break
-						case '1_year':
-							periodStart.setFullYear(currentDate.getFullYear() - 1)
-							break
-						default:
-							break
-					}
+			let filteredVendors = vendorsResponse?.records || [];
 
-					filteredVendors = filteredVendors.filter(
-						(vendor: { createdAt: string | number | Date }) => new Date(vendor.createdAt) >= periodStart
-					)
-				}
+			// Фильтрация по периоду
+			const periodStart = calculateStartDate(filterPeriod);
+			filteredVendors = filteredVendors.filter(
+				(vendor) => new Date(vendor.createdAt) >= periodStart
+			);
 
-				if (profileData.role != 'admin') {
-					filteredVendors = filteredVendors.filter(
-						(vendor: { firstName: string }) => vendor.firstName === profileData.firstName
-					)
-				}
-
-				setVendorData(filteredVendors)
-			} catch (err: unknown) {
-				setError(`Failed to load vendor data: ${err}`)
-			} finally {
-				setLoading(false)
+			// Фильтрация по пользователю
+			if (profileData.role !== 'admin') {
+				filteredVendors = filteredVendors.filter(
+					(vendor) => vendor.firstName === profileData.firstName
+				);
 			}
+
+			setVendorData(filteredVendors);
+		} catch (err) {
+			setError(`Failed to load vendor data: ${err}`);
+		} finally {
+			setLoading(false);
 		}
-		loadVendors()
-	}, [filterPeriod])
+	}, [filterPeriod, calculateStartDate]);
 
-	// Toggle catalog modal
-	const addCatalog = () => setIsAddCatalogOpen(true)
-	const addProduct = () => setIsAddProductOpen(true)
-	const topVendorsQuantity = vendorData.length
+	useEffect(() => {
+		loadVendors();
+	}, [loadVendors]);
 
-	// if (loading) return <Skeleton />
-	if (error) return <p>Error: {error}</p>
+	const toggleAddCatalog = () => setIsAddCatalogOpen((prev) => !prev);
+	const toggleAddProduct = () => setIsAddProductOpen((prev) => !prev);
 
 	return (
 		<div className={styles['catalog-page']}>
 			<CatalogSwitch />
 			<p className={styles['catalog-title']}>Каталог</p>
-			<p className={styles['catalog-description']}>
-				Топ - {topVendorsQuantity}
-			</p>
+			<p className={styles['catalog-description']}>Топ - {vendorData.length}</p>
 			<CatalogFilters
 				onFilterChange={setFilterPeriod}
-				addCatalog={addCatalog}
-				addProduct={addProduct}
+				addCatalog={toggleAddCatalog}
+				addProduct={toggleAddProduct}
 				filterPeriod={filterPeriod}
 			/>
 			<div className={styles['catalog-tenders']}>
-				{vendorData.map((vendor) =>
-					loading ? (
-						<Skeleton
-							style={{ marginBottom: '30px' }}
-							width={'100%'}
-							h={200}
-							radius={30}
-							key={vendor.id}
-						/>
-					) : (
-						<Tender key={vendor.id} user={vendor} />
-					)
-				)}
+				{loading
+					? Array.from({ length: 3 }).map((_, index) => (
+							<Skeleton
+								key={index}
+								style={{ marginBottom: '30px' }}
+								width="100%"
+								height={200}
+								radius={30}
+							/>
+					  ))
+					: vendorData.map((vendor) => <Tender key={vendor.id} user={vendor} />)}
 			</div>
 			{isAddCatalogOpen && (
-				<AddCatalogModal
-					isOpen={isAddCatalogOpen}
-					onClose={() => setIsAddCatalogOpen(false)}
-				/>
+				<AddCatalogModal isOpen={isAddCatalogOpen} onClose={toggleAddCatalog} />
 			)}
 			{isAddProductOpen && (
-				<AddProductModal
-					isOpen={isAddProductOpen}
-					onClose={() => setIsAddProductOpen(false)}
-				/>
+				<AddProductModal isOpen={isAddProductOpen} onClose={toggleAddProduct} />
 			)}
+			{error && <p className={styles['error']}>{error}</p>}
 		</div>
-	)
-}
+	);
+};
 
-export default CatalogPage
+export default CatalogPage;
