@@ -44,16 +44,13 @@ export const ApplicationTable = () => {
 		newStatus: 'inactive'
 	) => {
 		try {
-			setLoading(true)
 			// Обновляем статус в локальном состоянии
-			setProductData(prevData =>
-				prevData.map(item =>
-					item.id === productId
-						? { ...item, product: { ...item.product, status: newStatus } }
-						: item
-				)
-			)
-
+			const updatedData = productData.map(item =>
+				item.product.id === productId
+					? { ...item, product: { ...item.product, status: newStatus } }
+					: item
+			);
+			setProductData(updatedData);
 			await patchStatus(productId, newStatus)
 
 			NotificationStore.addNotification(
@@ -62,20 +59,20 @@ export const ApplicationTable = () => {
 				'success'
 			)
 
-			setTimeout(() => {
-				window.location.reload()
-			}, 1500)
 		} catch (error: any) {
-			setError('Не удалось изменить статус продукта')
 			console.log(error)
+			const revertedData = productData.map(item =>
+				item.product.id === productId
+					? { ...item, product: { ...item.product, status: 'active' } } // Assuming "active" is the previous status
+					: item
+			);
+			setProductData(revertedData);
 
 			NotificationStore.addNotification(
 				'Заявка',
 				`Произошла ошибка при попытке измененить заявку`,
 				'error'
 			)
-		} finally {
-			setLoading(false)
 		}
 	}
 
@@ -91,7 +88,7 @@ export const ApplicationTable = () => {
 
 		return filteredData.map(item => (
 			<Table.Tr key={item.id}>
-				<Table.Td>{item.id}</Table.Td>
+				<Table.Td>{item.product.id}</Table.Td>
 				<Table.Td>{item.product.name}</Table.Td>
 				<Table.Td>
 					{format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {

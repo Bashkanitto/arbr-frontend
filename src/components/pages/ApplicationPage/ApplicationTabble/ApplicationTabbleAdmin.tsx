@@ -66,6 +66,13 @@ export const ApplicationTableAdmin = () => {
 			setError('Не удалось изменить статус продукта')
 			console.error(error)
 
+			const revertedData = productData.map(item =>
+				item.product.id === productId
+					? { ...item, product: { ...item.product, status: 'active' } } // Assuming "active" is the previous status
+					: item
+			);
+			setProductData(revertedData);
+
 			NotificationStore.addNotification(
 				'Заявка',
 				`Произошла ошибка при попытке измененить заявку`,
