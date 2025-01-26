@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 import { fetchProfile } from '../../../services/api/authService'
 import { fetchAllVendors } from '../../../services/api/productService'
@@ -24,7 +25,7 @@ const CatalogPage = () => {
 		const loadVendors = async () => {
 			try {
 				setLoading(true)
-				const response = await fetchAllVendors()
+				const response: any = await fetchAllVendors()
 				const profileData = await fetchProfile()
 				let filteredVendors = response.records
 
@@ -48,13 +49,13 @@ const CatalogPage = () => {
 					}
 
 					filteredVendors = filteredVendors.filter(
-						(vendor) => new Date(vendor.createdAt) >= periodStart
+						(vendor: { createdAt: string | number | Date }) => new Date(vendor.createdAt) >= periodStart
 					)
 				}
 
 				if (profileData.role != 'admin') {
 					filteredVendors = filteredVendors.filter(
-						(vendor) => vendor.firstName === profileData.firstName
+						(vendor: { firstName: string }) => vendor.firstName === profileData.firstName
 					)
 				}
 
