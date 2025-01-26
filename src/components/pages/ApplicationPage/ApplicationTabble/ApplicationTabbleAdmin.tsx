@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Checkbox, Select, Skeleton } from '@mantine/core'
+import { Select, Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	fetchVendorGroups,
 	patchStatus,
 } from '../../../../services/api/productService'
-import { VendorGroups } from '../../../../services/api/Types'
 import NotificationStore from '../../../../store/NotificationStore'
 import { Table } from '../../../atoms/Table'
 import { Pagination } from '../../../molecules/Pagination/Pagination'
@@ -15,7 +14,6 @@ import styles from './ApplicationTabble.module.scss'
 import Status from '../../../../helpers/status'
 
 export const ApplicationTableAdmin = () => {
-	const [selectRows, setSelectRows] = useState<number[]>([])
 	const [productData, setProductData] = useState<any[]>([])
 	const [statusFilter, setStatusFilter] = useState<string | null>('')
 	const [loading, setLoading] = useState<boolean>(false)
@@ -50,30 +48,24 @@ export const ApplicationTableAdmin = () => {
 		newStatus: 'active' | 'inactive'
 	) => {
 		try {
-			setLoading(true)
-			// Обновляем статус в локальном состоянии
 			setProductData(prevData =>
 				prevData.map(item =>
-					item.id === productId
+					item.product.id === productId
 						? { ...item, product: { ...item.product, status: newStatus } }
 						: item
 				)
 			)
-
 			await patchStatus(productId, newStatus)
-
 			NotificationStore.addNotification(
 				'Заявка',
 				`Заявка продукта под номером ${productId} успешно изменена`,
 				'success'
 			)
 
-			setTimeout(() => {
-				window.location.reload()
-			}, 1500)
 		} catch (error: any) {
 			setError('Не удалось изменить статус продукта')
-			console.log(error)
+			console.error(error)
+
 			NotificationStore.addNotification(
 				'Заявка',
 				`Произошла ошибка при попытке измененить заявку`,
@@ -83,10 +75,6 @@ export const ApplicationTableAdmin = () => {
 			setLoading(false)
 		}
 	}
-	// Список всех групп поставщиков
-	const allVendorGroups: VendorGroups[] = productData.flatMap(
-		vendor => vendor.vendorGroups
-	)
 
 	if (loading) return <Skeleton />
 	if (error) return <div>Ошибка: {error}</div>
@@ -102,40 +90,16 @@ export const ApplicationTableAdmin = () => {
 		? filteredData.filter(group => group.product.status === statusFilter)
 		: filteredData
 
-	// Логика выделения всех строк
-	const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const { checked } = event.target
-		if (checked) {
-			setSelectRows(allVendorGroups.map(item => item.id))
-		} else {
-			setSelectRows([])
-		}
-	}
-
-	// Логика выбора строки
-	const handleSelectRowChange =
-		(id: number) => (event: ChangeEvent<HTMLInputElement>) => {
-			const { checked } = event.target
-			if (checked) {
-				setSelectRows([...selectRows, id])
-			} else {
-				setSelectRows(selectRows.filter(item => item !== id))
-			}
-		}
 
 	const handleDownload = async (url: string, customFileName: string) => {
 		try {
 			const response = await fetch(url)
 
-			if (!response.ok) {
-				throw new Error(`Failed to fetch file: ${response.statusText}`)
-			}
-
 			const blob = await response.blob()
 			const link = document.createElement('a')
 			const objectUrl = URL.createObjectURL(blob)
 			link.href = objectUrl
-			link.download = `${customFileName}.xlsx` // Use your custom name
+			link.download = `${customFileName}.xlsx`
 			link.click()
 			URL.revokeObjectURL(objectUrl)
 		} catch (error) {
@@ -147,25 +111,17 @@ export const ApplicationTableAdmin = () => {
 		return filteredByStatus.map(item => {
 			return (
 				<Table.Tr key={item.id}>
-					<Table.Td style={{ width: '16px' }}>
-						<Checkbox
-							size='xs'
-							checked={selectRows.includes(item.id)}
-							onChange={handleSelectRowChange(item.id)}
-						/>
-					</Table.Td>
-					<Table.Td>{item.id}</Table.Td>
+					<Table.Td>{item.product.id}</Table.Td>
 					<Table.Td>{item.product?.name}</Table.Td>
 					<Table.Td>{item.vendor.firstName}</Table.Td>
 					<Table.Td>
 						<Status>{item.product.status}</Status>
 					</Table.Td>
 					<Table.Td>
-						{item.product?.createdAt
-							? format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
+						{format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
 									locale: ru,
 							  })
-							: '—'}
+							}
 					</Table.Td>
 					<Table.Td style={{ width: '50px', padding: '0' }}>
 						<a
@@ -233,19 +189,8 @@ export const ApplicationTableAdmin = () => {
 				<Table stickyHeader>
 					<Table.Thead>
 						<Table.Tr>
-							<Table.Th>
-								<Checkbox
-									size='xs'
-									checked={selectRows.length === allVendorGroups.length}
-									indeterminate={
-										selectRows.length > 0 &&
-										selectRows.length < allVendorGroups.length
-									}
-									onChange={handleSelectAllChange}
-								/>
-							</Table.Th>
 							<Table.Th>ID заказа</Table.Th>
-							<Table.Th>Продукт</Table.Th>
+							<Table.Th >Продукт</Table.Th>
 							<Table.Th>Продавец</Table.Th>
 							<Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>
 							<Table.Th>Дата</Table.Th>
