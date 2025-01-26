@@ -159,7 +159,7 @@ export const fetchVendorGroups = async (
 ) => {
 	try {
 		const response: VendorResponse = await baseApi.get(
-			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=ab`
+			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=desc`
 		)
 		return response
 	} catch (error) {
