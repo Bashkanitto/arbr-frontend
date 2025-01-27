@@ -1,22 +1,24 @@
 import { Loader } from '@mantine/core'
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '../components/layouts/MainLayout'
-import ApplicationPage from '../components/pages/ApplicationPage/ApplicationPage'
-import AuthPage from '../components/pages/AuthPage/AuthPage'
-import CatalogPage from '../components/pages/CatalogPage/CatalogPage'
 import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
-import MyOrdersPage from '../components/pages/MyOrdersPage/MyOrdersPage'
-import NotFoundPage from '../components/pages/NotFoundPage/NotFoundPage'
-import ProductPage from '../components/pages/ProductPage/ProductPage'
-import SearchPage from '../components/pages/SearchPage/SearchPage'
-import SecurityPage from '../components/pages/SecurityPage/SecurityPage'
-import SuppliesPage from '../components/pages/SuppliesPage/SuppliesPage'
-import VendorPage from '../components/pages/VendorPage/VendorPage'
-import WithdrawsPage from '../components/pages/WithdrawsPage/WithdrawsPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
 import authStore from '../store/AuthStore'
 import { AuthProtect } from './AuthProtect'
+
+// Lazy load components
+const ApplicationPage = lazy(() => import('../components/pages/ApplicationPage/ApplicationPage'));
+const AuthPage = lazy(() => import('../components/pages/AuthPage/AuthPage'));
+const CatalogPage = lazy(() => import('../components/pages/CatalogPage/CatalogPage'));
+const MyOrdersPage = lazy(() => import('../components/pages/MyOrdersPage/MyOrdersPage'));
+const NotFoundPage = lazy(() => import('../components/pages/NotFoundPage/NotFoundPage'));
+const ProductPage = lazy(() => import('../components/pages/ProductPage/ProductPage'));
+const SearchPage = lazy(() => import('../components/pages/SearchPage/SearchPage'));
+const SecurityPage = lazy(() => import('../components/pages/SecurityPage/SecurityPage'));
+const SuppliesPage = lazy(() => import('../components/pages/SuppliesPage/SuppliesPage'));
+const VendorPage = lazy(() => import('../components/pages/VendorPage/VendorPage'));
+const WithdrawsPage = lazy(() => import('../components/pages/WithdrawsPage/WithdrawsPage'));
 
 export const AppRouter = () => {
 	const { userProfile } = authStore
