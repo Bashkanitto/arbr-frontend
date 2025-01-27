@@ -1,6 +1,6 @@
 import baseApi from './base'
 
-export const fetchBrands = async (): Promise<any> => {
+export const fetchBrands = async () => {
 	try {
 		const response = await baseApi.get('/brand')
 		return response
