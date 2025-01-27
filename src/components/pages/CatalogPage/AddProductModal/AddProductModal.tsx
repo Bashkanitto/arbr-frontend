@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { fetchBrands } from '../../../../services/api/brandService'
+import { fetchBrands, fetchSubCategory } from '../../../../services/api/brandService'
 import {
 	addProduct,
 	addVendorGroup,
@@ -40,6 +40,7 @@ const AddProductModal = ({
 	onClose: () => void
 }) => {
 	const [brands, setBrands] = useState<BrandOption[]>([])
+	const [category, setCategory] = useState([])
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 	const [error, setError] = useState<string>('')
 	const [accounts, setAccounts] = useState<BrandOption[]>([])
@@ -51,7 +52,7 @@ const AddProductModal = ({
 		quantity: 1,
 		price: 0,
 		brandId: '',
-		subcategoryId: '1',
+		subcategoryId: '',
 		isBonus: false,
 		isFreeDelivery: false,
 		isDiscount: false,
@@ -80,6 +81,19 @@ const AddProductModal = ({
 				}
 			}
 
+			const loadSubCategory = async () => {
+				try {
+					const response: any = await fetchSubCategory()
+					const categoryOptions = response.records.map((category: any) => ({
+						value: category.id.toString(),
+						label: category.name,
+					}))
+					setCategory(categoryOptions)
+				} catch (error) {
+					console.error('Ошибка загрузки брендов:', error)
+				}
+			}
+
 			const loadVendors = async () => {
 				try {
 					const response: any = await fetchAllVendors()
@@ -93,6 +107,7 @@ const AddProductModal = ({
 				}
 			}
 			loadBrands()
+			loadSubCategory()
 			loadVendors()
 		}
 	}, [isOpen])
@@ -141,7 +156,7 @@ const AddProductModal = ({
 				quantity: formData.quantity || 0,
 				price: formData.price || 0,
 				brandId: parseInt(formData.brandId, 10),
-				subcategoryId: parseInt(formData.subcategoryId, 10),
+				subcategoryId: formData.subcategoryId || '0',
 				features: {
 					isBonus: formData.isBonus,
 					isFreeDelivery: formData.isFreeDelivery,
@@ -201,6 +216,13 @@ const AddProductModal = ({
 				label='Название товара'
 				value={formData.name}
 				onChange={e => handleInputChange('name', e.currentTarget.value)}
+			/>
+			<Select
+				label='Категории'
+				data={category}
+				value={formData.subcategoryId}
+				onChange={value => handleInputChange('subcategoryId', value ?? '')}
+				placeholder='Выберите категорию'
 			/>
 			<TextInput
 				label='Описание'
