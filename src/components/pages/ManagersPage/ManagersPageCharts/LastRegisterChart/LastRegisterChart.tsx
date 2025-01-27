@@ -21,13 +21,11 @@ const LastRegisterChart = () => {
 	// Fetch the accounts data when the component mounts
 	useEffect(() => {
 		const loadLastConfirmedAccounts = async () => {
-			setLoading(true)
-			setError(null)
 			try {
 				const response = await fetchAccounts()
 				setLastConfirmedAccounts(response.records)
-			} catch (err: unknown) {
-				setError('Failed to load last confirmed accounts')
+			} catch (err) {
+				setError('Failed to load last confirmed accounts. Please try again later.')
 				console.error(err)
 			} finally {
 				setLoading(false)
@@ -37,35 +35,30 @@ const LastRegisterChart = () => {
 		loadLastConfirmedAccounts()
 	}, [])
 
-	if (error) return <div>Error: {error}</div>
+	if (error) return <div className={styles.error}>{error}</div>
 
 	return (
 		<div className={styles.container}>
-			<h2 className={styles.title}>Последние регистрации</h2>
-
-			<Table stickyHeader className={styles.tablee}>
-				<Table.Tbody className={styles.tablee}>
-					{lastConfirmedAccounts.map((item) =>
-						loading ? (
-							<Skeleton
-								key={item.id}
-								width={'100%'}
-								height={100}
-								radius={15}
-								style={{ marginBottom: '10px' }}
-							/>
-						) : (
+			<h3 style={{ fontSize:'18px'}}>Последние регистрации</h3>
+			{loading ? (
+				<Skeleton width="100%" height={300} radius={15} />
+			) : (
+				<Table stickyHeader className={styles.table}>
+					<Table.Tbody>
+						{lastConfirmedAccounts.map((item) => (
 							<Table.Tr key={item.id}>
-								<Table.Td>
+								<Table.Td style={{ width: '50px' }}>
 									<Avatar />
 								</Table.Td>
 								<Table.Td className={styles.nameRole}>
 									<p>{item.firstName || 'Неизвестный'}</p>
-									<p>{item.role}</p>
+									<p>{item.role || 'Роль не указана'}</p>
 								</Table.Td>
 								<Table.Td>
-									<DateItem variantColor='secondary'>
-										{format(new Date(item.createdAt), 'dd.MM.yy - HH:mm')}
+									<DateItem variantColor="secondary">
+										{item.createdAt
+											? format(new Date(item.createdAt), 'dd.MM.yy - HH:mm')
+											: 'Дата не указана'}
 									</DateItem>
 								</Table.Td>
 								<Table.Td>
@@ -74,10 +67,10 @@ const LastRegisterChart = () => {
 									</a>
 								</Table.Td>
 							</Table.Tr>
-						)
-					)}
-				</Table.Tbody>
-			</Table>
+						))}
+					</Table.Tbody>
+				</Table>
+			)}
 		</div>
 	)
 }

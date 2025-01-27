@@ -37,7 +37,7 @@ const elements = [
 const ConfirmatedUsersChart = () => {
 	return (
 		<div className={styles.container}>
-			<h2 className={styles.title}>Юр. лица с подтверждениями</h2>
+			<h3 style={{ fontSize:'18px'}}>Юр. лица с подтверждениями</h3>
 			<Table stickyHeader>
 				<Table.Tbody>
 					{elements.map((item, index) => (
