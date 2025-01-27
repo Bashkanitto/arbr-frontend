@@ -21,7 +21,11 @@ const SearchPage = () => {
 			try {
 				setLoading(true)
 				const response = await fetchAllVendors()
-				setVendorData(response.records)
+				if (response) {
+					setVendorData(response.records)
+				} else {
+					setError('Failed to load vendor data: response is undefined')
+				}
 			} catch (err: unknown) {
 				setError(
 					err instanceof Error
