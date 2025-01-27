@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
 import { updateDiscount } from '../../../../services/api/procentService'
 import NotificationStore from '../../../../store/NotificationStore'
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './DiscountModal.module.scss'
+import { fetchProductById } from '../../../../services/api/productService'
 
 interface DiscountModalProps {
 	isOpen: boolean
@@ -13,6 +15,7 @@ interface DiscountModalProps {
 
 const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 	const [sliderValue, setSliderValue] = useState<number>(0)
+	const [userPrice, setUserPrice] = useState<number>(0)
 	const [discount, setDiscount] = useState<number>(0)
 	const [error, setError] = useState<string>('')
 	const [selectedProductId, setSelectedProductId] = useState<number | null>(
@@ -26,14 +29,14 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 				await updateDiscount(selectedProductId, sliderValue)
 				onClose()
 				NotificationStore.addNotification(
-					'Изменение бонуса',
-					`Бонус для продукта c номером ${selectedProductId}  успешно изменен`,
+					'Изменение скидки',
+					`Скидка для продукта c номером ${selectedProductId}  успешно изменен`,
 					'success'
 				)
 			} catch (error) {
 				console.error('Error updating bonus:', error)
 				NotificationStore.addNotification(
-					'Изменение бонуса',
+					'Изменение скидки',
 					'Что то пошло не так',
 					'error'
 				)
@@ -46,17 +49,25 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 
 	const handleSliderChange = (value: number) => {
 		setSliderValue(value)
-		setDiscount(value)
+		setDiscount(Number((userPrice * (value / 100)).toFixed(2)))
 	}
 
-	const handleSelectChange = (value: string | null) => {
-		if (value !== null) {
-			setError('')
-			setSelectedProductId(Number(value))
-		} else {
-			setSelectedProductId(null)
+	const handleSelectChange = async (value: string | null) => {
+		const productId = Number(value)
+
+		try {
+			const response: any = await fetchProductById(productId)
+
+			const discountValue = response.features?.discount || 0
+			setSelectedProductId(productId)
+			setSliderValue(discountValue)
+			setUserPrice(response.price)
+			setDiscount(response.price * (discountValue / 100))
+		} catch (err) {
+			console.log(err)
 		}
 	}
+
 
 	return (
 		<Modal
@@ -88,7 +99,7 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
 				min={0}
 				max={100}
 			/>
-			<p className={styles.bonus}>Скидка {discount}%</p>
+			<p className={styles.bonus}>Скидка {discount}₸</p>
 			<BaseButton
 				onClick={handleSave}
 				className={styles['DiscountModal-button']}

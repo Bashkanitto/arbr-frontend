@@ -26,15 +26,15 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 		try {
 			await updateBonus(selectedProductId, sliderValue)
 			NotificationStore.addNotification(
-				'Изменение процента',
-				`Процент для продукта c номером ${selectedProductId} успешно изменен`,
+				'Изменение бонуса',
+				`Бонус для продукта c номером ${selectedProductId} успешно изменен`,
 				'success'
 			)
 			onClose()
 		} catch (error) {
 			console.error('Error updating bonus:', error)
 			NotificationStore.addNotification(
-				'Изменение процента',
+				'Изменение бонуса',
 				'Что то пошло не так',
 				'error'
 			)
@@ -51,10 +51,12 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
 
 		try {
 			const response: any = await fetchProductById(productId)
+
+			const bonusValue = response.features?.bonus || 0
 			setSelectedProductId(productId)
-			setSliderValue(response.features?.bonus || 0)
+			setSliderValue(bonusValue)
 			setUserPrice(response.price)
-			setBonus(response.price * (response.features?.bonus / 100))
+			setBonus(response.price * (bonusValue / 100))
 		} catch (err) {
 			console.log(err)
 		}
