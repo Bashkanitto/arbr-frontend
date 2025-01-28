@@ -94,7 +94,7 @@ const VendorPage = () => {
 							<img
 								src={
 									vendor.product.images && vendor.product.images.length > 0 ? (
-										vendor.product.images[0].url
+										vendor.product.images[0].url.replace('http://3.76.32.115:3000', 'https://rbr.kz')
 									) : (
 										<Skeleton width={200} height={200} radius={300} />
 									)
