@@ -62,7 +62,16 @@ const AddProductModal = ({
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			setSelectedFiles(Array.from(event.target.files))
+			const files = Array.from(event.target.files)
+			const oversizedFiles = files.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024)
+
+			if (oversizedFiles.length > 0) {
+				setError(`Файл(ы) превышают ${MAX_FILE_SIZE_MB}MB`)
+				return
+			}
+
+			setSelectedFiles(files)
+			setError('')
 		}
 	}
 
@@ -127,6 +136,8 @@ const AddProductModal = ({
 			isDiscount: field === 'discount' ? newValue > 0 : prev.isDiscount,
 		}))
 	}
+
+	const MAX_FILE_SIZE_MB = 5
 
 	const handleAddProduct = async () => {
 		setError('')
@@ -241,7 +252,7 @@ const AddProductModal = ({
 			/>
 			<div className={styles.fileUpload}>
 				<label htmlFor='fileInput' className={styles.uploadButton}>
-					Загрузить файлы
+				Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)	
 				</label>
 				<input
 					required

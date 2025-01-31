@@ -247,7 +247,7 @@ const ProductPage = () => {
 						<a onClick={() => setInfoVisibility(1)}>
 							ЕНС ТРУ
 							<p style={{ height: infoVisibility == 1 ? '40px' : '0px' }}>
-								{product.ENSTRU}
+								asdasds
 							</p>
 						</a>
 						<a onClick={() => setInfoVisibility(2)}>
