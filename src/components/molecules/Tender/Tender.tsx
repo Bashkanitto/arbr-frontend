@@ -57,9 +57,9 @@ const Tender = ({ user }: { user: any }) => {
 				</div>
 
 				<div className={styles['tender-user-statistics']}>
-					<p>
+					{/* <p>
 						Рейтинг: <span>{user.rating}</span>
-					</p>
+					</p> */}
 					<p>
 						Количество товаров: <span>{user.vendorGroups.length}</span>
 					</p>

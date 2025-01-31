@@ -28,7 +28,7 @@ export const updateDiscount = async (productId: number, discount: number) => {
 		}
 
 		const response = await baseApi.patch(
-			`/vendor-group/${productId}`,
+			`/product/${productId}`,
 			updatedData
 		)
 		return response.data
