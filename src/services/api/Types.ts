@@ -47,7 +47,7 @@ export interface ProductType {
 		bonus: string
 		discount: string
 	}
-	id: number | null
+	id: number
 	images?: any[]
 	price: number | null
 	quantity: number

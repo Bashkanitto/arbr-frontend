@@ -32,7 +32,7 @@ export const fetchVendorById = async (id: any) => {
 export const fetchProductById = async (productId: any) => {
 	try {
 		const response = await baseApi.get(
-			`/product/${productId}?relations=images,features`
+			`/product/${productId}?relations=images,features,vendorGroups.productDocuments`
 		)
 		return response
 	} catch (error) {
@@ -200,6 +200,17 @@ export const fetchMyOrders = async () => {
 export const deleteDocument = async (filename: string) => {
 	try {
 		const response = await baseApi.delete(`/upload/${filename}`)
+		return response
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+
+
+export const deleteProduct = async (productId: number) => {
+	try {
+		const response = await baseApi.delete(`/product/${productId}`	)
 		return response
 	} catch (error) {
 		console.log(error)
