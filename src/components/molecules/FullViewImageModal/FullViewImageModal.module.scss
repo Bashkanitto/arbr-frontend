@@ -12,12 +12,16 @@
 }
 
 .modalContent {
-	position: relative;
+	// position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .fullImage {
 	max-width: 90%;
-	max-height: 90%;
+	max-height: 80vh;
+	object-fit: cover;
 }
 
 .closeButton {
