@@ -74,20 +74,22 @@ const Tender = ({ user }: { user: any }) => {
 			</div>
 
 			<div className={styles['tender-items']}>
-				{user.vendorGroups.map((item: any) => (
+			{user.vendorGroups
+				.filter((item: any) => item.product?.status === 'active') // Filter only active products
+				.map((item: any) => (
 					<button
-						onClick={() => navigate(`/product/${item.id}`)}
+						onClick={() => navigate(`/product/${item.product.id}`)}
 						key={item.id}
 						className={styles['tender-item']}
 					>
 						<img
-							src={item.product?.images[0]?.url || 'placeholder.png'}
+							src={item.product?.images[0]?.url.replace('http://3.76.32.115:3000', 'https://rbr.kz')}
 							className={styles['tender-image']}
 						/>
 						<p className={styles['tender-title']}>{item.product?.name}</p>
 					</button>
 				))}
-			</div>
+		</div>
 
 			{/* Modals */}
 			{isProcentModalOpen && (
