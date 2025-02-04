@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
 	deleteDocument,
-	fetchVendorGroupById,
+	deleteProduct,
+	fetchProductById,
 	uploadProductDocument,
 } from '../../../services/api/productService'
 import EditProcentModal from '../CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './ProductPage.module.scss'
 import { BaseButton } from '../../atoms/Button/BaseButton'
-import { ProductType } from '../../../services/api/Types'
 import FullViewImageModal from '../../molecules/FullViewImageModal/FullViewImageModal'
 import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
 import NotificationStore from '../../../store/NotificationStore'
@@ -18,7 +18,7 @@ import { DeleteIcon } from '../../../assets/icons'
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
-	const [vendorGroup, setVendorGroup] = useState<any | null>(null)
+	const [product, setProduct] = useState<any | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [infoVisibility, setInfoVisibility] = useState<number | null>()
 	const [error, setError] = useState<string | null>(null)
@@ -45,9 +45,8 @@ const ProductPage = () => {
 		setSelectedImage('')
 	}
 
-	const vendorGroupId = vendorGroup ? vendorGroup.id : null
 
-	const deleteProduct = async (fileName: string) => {
+	const handleDeleteDocument = async (fileName: string) => {
 		try {
 			await deleteDocument(fileName)
 			NotificationStore.addNotification(
@@ -68,7 +67,7 @@ const ProductPage = () => {
 	const handleSubmit = async () => {
 		if (selectedFiles) {
 			try {
-				await uploadProductDocument(selectedFiles, vendorGroupId)
+				await uploadProductDocument(selectedFiles, product.vendorGroupId)
 				NotificationStore.addNotification(
 					'Документы',
 					'Документы успешно добавлены!',
@@ -92,8 +91,8 @@ const ProductPage = () => {
 		const loadProduct = async () => {
 			try {
 				setLoading(true)
-				const fetchedProduct: any = await fetchVendorGroupById(id)
-				setVendorGroup(fetchedProduct)
+				const response: any = await fetchProductById(id)
+				setProduct(response)
 			} catch (err: any) {
 				setError(err.message || 'An unknown error occurred')
 			} finally {
@@ -124,16 +123,24 @@ const ProductPage = () => {
 	}
 
 	if (error) return <div>{error}</div>
-	if (!vendorGroup) {
+	if (!product) {
 		return <Skeleton />
 	}
 
-	const product: ProductType = vendorGroup.product
 
 	const getTextColor = (quantity: number): string => {
 		if (quantity < 20) return 'danger' // красный цвет
 		if (quantity < 60) return 'warning' // зеленый цвет
 		return 'active'
+	}
+
+	const handleDeleteProduct = async(productId:number) => {
+		try{
+			const response = await deleteProduct(productId)
+			console.log(response)
+		}catch(err){
+			console.log(err)
+		}
 	}
 
 	const handleTabClick = (tab: string) => {
@@ -153,11 +160,12 @@ const ProductPage = () => {
 			<div className={styles['product-image']}>
 				{product.images?.map((image: { url: string }) =>
 					loading ? (
-						<Skeleton width={600} height={400} radius={15} />
+						<Skeleton key={product.id} width={600} height={400} radius={15} />
 					) : (
 						<img
 							onClick={() => openViewModal(image.url)}
 							style={{ cursor: 'pointer' }}
+							key={product.id}
 							src={image.url.replace('http://3.76.32.115:3000', 'https://rbr.kz')}
 							alt=''
 						/>
@@ -194,7 +202,7 @@ const ProductPage = () => {
 								Добавить документ
 							</BaseButton>
 							<ul className='flex '>
-								{vendorGroup.productDocuments.map((productDocument: any) => (
+								{product.vendorGroups[0].productDocuments.map((productDocument: any) => (
 									<li key={productDocument.id}>
 										{productDocument.bucket}
 										<div className={styles.documentAction}>
@@ -208,7 +216,7 @@ const ProductPage = () => {
 
 											<a
 												href='#'
-												onClick={() => deleteProduct(productDocument.filename)}
+												onClick={() => handleDeleteDocument(productDocument.filename)}
 											>
 												<DeleteIcon />
 											</a>
@@ -271,6 +279,7 @@ const ProductPage = () => {
 						</a>
 					</div>
 				</div>
+				<button onClick={()=>handleDeleteProduct(product.id)} className={styles['deleteProduct']}>Удалить продукт</button>
 			</div>
 
 			<EditProcentModal
