@@ -24,7 +24,7 @@ interface FormData {
 	quantity: number
 	price: number
 	brandId: string
-	subcategoryId: string
+	subcategoryId: number
 	isBonus: boolean
 	isFreeDelivery: boolean
 	isDiscount: boolean
@@ -59,7 +59,7 @@ const AddProductModal = ({
 		quantity: 1,
 		price: 0,
 		brandId: '',
-		subcategoryId: '',
+		subcategoryId: 0,
 		isBonus: false,
 		isFreeDelivery: false,
 		isDiscount: false,
@@ -191,7 +191,7 @@ const AddProductModal = ({
 				quantity: formData.quantity || 0,
 				price: formData.price || 0,
 				brandId: parseInt(formData.brandId, 10),
-				subcategoryId: formData.subcategoryId || '0',
+				subcategoryId: formData.subcategoryId + 1 || 1,
 				features: {
 					isBonus: formData.isBonus,
 					isFreeDelivery: formData.isFreeDelivery,

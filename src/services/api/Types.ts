@@ -120,7 +120,7 @@ export interface addProductType {
 	amountPrice: number
 	rating: number
 	brandId: number
-	subcategoryId: string
+	subcategoryId: number
 	features: {
 		isBonus: boolean
 		isFreeDelivery: boolean
