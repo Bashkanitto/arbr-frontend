@@ -64,6 +64,7 @@
 	border: none;
 }
 .tender-items {
+	scrollbar-width: none;
 	flex: 1;
 	display: flex;
 	align-items: flex-start;
@@ -106,6 +107,7 @@ p {
 }
 
 .brandWrapper {
+	scrollbar-width: none;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
@@ -115,6 +117,7 @@ p {
 }
 
 .brand {
+	scrollbar-width: none;
 	background: #00000025;
 	overflow: scroll;
 	display: flex;

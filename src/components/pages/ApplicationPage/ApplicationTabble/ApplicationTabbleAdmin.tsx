@@ -20,7 +20,7 @@ export const ApplicationTableAdmin = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('')
 	const [error, setError] = useState<string | null>(null)
 	const [page, setPage] = useState<number>(1)
-	const [pageSize] = useState<number>(10)
+	const [pageSize] = useState<number>(7)
 	const [totalPages, setTotalPages] = useState<number>(1)
 
 	useEffect(() => {

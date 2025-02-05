@@ -17,7 +17,7 @@ const TransactionList: React.FC = () => {
 	useEffect(() => {
 		const getBalance = async () => {
 			try {
-				const response: any = await fetchOperations()
+				const response = await fetchOperations()
 				setOperations(response.records)
 			} catch (err) {
 				console.error(err)

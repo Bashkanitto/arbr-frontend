@@ -1,6 +1,7 @@
 // TransactionList.module.scss
 
 .container {
+	scrollbar-width: none;
 	padding: 10px;
 	overflow: scroll;
 }
