@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { fetchBrands, fetchSubCategory } from '../../../../services/api/brandService'
+import { fetchAllSubCategory, fetchBrands } from '../../../../services/api/brandService'
 import {
 	addProduct,
 	addVendorGroup,
@@ -39,12 +39,19 @@ const AddProductModal = ({
 	isOpen: boolean
 	onClose: () => void
 }) => {
-	const [brands, setBrands] = useState<BrandOption[]>([])
-	const [category, setCategory] = useState([])
-	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-	const [error, setError] = useState<string>('')
+	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
+	const [brandSearch, setBrandSearch] = useState<string>('')
+	const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
+
+	const [subcategorySearch, setSubcategorySearch] = useState<string>('')
+	const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
+	const [filteredCategories, setFilteredCategories] = useState<{ value: string; label: string }[]>([])
+
 	const [accounts, setAccounts] = useState<BrandOption[]>([])
+
+	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 	const [loading, setLoading] = useState<boolean>(false)
+	const [error, setError] = useState<string>('')
 	const [formData, setFormData] = useState<FormData>({
 		accountId: '',
 		name: '',
@@ -77,49 +84,66 @@ const AddProductModal = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			const loadBrands = async () => {
+			const loadData = async () => {
 				try {
-					const response: any = await fetchBrands()
-					const brandOptions = response.records.map((brand: any) => ({
-						value: brand.id.toString(),
-						label: brand.name,
-					}))
-					setBrands(brandOptions)
-				} catch (error) {
-					console.error('Ошибка загрузки брендов:', error)
-				}
-			}
+					const [categoriesResponse, brandsResponse,vendorResponse]:any = await Promise.all([
+						fetchAllSubCategory(),
+						fetchBrands(),
+						fetchAllVendors()
+					])
 
-			const loadSubCategory = async () => {
-				try {
-					const response: any = await fetchSubCategory()
-					const categoryOptions = response.records.map((category: any) => ({
-						value: category.id.toString(),
-						label: category.name,
-					}))
-					setCategory(categoryOptions)
-				} catch (error) {
-					console.error('Ошибка загрузки брендов:', error)
-				}
-			}
+				// Категории
+				const categoryOptions = categoriesResponse.records.map((category: any) => ({
+					value: category.id.toString(),
+					label: category.name,
+				}))
+				setCategories(categoryOptions)
+				setFilteredCategories(categoryOptions)
 
-			const loadVendors = async () => {
-				try {
-					const response: any = await fetchAllVendors()
-					const vendorOptions = response.records.map((vendor: any) => ({
-						value: vendor.id.toString(),
-						label: vendor.firstName,
-					}))
-					setAccounts(vendorOptions)
+				// Бренды
+				const brandOptions = brandsResponse.records.map((brand: any) => ({
+					value: brand.id.toString(),
+					label: brand.name,
+				}))
+				setBrands(brandOptions)
+				setFilteredBrands(brandOptions)
+
+					// Поставщики
+				const vendorOptions = vendorResponse.records.map((vendor: any) => ({
+					value: vendor.id.toString(),
+					label: vendor.firstName,
+				}))
+				setAccounts(vendorOptions)
+
 				} catch (error) {
 					console.error('Ошибка загрузки поставщиков:', error)
 				}
 			}
-			loadBrands()
-			loadSubCategory()
-			loadVendors()
+			loadData()
 		}
 	}, [isOpen])
+
+	useEffect(() => {
+		if (subcategorySearch.trim() === '') {
+			setFilteredCategories(categories)
+		} else {
+			setFilteredCategories(
+				categories.filter(category =>
+					category.label.toLowerCase().includes(subcategorySearch.toLowerCase())
+				)
+			)
+		}
+	}, [subcategorySearch, categories])
+
+	useEffect(() => {
+		setFilteredBrands(
+			brandSearch.trim() === ''
+				? brands
+				: brands.filter(brand =>
+						brand.label.toLowerCase().includes(brandSearch.toLowerCase())
+				  )
+		)
+	}, [brandSearch, brands])
 
 	const handleInputChange = (field: keyof FormData, value: any) => {
 		// Преобразуем значение в число и ограничиваем его максимумом 100, если это бонус или скидка
@@ -228,13 +252,14 @@ const AddProductModal = ({
 				value={formData.name}
 				onChange={e => handleInputChange('name', e.currentTarget.value)}
 			/>
-			<Select
-				label='Категории'
-				data={category}
-				value={formData.subcategoryId}
-				onChange={value => handleInputChange('subcategoryId', value ?? '')}
-				placeholder='Выберите категорию'
-			/>
+	<Select
+			label="Категории"
+			data={filteredCategories} // Фильтрованный список
+			searchable
+			searchValue={subcategorySearch}
+			onSearchChange={setSubcategorySearch}
+			placeholder="Введите категорию..."
+		/>
 			<TextInput
 				label='Описание'
 				value={formData.options}
@@ -252,7 +277,7 @@ const AddProductModal = ({
 			/>
 			<div className={styles.fileUpload}>
 				<label htmlFor='fileInput' className={styles.uploadButton}>
-				Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)	
+				Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)
 				</label>
 				<input
 					required
@@ -268,11 +293,12 @@ const AddProductModal = ({
 				</span>
 			</div>
 			<Select
-				label='Бренд'
-				data={brands}
-				value={formData.brandId}
-				onChange={value => handleInputChange('brandId', value ?? '')}
-				placeholder='Выберите бренд'
+				label="Бренд"
+				data={filteredBrands} // Фильтрованный список
+				searchable
+				searchValue={brandSearch}
+				onSearchChange={setBrandSearch}
+				placeholder="Введите бренд..."
 			/>
 			<NumberInput
 				label='Бонус %'

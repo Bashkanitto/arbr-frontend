@@ -103,6 +103,7 @@ export interface VendorType {
 }
 
 export interface VendorResponse {
+	data: any
 	records: VendorType[]
 	meta: {
 		totalPages: number
