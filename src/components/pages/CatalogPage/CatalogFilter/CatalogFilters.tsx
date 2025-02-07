@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseButton } from '../../../atoms/Button/BaseButton'
 import styles from './CatalogFilters.module.scss'
 
 const CatalogFilters = ({
 	addCatalog,
-	disabled,
+	isAdmin=true,
 	onFilterChange,
 	filterPeriod,
 	addProduct,
 }: {
-	disabled?: true | false
+	isAdmin?: true | false
 	addCatalog: () => void
 	addProduct: () => void
 	onFilterChange: (filter: '3_months' | '6_months' | '1_year') => void
@@ -36,24 +37,23 @@ const CatalogFilters = ({
 					За год
 				</BaseButton>
 			</div>
-			{disabled ?? (
 				<div className={styles['catalog-actions']}>
+					{
+					isAdmin && (
 					<BaseButton
-						disabled={disabled}
 						onClick={addCatalog}
 						variantColor='secondary'
-					>
-						Добавить каталог
-					</BaseButton>
+						>
+							Добавить каталог
+						</BaseButton>
+					)}
 					<BaseButton
-						disabled={disabled}
 						onClick={addProduct}
 						variantColor='primary'
 					>
 						Создать товар
 					</BaseButton>
 				</div>
-			)}
 		</div>
 	)
 }

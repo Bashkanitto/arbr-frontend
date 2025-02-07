@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Avatar, Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,6 +14,7 @@ const VendorPage = () => {
 	// Local state for vendors, loading, and errors
 	const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
 	const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
+	const [profileData, setProfileData] = useState(0)
 	const [vendorData, setVendorData] = useState<VendorType[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -25,7 +27,8 @@ const VendorPage = () => {
 			try {
 				setLoading(true)
 
-				const profileData = await fetchProfile()
+				const profileData:any = await fetchProfile()
+				setProfileData(profileData)
 				const vendorId = profileData.id
 				let response
 
@@ -76,12 +79,14 @@ const VendorPage = () => {
 			)}
 
 			<CatalogFilters
-				disabled
+				isAdmin={false}
 				onFilterChange={setFilterPeriod}
 				addCatalog={addCatalog}
 				addProduct={addProduct}
 				filterPeriod={filterPeriod}
 			/>
+
+
 
 			<div className={styles['catalog-tenders']}>
 				{vendorData.length > 0 ? (
@@ -118,6 +123,8 @@ const VendorPage = () => {
 
 			{isAddProductOpen && (
 				<AddProductModal
+					profileData={profileData}
+					isAdmin={false}
 					isOpen={isAddProductOpen}
 					onClose={() => setIsAddProductOpen(false)}
 				/>

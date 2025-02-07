@@ -35,9 +35,13 @@ interface FormData {
 const AddProductModal = ({
 	isOpen,
 	onClose,
+	isAdmin,
+	profileData,
 }: {
 	isOpen: boolean
 	onClose: () => void
+	isAdmin?: boolean,
+	profileData?:any
 }) => {
 	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
 	const [brandSearch, setBrandSearch] = useState<string>('')
@@ -53,7 +57,7 @@ const AddProductModal = ({
 	const [loading, setLoading] = useState<boolean>(false)
 	const [error, setError] = useState<string>('')
 	const [formData, setFormData] = useState<FormData>({
-		accountId: '',
+		accountId: isAdmin ? '' : profileData.id.toString(),
 		name: '',
 		options: '',
 		quantity: 1,
@@ -89,7 +93,7 @@ const AddProductModal = ({
 					const [categoriesResponse, brandsResponse,vendorResponse]:any = await Promise.all([
 						fetchAllSubCategory(),
 						fetchBrands(),
-						fetchAllVendors()
+						fetchAllVendors(),
 					])
 
 				// Категории
@@ -241,7 +245,8 @@ const AddProductModal = ({
 			<Select
 				label='Поставщик'
 				required
-				data={accounts}
+				disabled={!isAdmin}
+				data={isAdmin ? accounts : [{ value: profileData.id.toString(), label: profileData.firstName }]}  // Wrap the profileData.id in an object
 				value={formData.accountId}
 				onChange={value => handleInputChange('accountId', value ?? '')}
 				placeholder='Выберите имя поставщика'
