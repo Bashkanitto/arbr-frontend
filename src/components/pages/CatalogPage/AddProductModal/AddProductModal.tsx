@@ -35,7 +35,7 @@ interface FormData {
 const AddProductModal = ({
 	isOpen,
 	onClose,
-	isAdmin,
+	isAdmin=true,
 	profileData,
 }: {
 	isOpen: boolean

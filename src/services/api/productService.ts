@@ -110,7 +110,13 @@ export const uploadProductDocument = async (
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const fetchMyProducts = async (vendorId: number | string) => {
 	try {
-		const response: any = await baseApi.get(`/vendor-group/vendor/${vendorId}`)
+		const response: any = await baseApi.get(`/vendor-group`, {
+			params: {
+				'search[vendor][id]': vendorId,
+				'relations': 'product,features',
+				'sort[product][id]': 'desc',
+			}
+		})
 		return response
 	} catch (error) {
 		console.error('Error fetching products:', error)

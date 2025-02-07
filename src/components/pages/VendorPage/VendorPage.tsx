@@ -92,7 +92,7 @@ const VendorPage = () => {
 				{vendorData.length > 0 ? (
 					vendorData[0]?.vendorGroups.map((vendor) => (
 						<div
-							onClick={() => navigate(`/product/${vendor.id}`)}
+							onClick={() => navigate(`/product/${vendor.product.id}`)}
 							className={styles.catalogItem}
 							key={vendor.id}
 						>

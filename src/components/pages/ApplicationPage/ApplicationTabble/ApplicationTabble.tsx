@@ -27,7 +27,7 @@ export const ApplicationTable = () => {
 			setError(null)
 			try {
 				const response: any = await fetchMyProducts(vendorId)
-				setProductData(response)
+				setProductData(response.records)
 			} catch (err) {
 				setError('Failed to load products')
 				console.error(err)
