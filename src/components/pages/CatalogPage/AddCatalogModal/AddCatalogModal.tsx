@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { sendCatalogList } from '../../../../services/api/productService'
@@ -23,19 +24,22 @@ const AddCatalogModal = ({
 	const handleSubmit = async () => {
 		if (file) {
 			try {
-				await sendCatalogList(file)
-				onClose()
-				NotificationStore.addNotification(
-					'Каталог',
-					'Каталог успешно добавлен',
-					'success'
-				)
-			} catch (error) {
+				const response:any = await sendCatalogList(file)
+				if(response.allSaved == true){
+					onClose()
+					NotificationStore.addNotification(
+						'Каталог',
+						'Каталог успешно добавлен',
+						'success'
+					)
+				}else{throw new Error('Произошла ошибка')}
+
+			} catch (error:any) {
 				console.error(error)
 				onClose()
 				NotificationStore.addNotification(
 					'Каталог',
-					'Ошибка при добавлении каталога',
+					`Ошибка при добавлении каталога ${error.message}`,
 					'error'
 				)
 			}
