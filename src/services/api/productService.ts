@@ -32,7 +32,7 @@ export const fetchVendorById = async (id: any) => {
 export const fetchProductById = async (productId: any) => {
 	try {
 		const response = await baseApi.get(
-			`/product/${productId}?relations=images,features,vendorGroups.productDocuments`
+			`/product/${productId}?relations=images,features,vendorGroups,vendorGroups.productDocuments`
 		)
 		return response
 	} catch (error) {

@@ -67,7 +67,7 @@ const ProductPage = () => {
 	const handleSubmit = async () => {
 		if (selectedFiles) {
 			try {
-				await uploadProductDocument(selectedFiles, product.vendorGroupId)
+				await uploadProductDocument(selectedFiles, product.vendorGroups[0].id)
 				NotificationStore.addNotification(
 					'Документы',
 					'Документы успешно добавлены!',
@@ -208,7 +208,7 @@ const ProductPage = () => {
 										<div className={styles.documentAction}>
 											<a
 												onClick={() =>
-													downloadFile(productDocument.url, productDocument.id)
+													downloadFile(productDocument.url, productDocument.originalName)
 												}
 											>
 												<DownloadIcon />
