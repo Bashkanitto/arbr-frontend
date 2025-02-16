@@ -96,10 +96,15 @@ export const uploadProductDocument = async (
 	try {
 		const formData = new FormData()
 		formData.append('vendorGroup', JSON.stringify(vendorGroupId))
-		files.forEach(file => formData.append('files', file))
+		console.log(files[0])
+		files.forEach(file => {
+			const renamedFile = new File([file], 'Документ.xlsx', { type: file.type });
+			formData.append('files', renamedFile);
+		});
+
 
 		await baseApi.post('/upload/multiple', formData, {
-			headers: { 'Content-Type': 'multipart/form-data' },
+			headers: { 'Content-Type': 'multipart/form-data;  charset=utf-8' },
 			timeout: 10000,
 		})
 	} catch (error) {

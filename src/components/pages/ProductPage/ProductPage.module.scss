@@ -31,6 +31,7 @@
 		height: 100%;
 		background: #fff;
 		border-radius: 30px;
+		position: relative;
 
 		.container {
 			scrollbar-width: none;
@@ -216,4 +217,17 @@
 	a:hover {
 		background: #acafff56;
 	}
+}
+
+
+.productDocumentsItem{
+	overflow: scroll;
+}
+
+.deleteProduct{
+	position: absolute;
+	bottom: 1%;
+	left: 0;
+	width: 95%;
+	margin: 0 10px;
 }

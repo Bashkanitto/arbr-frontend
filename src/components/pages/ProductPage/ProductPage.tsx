@@ -114,7 +114,7 @@ const ProductPage = () => {
 			const link = document.createElement('a')
 			const objectUrl = URL.createObjectURL(blob)
 			link.href = objectUrl
-			link.download = `${customFileName}.xlsx` // Use your custom name
+			link.download = `${customFileName.split('.')[0]}.xlsx` // Use your custom name
 			link.click()
 			URL.revokeObjectURL(objectUrl)
 		} catch (error) {
@@ -138,8 +138,15 @@ const ProductPage = () => {
 		try{
 			const response = await deleteProduct(productId)
 			console.log(response)
+			NotificationStore.addNotification('Продукт', 'Продукт успешно удален!', 'success')
 		}catch(err){
+			NotificationStore.addNotification('Продукт', 'Произошла ошибка при удалении продукта!', 'error')
 			console.log(err)
+		}
+		finally{
+			setTimeout(() => {
+				window.location.href = '/catalog'
+			}, 2000)
 		}
 	}
 
@@ -203,12 +210,12 @@ const ProductPage = () => {
 							</BaseButton>
 							<ul className='flex '>
 								{product.vendorGroups[0].productDocuments.map((productDocument: any) => (
-									<li key={productDocument.id}>
-										{productDocument.bucket}
+									<li className={styles.productDocumentsItem} key={productDocument.id}>
+										{productDocument.originalname.split('.')[0].length >= 35 ? productDocument.originalname.split('.')[0].substring(0, 35) + '...' : productDocument.originalname.split('.')[0]}
 										<div className={styles.documentAction}>
 											<a
 												onClick={() =>
-													downloadFile(productDocument.url, productDocument.originalName)
+													downloadFile(productDocument.url, productDocument.originalname)
 												}
 											>
 												<DownloadIcon />
@@ -279,7 +286,7 @@ const ProductPage = () => {
 						</a>
 					</div>
 				</div>
-				<button onClick={()=>handleDeleteProduct(product.id)} className={styles['deleteProduct']}>Удалить продукт</button>
+				<BaseButton onClick={()=>handleDeleteProduct(product.id)} className={styles['deleteProduct']}>Удалить продукт</BaseButton>
 			</div>
 
 			<EditProcentModal

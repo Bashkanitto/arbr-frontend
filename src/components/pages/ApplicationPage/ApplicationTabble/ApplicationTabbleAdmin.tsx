@@ -119,7 +119,7 @@ export const ApplicationTableAdmin = () => {
 			return (
 				<Table.Tr key={item.id}>
 					<Table.Td>{item.product.id}</Table.Td>
-					<Table.Td>{item.product?.name}</Table.Td>
+					<Table.Td><a href={`/product/${item.product.id}`}>{item.product?.name}</a></Table.Td>
 					<Table.Td>{item.vendor.firstName}</Table.Td>
 					<Table.Td>
 						<Status>{item.product.status}</Status>
