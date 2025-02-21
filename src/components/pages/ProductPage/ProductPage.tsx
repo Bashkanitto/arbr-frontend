@@ -308,7 +308,7 @@ const ProductPage = () => {
 						</a>
 					</div>
 				</div>
-				{product.status == 'active' ? (
+				{product.status !== 'active' ? (
 					<BaseButton
 						onClick={() => handleDeleteProduct(product.id)}
 						className={styles['deleteProduct']}
