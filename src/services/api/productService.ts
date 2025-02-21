@@ -90,21 +90,21 @@ export const uploadMultipleImages = async (files: any[], productId: number) => {
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadProductDocument = async (
-	files: any[],
+	files: File[],
 	vendorGroupId: null | number
 ) => {
 	try {
 		const formData = new FormData()
 		formData.append('vendorGroup', JSON.stringify(vendorGroupId))
-		console.log(files[0])
-		files.forEach(file => {
-			const renamedFile = new File([file], 'Документ.xlsx', { type: file.type });
-			formData.append('files', renamedFile);
-		});
 
+		files.forEach(file => {
+			formData.append('files', file)
+		})
 
 		await baseApi.post('/upload/multiple', formData, {
-			headers: { 'Content-Type': 'multipart/form-data;  charset=utf-8' },
+			headers: {
+				'Content-Type': 'multipart/form-data;>',
+			},
 			timeout: 10000,
 		})
 	} catch (error) {
@@ -118,9 +118,9 @@ export const fetchMyProducts = async (vendorId: number | string) => {
 		const response: any = await baseApi.get(`/vendor-group`, {
 			params: {
 				'search[vendor][id]': vendorId,
-				'relations': 'product,features',
+				relations: 'product,features',
 				'sort[product][id]': 'desc',
-			}
+			},
 		})
 		return response
 	} catch (error) {
@@ -217,11 +217,9 @@ export const deleteDocument = async (filename: string) => {
 	}
 }
 
-
-
 export const deleteProduct = async (productId: number) => {
 	try {
-		const response = await baseApi.delete(`/product/${productId}`	)
+		const response = await baseApi.delete(`/product/${productId}`)
 		return response
 	} catch (error) {
 		console.log(error)

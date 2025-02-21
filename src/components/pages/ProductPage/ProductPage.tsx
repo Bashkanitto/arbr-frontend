@@ -45,7 +45,6 @@ const ProductPage = () => {
 		setSelectedImage('')
 	}
 
-
 	const handleDeleteDocument = async (fileName: string) => {
 		try {
 			await deleteDocument(fileName)
@@ -122,28 +121,29 @@ const ProductPage = () => {
 		}
 	}
 
-	if (error) return <div>{error}</div>
-	if (!product) {
-		return <Skeleton />
-	}
-
-
 	const getTextColor = (quantity: number): string => {
 		if (quantity < 20) return 'danger' // красный цвет
 		if (quantity < 60) return 'warning' // зеленый цвет
 		return 'active'
 	}
 
-	const handleDeleteProduct = async(productId:number) => {
-		try{
+	const handleDeleteProduct = async (productId: number) => {
+		try {
 			const response = await deleteProduct(productId)
 			console.log(response)
-			NotificationStore.addNotification('Продукт', 'Продукт успешно удален!', 'success')
-		}catch(err){
-			NotificationStore.addNotification('Продукт', 'Произошла ошибка при удалении продукта!', 'error')
+			NotificationStore.addNotification(
+				'Продукт',
+				'Продукт успешно удален!',
+				'success'
+			)
+		} catch (err) {
+			NotificationStore.addNotification(
+				'Продукт',
+				'Произошла ошибка при удалении продукта!',
+				'error'
+			)
 			console.log(err)
-		}
-		finally{
+		} finally {
 			setTimeout(() => {
 				window.location.href = '/catalog'
 			}, 2000)
@@ -162,6 +162,11 @@ const ProductPage = () => {
 		setIsEditModalOpen(false)
 	}
 
+	if (error) return <div>{error}</div>
+	if (!product) {
+		return <Skeleton />
+	}
+
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
@@ -173,7 +178,10 @@ const ProductPage = () => {
 							onClick={() => openViewModal(image.url)}
 							style={{ cursor: 'pointer' }}
 							key={product.id}
-							src={image.url.replace('http://3.76.32.115:3000', 'https://rbr.kz')}
+							src={image.url.replace(
+								'http://3.76.32.115:3000',
+								'https://rbr.kz'
+							)}
 							alt=''
 						/>
 					)
@@ -209,27 +217,41 @@ const ProductPage = () => {
 								Добавить документ
 							</BaseButton>
 							<ul className='flex '>
-								{product.vendorGroups[0].productDocuments.map((productDocument: any) => (
-									<li className={styles.productDocumentsItem} key={productDocument.id}>
-										{productDocument.originalname.split('.')[0].length >= 35 ? productDocument.originalname.split('.')[0].substring(0, 35) + '...' : productDocument.originalname.split('.')[0]}
-										<div className={styles.documentAction}>
-											<a
-												onClick={() =>
-													downloadFile(productDocument.url, productDocument.originalname)
-												}
-											>
-												<DownloadIcon />
-											</a>
+								{product.vendorGroups[0].productDocuments.map(
+									(productDocument: any) => (
+										<li
+											className={styles.productDocumentsItem}
+											key={productDocument.id}
+										>
+											{productDocument.originalname.split('.')[0].length >= 35
+												? productDocument.originalname
+														.split('.')[0]
+														.substring(0, 35) + '...'
+												: productDocument.originalname.split('.')[0]}
+											<div className={styles.documentAction}>
+												<a
+													onClick={() =>
+														downloadFile(
+															productDocument.url,
+															productDocument.originalname
+														)
+													}
+												>
+													<DownloadIcon />
+												</a>
 
-											<a
-												href='#'
-												onClick={() => handleDeleteDocument(productDocument.filename)}
-											>
-												<DeleteIcon />
-											</a>
-										</div>
-									</li>
-								))}
+												<a
+													href='#'
+													onClick={() =>
+														handleDeleteDocument(productDocument.filename)
+													}
+												>
+													<DeleteIcon />
+												</a>
+											</div>
+										</li>
+									)
+								)}
 							</ul>
 						</div>
 					)}
@@ -286,7 +308,14 @@ const ProductPage = () => {
 						</a>
 					</div>
 				</div>
-				<BaseButton onClick={()=>handleDeleteProduct(product.id)} className={styles['deleteProduct']}>Удалить продукт</BaseButton>
+				{product.status == 'active' ? (
+					<BaseButton
+						onClick={() => handleDeleteProduct(product.id)}
+						className={styles['deleteProduct']}
+					>
+						Удалить продукт
+					</BaseButton>
+				) : null}
 			</div>
 
 			<EditProcentModal
