@@ -17,7 +17,11 @@ const FullViewImageModal: React.FC<FullImageModalProps> = ({
 	return (
 		<div onClick={onClose} className={styles.modalOverlay}>
 			<div className={styles.modalContent}>
-				<img src={imageUrl} alt='Full View' className={styles.fullImage} />
+				<img
+					src={imageUrl.replace('http://3.76.32.115:3000', 'https://rbr.kz')}
+					alt='Full View'
+					className={styles.fullImage}
+				/>
 			</div>
 		</div>
 	)
