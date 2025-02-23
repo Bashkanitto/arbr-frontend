@@ -64,25 +64,51 @@ const ProductPage = () => {
 	}
 
 	const handleSubmit = async () => {
-		if (selectedFiles) {
-			try {
-				await uploadProductDocument(selectedFiles, product.vendorGroups[0].id)
+		// Validate that at least one file is selected
+		if (selectedFiles.length === 0) {
+			NotificationStore.addNotification(
+				'Документы',
+				'Пожалуйста, выберите хотя бы один документ.',
+				'error'
+			)
+			return
+		}
+
+		// Define allowed file extensions
+		const allowedExtensions = ['xlsx', 'pdf']
+
+		// Validate file extensions for all selected files
+		for (const file of selectedFiles) {
+			const ext = file.name.split('.').pop()?.toLowerCase()
+			if (!ext || !allowedExtensions.includes(ext)) {
 				NotificationStore.addNotification(
 					'Документы',
-					'Документы успешно добавлены!',
-					'success'
-				)
-				setIsDocumentModalOpen(false)
-				// window.location.reload()
-			} catch (error) {
-				console.error(error)
-				NotificationStore.addNotification(
-					'Документы',
-					'Произошла ошибка при добавлении документа!',
+					'Неверный формат файла. Допустимы только файлы с расширением .xlsx или .pdf.',
 					'error'
 				)
-				setIsDocumentModalOpen(false)
+				return
 			}
+		}
+
+		// If validation passes, proceed with upload
+		try {
+			await uploadProductDocument(selectedFiles, product.vendorGroups[0].id)
+			NotificationStore.addNotification(
+				'Документы',
+				'Документы успешно добавлены!',
+				'success'
+			)
+			setIsDocumentModalOpen(false)
+			// Optionally reload the page or update state
+			// window.location.reload();
+		} catch (error) {
+			console.error(error)
+			NotificationStore.addNotification(
+				'Документы',
+				'Произошла ошибка при добавлении документа!',
+				'error'
+			)
+			setIsDocumentModalOpen(false)
 		}
 	}
 
@@ -284,7 +310,7 @@ const ProductPage = () => {
 						<a onClick={() => setInfoVisibility(1)}>
 							ЕНС ТРУ
 							<p style={{ height: infoVisibility == 1 ? '40px' : '0px' }}>
-								asdasds
+								{product.ENSTRU}
 							</p>
 						</a>
 						<a onClick={() => setInfoVisibility(2)}>
