@@ -61,7 +61,6 @@ export const ApplicationTableAdmin = () => {
 				`Заявка продукта под номером ${productId} успешно изменена`,
 				'success'
 			)
-
 		} catch (error: any) {
 			setError('Не удалось изменить статус продукта')
 			console.error(error)
@@ -70,8 +69,8 @@ export const ApplicationTableAdmin = () => {
 				item.product.id === productId
 					? { ...item, product: { ...item.product, status: 'active' } } // Assuming "active" is the previous status
 					: item
-			);
-			setProductData(revertedData);
+			)
+			setProductData(revertedData)
 
 			NotificationStore.addNotification(
 				'Заявка',
@@ -97,7 +96,6 @@ export const ApplicationTableAdmin = () => {
 		? filteredData.filter(group => group.product.status === statusFilter)
 		: filteredData
 
-
 	const handleDownload = async (url: string, customFileName: string) => {
 		try {
 			const response = await fetch(url)
@@ -119,23 +117,27 @@ export const ApplicationTableAdmin = () => {
 			return (
 				<Table.Tr key={item.id}>
 					<Table.Td>{item.product.id}</Table.Td>
-					<Table.Td><a href={`/product/${item.product.id}`}>{item.product?.name}</a></Table.Td>
+					<Table.Td>
+						<a href={`/product/${item.product.id}`}>{item.product?.name}</a>
+					</Table.Td>
 					<Table.Td>{item.vendor.firstName}</Table.Td>
 					<Table.Td>
 						<Status>{item.product.status}</Status>
 					</Table.Td>
 					<Table.Td>
 						{format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
-									locale: ru,
-							  })
-							}
+							locale: ru,
+						})}
 					</Table.Td>
 					<Table.Td style={{ width: '50px', padding: '0' }}>
 						<a
 							href='#'
 							onClick={() =>
 								handleDownload(
-									item.productDocuments[0].url,
+									item.productDocuments[0].url.replace(
+										'http://3.76.32.115:3000',
+										'https://rbr.kz'
+									),
 									item.productDocuments[0].bucket
 								)
 							}
@@ -197,7 +199,7 @@ export const ApplicationTableAdmin = () => {
 					<Table.Thead>
 						<Table.Tr>
 							<Table.Th>ID заказа</Table.Th>
-							<Table.Th >Продукт</Table.Th>
+							<Table.Th>Продукт</Table.Th>
 							<Table.Th>Продавец</Table.Th>
 							<Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>
 							<Table.Th>Дата</Table.Th>
