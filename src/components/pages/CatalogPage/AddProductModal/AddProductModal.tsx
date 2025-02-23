@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { fetchAllSubCategory, fetchBrands } from '../../../../services/api/brandService'
+import {
+	fetchAllSubCategory,
+	fetchBrands,
+} from '../../../../services/api/brandService'
 import {
 	addProduct,
 	addVendorGroup,
@@ -35,21 +38,27 @@ interface FormData {
 const AddProductModal = ({
 	isOpen,
 	onClose,
-	isAdmin=true,
+	isAdmin = true,
 	profileData,
 }: {
 	isOpen: boolean
 	onClose: () => void
-	isAdmin?: boolean,
-	profileData?:any
+	isAdmin?: boolean
+	profileData?: any
 }) => {
 	const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
 	const [brandSearch, setBrandSearch] = useState<string>('')
-	const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
+	const [filteredBrands, setFilteredBrands] = useState<
+		{ value: string; label: string }[]
+	>([])
 
 	const [subcategorySearch, setSubcategorySearch] = useState<string>('')
-	const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
-	const [filteredCategories, setFilteredCategories] = useState<{ value: string; label: string }[]>([])
+	const [categories, setCategories] = useState<
+		{ value: string; label: string }[]
+	>([])
+	const [filteredCategories, setFilteredCategories] = useState<
+		{ value: string; label: string }[]
+	>([])
 
 	const [accounts, setAccounts] = useState<BrandOption[]>([])
 
@@ -74,7 +83,9 @@ const AddProductModal = ({
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
 			const files = Array.from(event.target.files)
-			const oversizedFiles = files.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024)
+			const oversizedFiles = files.filter(
+				file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024
+			)
 
 			if (oversizedFiles.length > 0) {
 				setError(`Файл(ы) превышают ${MAX_FILE_SIZE_MB}MB`)
@@ -90,35 +101,37 @@ const AddProductModal = ({
 		if (isOpen) {
 			const loadData = async () => {
 				try {
-					const [categoriesResponse, brandsResponse,vendorResponse]:any = await Promise.all([
-						fetchAllSubCategory(),
-						fetchBrands(),
-						fetchAllVendors(),
-					])
+					const [categoriesResponse, brandsResponse, vendorResponse]: any =
+						await Promise.all([
+							fetchAllSubCategory(),
+							fetchBrands(),
+							fetchAllVendors(),
+						])
 
-				// Категории
-				const categoryOptions = categoriesResponse.records.map((category: any) => ({
-					value: category.id.toString(),
-					label: category.name,
-				}))
-				setCategories(categoryOptions)
-				setFilteredCategories(categoryOptions)
+					// Категории
+					const categoryOptions = categoriesResponse.records.map(
+						(category: any) => ({
+							value: category.id.toString(),
+							label: category.name,
+						})
+					)
+					setCategories(categoryOptions)
+					setFilteredCategories(categoryOptions)
 
-				// Бренды
-				const brandOptions = brandsResponse.records.map((brand: any) => ({
-					value: brand.id.toString(),
-					label: brand.name,
-				}))
-				setBrands(brandOptions)
-				setFilteredBrands(brandOptions)
+					// Бренды
+					const brandOptions = brandsResponse.records.map((brand: any) => ({
+						value: brand.id.toString(),
+						label: brand.name,
+					}))
+					setBrands(brandOptions)
+					setFilteredBrands(brandOptions)
 
 					// Поставщики
-				const vendorOptions = vendorResponse.records.map((vendor: any) => ({
-					value: vendor.id.toString(),
-					label: vendor.firstName,
-				}))
-				setAccounts(vendorOptions)
-
+					const vendorOptions = vendorResponse.records.map((vendor: any) => ({
+						value: vendor.id.toString(),
+						label: vendor.firstName,
+					}))
+					setAccounts(vendorOptions)
 				} catch (error) {
 					console.error('Ошибка загрузки поставщиков:', error)
 				}
@@ -151,10 +164,10 @@ const AddProductModal = ({
 
 	const handleInputChange = (field: keyof FormData, value: any) => {
 		// Преобразуем значение в число и ограничиваем его максимумом 100, если это бонус или скидка
-		let newValue = value;
+		let newValue = value
 
 		if (field === 'bonus' || field === 'discount') {
-			newValue = Math.min(100, Math.max(0, value));
+			newValue = Math.min(100, Math.max(0, value))
 		}
 
 		setFormData(prev => ({
@@ -195,7 +208,7 @@ const AddProductModal = ({
 				quantity: formData.quantity || 0,
 				price: formData.price || 0,
 				brandId: parseInt(formData.brandId, 10),
-				subcategoryId: formData.subcategoryId + 1 || 1,
+				subcategoryId: formData.subcategoryId || 1,
 				features: {
 					isBonus: formData.isBonus,
 					isFreeDelivery: formData.isFreeDelivery,
@@ -246,7 +259,16 @@ const AddProductModal = ({
 				label='Поставщик'
 				required
 				disabled={!isAdmin}
-				data={isAdmin ? accounts : [{ value: profileData.id.toString(), label: profileData.firstName }]}  // Wrap the profileData.id in an object
+				data={
+					isAdmin
+						? accounts
+						: [
+								{
+									value: profileData.id.toString(),
+									label: profileData.firstName,
+								},
+						  ]
+				} // Wrap the profileData.id in an object
 				value={formData.accountId}
 				onChange={value => handleInputChange('accountId', value ?? '')}
 				placeholder='Выберите имя поставщика'
@@ -257,14 +279,18 @@ const AddProductModal = ({
 				value={formData.name}
 				onChange={e => handleInputChange('name', e.currentTarget.value)}
 			/>
-	<Select
-			label="Категории"
-			data={filteredCategories} // Фильтрованный список
-			searchable
-			searchValue={subcategorySearch}
-			onSearchChange={setSubcategorySearch}
-			placeholder="Введите категорию..."
-		/>
+			<Select
+				label='Категории'
+				data={filteredCategories}
+				searchable
+				searchValue={subcategorySearch}
+				onSearchChange={setSubcategorySearch}
+				placeholder='Введите категорию...'
+				value={formData.subcategoryId.toString()}
+				onChange={value => {
+					setFormData(prev => ({ ...prev, subcategoryId: Number(value) }))
+				}}
+			/>
 			<TextInput
 				label='Описание'
 				value={formData.options}
@@ -282,7 +308,7 @@ const AddProductModal = ({
 			/>
 			<div className={styles.fileUpload}>
 				<label htmlFor='fileInput' className={styles.uploadButton}>
-				Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)
+					Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)
 				</label>
 				<input
 					required
@@ -298,25 +324,25 @@ const AddProductModal = ({
 				</span>
 			</div>
 			<Select
-				label="Бренд"
+				label='Бренд'
 				data={filteredBrands} // Фильтрованный список
 				searchable
 				searchValue={brandSearch}
 				onSearchChange={setBrandSearch}
-				placeholder="Введите бренд..."
+				placeholder='Введите бренд...'
 			/>
 			<NumberInput
 				label='Бонус %'
 				max={100}
 				min={0}
-				placeholder="Введите бонус (0 - 100)"
+				placeholder='Введите бонус (0 - 100)'
 				onChange={value => handleInputChange('bonus', value ?? 0)}
 			/>
 			<NumberInput
 				label='Скидка %'
 				max={100}
 				min={0}
-				placeholder="Введите бонус (0 - 100)"
+				placeholder='Введите бонус (0 - 100)'
 				onChange={value => handleInputChange('discount', value ?? 0)}
 			/>
 			{error && <p className='danger'>{error}</p>}
