@@ -1,5 +1,5 @@
 .catalog-header {
-	margin-top: 55px;
+	margin-top: 30px;
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
@@ -7,13 +7,17 @@
 	.catalog-filter {
 		display: flex;
 		gap: 5px;
+
+		button{
+			border-radius: 50px;
+		}
 	}
 	.catalog-actions {
 		display: flex;
 		gap: 10px;
 
 		button {
-			width: 280px;
+			width: 220px;
 			border-radius: 50px;
 		}
 	}

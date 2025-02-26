@@ -9,14 +9,12 @@ export const MainSidebar = () => {
 			className={styles['main-sidebar']}
 			initial={{
 				transform: 'translateX(-50px)',
-				opacity: 0,
 			}}
 			animate={{
 				transform: 'translateX(0px)',
-				opacity: 1,
 			}}
 			transition={{
-				duration: 0.8,
+				duration: 0.2,
 				type: 'spring',
 			}}
 		>
