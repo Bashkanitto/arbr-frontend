@@ -6,6 +6,7 @@ import {
 	deleteDocument,
 	deleteProduct,
 	fetchProductById,
+	uploadMultipleImages,
 	uploadProductDocument,
 } from '../../../services/api/productService'
 import EditProcentModal from '../CatalogPage/EditProcentModal/EditProcentModal'
@@ -27,14 +28,54 @@ const ProductPage = () => {
 	const [isDocumentModalOpen, setIsDocumentModalOpen] = useState<boolean>(false)
 	const [isViewModalOpen, setIsViewModalOpen] = useState<boolean>(false)
 	const [selectedImage, setSelectedImage] = useState<string>('')
-
+	const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false)
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+	const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([])
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
 			setSelectedFiles(Array.from(event.target.files))
 		}
 	}
+
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files) {
+			const filesArray = Array.from(event.target.files)
+			console.log('Выбранные файлы:', filesArray)
+			setSelectedImageFiles(filesArray)
+		}
+	}
+	
+
+	const handleUploadImage = async () => {
+		console.log('Файлы для загрузки:', selectedImageFiles)
+		if (selectedImageFiles.length === 0) {
+			NotificationStore.addNotification('Ошибка', 'Выберите изображение', 'error')
+			return
+		}
+
+		const allowedExtensions = ['jpg', 'jpeg', 'png']
+		for (const file of selectedImageFiles) {
+			const ext = file.name.split('.').pop()?.toLowerCase()
+			if (!ext || !allowedExtensions.includes(ext)) {
+				NotificationStore.addNotification('Ошибка', 'Допустимые форматы: jpg, png', 'error')
+				return
+			}
+		}
+
+		try {
+			await uploadMultipleImages(selectedImageFiles, product.id)
+			NotificationStore.addNotification('Успех', 'Изображение загружено!', 'success')
+			setIsImageModalOpen(false)
+			// Обновление данных после загрузки
+			const updatedProduct = await fetchProductById(id)
+			setProduct(updatedProduct)
+		} catch (error) {
+			console.error(error)
+			NotificationStore.addNotification('Ошибка', 'Не удалось загрузить изображение', 'error')
+		}
+	}
+
 	function openViewModal(imageUrl: string) {
 		setSelectedImage(imageUrl)
 		setIsViewModalOpen(true)
@@ -212,6 +253,7 @@ const ProductPage = () => {
 						/>
 					)
 				)}
+				<BaseButton onClick={() => setIsImageModalOpen(true)}>Добавить фото</BaseButton>
 				<div className={styles.tabs}>
 					<ul>
 						<li
@@ -371,6 +413,14 @@ const ProductPage = () => {
 					onClick={handleSubmit}
 				>
 					Отправить
+				</BaseButton>
+			</Modal>
+
+			<Modal opened={isImageModalOpen} onClose={() => setIsImageModalOpen(false)}>
+				<TextInput type='file' onChange={handleImageChange} multiple />
+				<p style={{ color: 'grey', margin: '10px 0' }}>Допустимые форматы: jpg, png</p>
+				<BaseButton variantColor='primary' onClick={handleUploadImage}>
+					Загрузить
 				</BaseButton>
 			</Modal>
 		</div>
