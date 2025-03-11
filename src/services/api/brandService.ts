@@ -17,7 +17,7 @@ export const fetchBrands = async () => {
 
 export const fetchBrandsPage = async (page:number = 1, pageSize:number = 10) => {
 	try {
-		const response = await baseApi.get(`/brand?pagination[pageSize]=${pageSize}&pagination[page]=${page}&relations=image`)
+		const response = await baseApi.get(`/brand?pagination[pageSize]=${pageSize}&pagination[page]=${page}&relations=image&sort[id]=desc`)
 		return response
 	} catch (error) {
 		console.error('Error adding product:', error)
@@ -29,16 +29,27 @@ export const fetchBrandsPage = async (page:number = 1, pageSize:number = 10) => 
 	}
 }
 
-export const createBrand = async (name: string, file:any) => {
-	const formData = new FormData();
-	formData.append("name", name);
-	formData.append('image', file)
+export const uploadBrandImage = async (file: any, brandId: number) => {
+	try {
+		const formData = new FormData()
+		formData.append('brand', JSON.stringify(brandId))
+		formData.append('files', file)
 
-	console.log(formData)
+		await baseApi.post('/upload/multiple', formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+			timeout: 60000,
+		})
+	} catch (error) {
+		console.error('Ошибка при отправке файлов:', error)
+	}
+}
+
+export const createBrand = async (name: string, file:any) => {
 
 	try {
-		const response = await baseApi.post('/brand', formData, { headers: {'Content-Type': 'multipart/form-data'}, timeout: 60000 })
-		return response
+		const brandResponse: any = await baseApi.post('/brand', {name: name, rating: 5.00})
+		await uploadBrandImage(file, brandResponse.id)
+		return brandResponse
 	} catch (error) {
 		console.error('Error adding product:', error)
 		throw new Error(

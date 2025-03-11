@@ -202,9 +202,12 @@ const BrandPage = () => {
         opened={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         title="Подтвердите удаление"
+        withCloseButton={false}
       >
         <p>Вы уверены, что хотите удалить этот бренд?</p>
-        <Button onClick={handleConfirmDelete}>Удалить</Button>
+        <Button style={{ marginRight: "20px" }} onClick={handleConfirmDelete}>
+          Удалить
+        </Button>
         <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
       </Modal>
     </>
