@@ -34,7 +34,7 @@ const Tender = ({ user }: { user: any }) => {
 						<Avatar />
 						<div>
 							<p className={styles['tender-user-name']}>{user.firstName}</p>
-							<p className={styles['tender-user-role']}>Поставщик</p>
+							<p className={styles['tender-user-role']}>{user.role == 'admin' ? 'Админ' : 'Поставщик'}</p>
 						</div>
 					</a>
 					{isAdmin && (

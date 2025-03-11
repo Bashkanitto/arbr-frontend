@@ -16,6 +16,7 @@ import FullViewImageModal from '../../molecules/FullViewImageModal/FullViewImage
 import { DownloadIcon } from '../../../assets/icons/DownloadIcon'
 import NotificationStore from '../../../store/NotificationStore'
 import { DeleteIcon } from '../../../assets/icons'
+import baseApi from '../../../services/api/base'
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>()
@@ -153,6 +154,29 @@ const ProductPage = () => {
 		}
 	}
 
+	const handleDeleteImage = async(filename:string)=>{
+		try {
+			const response = await baseApi.delete(`/upload/${filename}`)
+			console.log(response)
+			NotificationStore.addNotification(
+				'Изображение',
+				'Изображение успешно удалено!',
+				'success'
+			)
+		} catch (err) {
+			NotificationStore.addNotification(
+				'Изображение',
+				'Произошла ошибка при удалении изображения!',
+				'error'
+			)
+			console.log(err)
+		} finally {
+			setTimeout(() => {
+				window.location.href = '/catalog'
+			}, 500)
+		}
+	}
+
 	useEffect(() => {
 		const loadProduct = async () => {
 			try {
@@ -237,10 +261,11 @@ const ProductPage = () => {
 	return (
 		<div className={styles['product-page']}>
 			<div className={styles['product-image']}>
-				{product.images?.map((image: { url: string }) =>
+				{product.images?.map((image: { filename:string, url: string }) =>
 					loading ? (
 						<Skeleton key={product.id} width={600} height={400} radius={15} />
 					) : (
+						<div style={{position:'relative'}}>
 						<img
 							onClick={() => openViewModal(image.url)}
 							style={{ cursor: 'pointer' }}
@@ -250,7 +275,9 @@ const ProductPage = () => {
 								'https://rbr.kz'
 							)}
 							alt=''
-						/>
+							/>
+							<div style={{position:'absolute', top:'-10px', right:'-10px', cursor:'pointer', background:'#6f73f3',color:'white', padding:'5px 13px', borderRadius:'100%' }} onClick={() => handleDeleteImage(image.filename)}>X</div>
+							</div>
 					)
 				)}
 				<BaseButton onClick={() => setIsImageModalOpen(true)}>Добавить фото</BaseButton>

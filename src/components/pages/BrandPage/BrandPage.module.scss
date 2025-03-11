@@ -1,0 +1,29 @@
+.security-page-table {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+    border-radius: 30px;
+
+	.security-page-table-head{
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		padding: 20px 30px;
+	}
+
+	tr {
+		border: none;
+	}
+	button {
+		border: 0;
+		background: transparent;
+	}
+	button:hover {
+		cursor: pointer;
+	}
+	input[type='checkbox'] {
+		// width: 60px;
+	}
+}

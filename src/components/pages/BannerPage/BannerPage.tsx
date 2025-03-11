@@ -1,0 +1,145 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Skeleton, Table, Button, Modal, TextInput } from "@mantine/core";
+import { useEffect, useState } from "react";
+import styles from "./BannerPage.module.scss";
+import {
+  createFeature,
+  fetchFeatures,
+  deleteFeature,
+} from "../../../services/api/brandService";
+import { BaseButton } from "../../atoms/Button/BaseButton";
+import { DeleteIcon } from "../../../assets/icons";
+import NotificationStore from "../../../store/NotificationStore";
+
+const BannerPage = () => {
+  const [bannerData, setBannerData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [brandId, setBrandId] = useState<string>("");
+  const [isCreating, setIsCreating] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadBanners = async () => {
+      try {
+        setLoading(true);
+        const response: any = await fetchFeatures();
+        setBannerData(response.records);
+      } catch (err: any) {
+        setError(`Не удалось загрузить данные: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBanners();
+  }, []);
+
+  const handleCreateBrand = async () => {
+    try {
+      if (!brandId.trim()) {
+        setError("Введите корректный номер бренда");
+        return;
+      }
+
+      const numericBrandId = Number(brandId);
+      if (isNaN(numericBrandId)) {
+        setError("Номер бренда должен быть числом");
+        return;
+      }
+
+      setIsCreating(true);
+      console.log(numericBrandId);
+      const response: any = await createFeature(numericBrandId); // Передаём число
+      const newBrand = response.records;
+      setBannerData([...bannerData, newBrand]);
+      setIsCreateModalOpen(false);
+      setBrandId("");
+
+      NotificationStore.addNotification(
+        "Добавление баннера",
+        "Баннер успешно создан",
+        "success"
+      );
+    } catch (err: any) {
+      setError(`Не удалось создать баннер: ${err.message}`);
+      NotificationStore.addNotification(
+        "Добавление баннера",
+        "Ошибка при создании баннера",
+        "error"
+      );
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleDeleteBanner = async (id: string) => {
+    try {
+      await deleteFeature(id);
+      setBannerData(bannerData.filter((banner) => banner.id !== id));
+    } catch (err: any) {
+      setError(`Не удалось удалить баннер: ${err.message}`);
+    }
+  };
+
+  if (loading) return <Skeleton />;
+  if (error) return <p>Error: {error}</p>;
+
+  const renderRow = () => {
+    return bannerData.map((item) => (
+      <Table.Tr key={item.id}>
+        <Table.Td>{item?.id}</Table.Td>
+        <Table.Td>{item.brand?.name}</Table.Td>
+        <Table.Td>{item.brand?.features?.discount}</Table.Td>
+        <Table.Td style={{ width: "50px", padding: "0" }}>
+          <DeleteIcon onClick={() => handleDeleteBanner(item.id)} />
+        </Table.Td>
+      </Table.Tr>
+    ));
+  };
+
+  return (
+    <>
+      <div className={styles["security-page-table"]}>
+        <div className={styles["security-page-table-head"]}>
+          <BaseButton onClick={() => setIsCreateModalOpen(true)}>
+            Создать Баннер
+          </BaseButton>
+        </div>
+        <Table stickyHeader>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Номер</Table.Th>
+              <Table.Th>Название</Table.Th>
+              <Table.Th>Скидки</Table.Th>
+              <Table.Th style={{ width: "150px", padding: "0" }}>
+                Действие
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{renderRow()}</Table.Tbody>
+        </Table>
+      </div>
+
+      <Modal
+        opened={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        title="Добавить Баннер"
+      >
+        <TextInput
+          label="Номер Бренда"
+          value={brandId}
+          onChange={(event) => setBrandId(event.target.value)}
+        />
+        <Button
+          style={{ marginTop: "20px" }}
+          onClick={handleCreateBrand}
+          loading={isCreating}
+        >
+          Добавить
+        </Button>
+      </Modal>
+    </>
+  );
+};
+
+export default BannerPage;

@@ -67,7 +67,7 @@ export const ContentUserInfo = observer(() => {
 								avatar={<Avatar />}
 								title={userProfile?.firstName}
 								description={
-									(userProfile?.role == 'manager' && 'Менеджер') || 'Поставщик'
+									(userProfile?.role == 'admin' && 'Админ') || 'Поставщик'
 								}
 							/>
 						</>
