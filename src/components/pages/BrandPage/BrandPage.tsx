@@ -87,7 +87,7 @@ const BrandPage = () => {
     } catch (err: any) {
       setError(`Не удалось создать бренд: ${err.message}`);
       NotificationStore.addNotification(
-        "Добавление баннера",
+        "Добавление бренда",
         "Ошибка при создании бренда",
         "error"
       );

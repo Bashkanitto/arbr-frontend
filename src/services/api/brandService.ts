@@ -106,7 +106,7 @@ export const fetchFeatures = async (
 ) => {
   try {
     const response = await baseApi.get(
-      `/main-feature?relations=brand.image,brand.features&pagnation[pageSize]=${pageSize}&pagination[page]=${page}`
+      `/main-feature?relations=brand.image,brand.features&pagnation[pageSize]=${pageSize}&pagination[page]=${page}&sort[id]=desc`
     );
     return response;
   } catch (error) {
@@ -114,12 +114,18 @@ export const fetchFeatures = async (
   }
 };
 
-export const createFeature = async (brandId: number) => {
+export const createFeature = async (
+  brandId: number,
+  page: number = 1,
+  pageSize: number = 10
+) => {
   try {
-    console.log(brandId);
-    const response = await baseApi.post("/main-feature?relations=brand", {
-      brandId: brandId,
-    });
+    const response = await baseApi.post(
+      `/main-feature?relations=brand&pagnation[pageSize]=${pageSize}&pagination[page]=${page}&sort[id]=desc`,
+      {
+        brandId: brandId,
+      }
+    );
     return response;
   } catch (error) {
     console.error("Error creating feature:", error);

@@ -42,7 +42,7 @@ const BannerPage = () => {
     loadBanners();
   }, []);
 
-  const handleCreateBrand = async () => {
+  const handleCreateBanner = async () => {
     try {
       if (!brandId.trim()) {
         setError("Введите корректный номер бренда");
@@ -56,8 +56,7 @@ const BannerPage = () => {
       }
 
       setIsCreating(true);
-      console.log(numericBrandId);
-      const response: any = await createFeature(numericBrandId); // Передаём число
+      const response: any = await createFeature(numericBrandId, page, pageSize);
       const newBrand = response.records;
       setBannerData([...bannerData, newBrand]);
       setIsCreateModalOpen(false);
@@ -69,7 +68,7 @@ const BannerPage = () => {
         "success"
       );
     } catch (err: any) {
-      setError(`Не удалось создать баннер: ${err.message}`);
+      console.log(`Не удалось создать баннер: ${err.message}`);
       NotificationStore.addNotification(
         "Добавление баннера",
         "Ошибка при создании баннера",
@@ -82,22 +81,28 @@ const BannerPage = () => {
 
   const handleDeleteBanner = async (id: string) => {
     try {
-      await deleteFeature(id);
-      setBannerData(bannerData.filter((banner) => banner.id !== id));
+      await deleteFeature(id).then((response) =>
+        response?.status === 204
+          ? setBannerData(bannerData.filter((banner) => banner.id !== id))
+          : NotificationStore.addNotification(
+              "Удаление баннера",
+              "Ошибка при удалении баннера",
+              "error"
+            )
+      );
     } catch (err: any) {
       setError(`Не удалось удалить баннер: ${err.message}`);
     }
   };
 
   if (loading) return <Skeleton />;
-  if (error) return <p>Error: {error}</p>;
 
   const renderRow = () => {
     return bannerData.map((item) => (
       <Table.Tr key={item.id}>
-        <Table.Td>{item?.id}</Table.Td>
-        <Table.Td>{item.brand?.name}</Table.Td>
-        <Table.Td>{item.brand?.features?.discount}</Table.Td>
+        <Table.Td>{item.id}</Table.Td>
+        <Table.Td>{item.brand.name}</Table.Td>
+        <Table.Td>{item.brand.features?.discount}</Table.Td>
         <Table.Td style={{ width: "50px", padding: "0" }}>
           <DeleteIcon onClick={() => handleDeleteBanner(item.id)} />
         </Table.Td>
@@ -138,14 +143,16 @@ const BannerPage = () => {
         onClose={() => setIsCreateModalOpen(false)}
         title="Добавить Баннер"
       >
+        {error && <div style={{ color: "red" }}>{error}</div>}
         <TextInput
+          type="number"
           label="Номер Бренда"
           value={brandId}
           onChange={(event) => setBrandId(event.target.value)}
         />
         <Button
           style={{ marginTop: "20px" }}
-          onClick={handleCreateBrand}
+          onClick={handleCreateBanner}
           loading={isCreating}
         >
           Добавить
