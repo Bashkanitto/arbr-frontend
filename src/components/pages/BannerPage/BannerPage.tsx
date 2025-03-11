@@ -10,6 +10,7 @@ import {
 import { BaseButton } from "../../atoms/Button/BaseButton";
 import { DeleteIcon } from "../../../assets/icons";
 import NotificationStore from "../../../store/NotificationStore";
+import { Pagination } from "../../molecules/Pagination/Pagination";
 
 const BannerPage = () => {
   const [bannerData, setBannerData] = useState<any[]>([]);
@@ -18,12 +19,19 @@ const BannerPage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [brandId, setBrandId] = useState<string>("");
   const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
     const loadBanners = async () => {
       try {
         setLoading(true);
-        const response: any = await fetchFeatures();
+        const response: any = await fetchFeatures(page, pageSize);
+        setTotalPages(
+          response.meta?.totalPages ||
+            Math.ceil(response.records.length / pageSize)
+        );
         setBannerData(response.records);
       } catch (err: any) {
         setError(`Не удалось загрузить данные: ${err.message}`);
@@ -101,6 +109,11 @@ const BannerPage = () => {
     <>
       <div className={styles["security-page-table"]}>
         <div className={styles["security-page-table-head"]}>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
           <BaseButton onClick={() => setIsCreateModalOpen(true)}>
             Создать Баннер
           </BaseButton>

@@ -100,10 +100,13 @@ export const deleteBrand = async (brandId: string) => {
   }
 };
 
-export const fetchFeatures = async () => {
+export const fetchFeatures = async (
+  page: number = 1,
+  pageSize: number = 10
+) => {
   try {
     const response = await baseApi.get(
-      "/main-feature?relations=brand.image,brand.features"
+      `/main-feature?relations=brand.image,brand.features&pagnation[pageSize]=${pageSize}&pagination[page]=${page}`
     );
     return response;
   } catch (error) {
