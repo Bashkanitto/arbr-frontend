@@ -13,10 +13,11 @@ import styles from "./BrandPage.module.scss";
 import {
   createBrand,
   deleteBrand,
+  editBrand,
   fetchBrandsPage,
 } from "../../../services/api/brandService";
 import { BaseButton } from "../../atoms/Button/BaseButton";
-import { DeleteIcon } from "../../../assets/icons";
+import { DeleteIcon, EditIcon } from "../../../assets/icons";
 import NotificationStore from "../../../store/NotificationStore";
 
 interface Brand {
@@ -24,6 +25,7 @@ interface Brand {
   name: string;
   image?: {
     url: string;
+    filename: string;
   };
   rating: number;
   createdAt: string;
@@ -35,7 +37,12 @@ const BrandPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [newBrandName, setNewBrandName] = useState<string>("");
+  const [brandId, setBrandId] = useState<string>("");
+  const [brandFilename, setBrandFilename] = useState<string>("");
+  const [newDiscount, setNewDiscount] = useState<string | number>();
+  const [newBonus, setNewBonus] = useState<string | number>();
   const [newBrandImage, setNewBrandImage] = useState<File | null>(null);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -44,6 +51,7 @@ const BrandPage = () => {
   const [pageSize] = useState<number>(10);
   const [totalPages, setTotalPages] = useState<number>(1);
 
+  // загрузка брендов
   useEffect(() => {
     const loadBrands = async () => {
       try {
@@ -63,6 +71,7 @@ const BrandPage = () => {
     loadBrands();
   }, [page, pageSize]);
 
+  // Создание бренда
   const handleCreateBrand = async () => {
     try {
       setIsCreating(true);
@@ -87,11 +96,43 @@ const BrandPage = () => {
     }
   };
 
+  // изменение брендов
+  const handleEditBrand = async () => {
+    setEditModalOpen(true);
+
+    try {
+      await editBrand(
+        brandId,
+        newBrandName,
+        newBrandImage,
+        brandFilename,
+        Number(newDiscount),
+        Number(newBonus)
+      );
+      setEditModalOpen(false);
+      NotificationStore.addNotification(
+        "Изменение бренда",
+        "Бренд успешно изменен",
+        "success"
+      );
+    } catch (err: any) {
+      setError(`Не удалось создать бренд: ${err.message}`);
+      NotificationStore.addNotification(
+        "Изменение бренда",
+        "Ошибка при изменении бренда",
+        "error"
+      );
+    } finally {
+      setEditModalOpen(false);
+    }
+  };
+
   const openConfirmModal = (id: string) => {
     setBrandToDelete(id);
     setIsConfirmModalOpen(true);
   };
 
+  // подтверждение удаления
   const handleConfirmDelete = async () => {
     if (brandToDelete) {
       try {
@@ -140,6 +181,13 @@ const BrandPage = () => {
         <Table.Td>{item.rating}</Table.Td>
         <Table.Td style={{ width: "50px", padding: "0" }}>
           <DeleteIcon onClick={() => openConfirmModal(item.id)} />
+          <EditIcon
+            onClick={() => {
+              setEditModalOpen(true);
+              setBrandFilename(item.image?.filename || "");
+              setBrandId(item.id);
+            }}
+          />
         </Table.Td>
       </Table.Tr>
     ));
@@ -209,6 +257,40 @@ const BrandPage = () => {
           Удалить
         </Button>
         <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
+      </Modal>
+
+      <Modal
+        opened={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title="Изменить бренд"
+        withCloseButton={false}
+      >
+        <TextInput
+          label="Новое название"
+          value={newBrandName}
+          onChange={(event) => setNewBrandName(event.currentTarget.value)}
+        />
+        <TextInput
+          label="Изменить Скидку"
+          value={newDiscount}
+          onChange={(event) => setNewDiscount(event.currentTarget.value)}
+        />
+        <TextInput
+          label="Изменить бонус"
+          value={newBonus}
+          onChange={(event) => setNewBonus(event.currentTarget.value)}
+        />
+        <Input
+          type="file"
+          aria-label="Изменить логотип"
+          accept="image/*"
+          onChange={(event) => {
+            if (event.currentTarget.files?.length) {
+              setNewBrandImage(event.currentTarget.files[0]);
+            }
+          }}
+        />
+        <Button onClick={() => handleEditBrand()}>Изменить</Button>
       </Modal>
     </>
   );
