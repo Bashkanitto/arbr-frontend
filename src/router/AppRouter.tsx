@@ -6,6 +6,8 @@ import ManagersPage from '../components/pages/ManagersPage/ManagersPage'
 import { RouteNavList, RoutePathList } from '../constants/router'
 import authStore from '../store/AuthStore'
 import { AuthProtect } from './AuthProtect'
+import BrandPage from '../components/pages/BrandPage/BrandPage'
+import BannerPage from '../components/pages/BannerPage/BannerPage'
 
 // Lazy load components
 const ApplicationPage = lazy(() => import('../components/pages/ApplicationPage/ApplicationPage'));
@@ -67,6 +69,19 @@ export const AppRouter = () => {
 								element={<AuthProtect allowedRoles={['admin']} />}
 							>
 								<Route path='' element={<CatalogPage />} />
+							</Route>
+							<Route
+								path={RoutePathList.brand}
+								element={<AuthProtect allowedRoles={['admin']} />}
+							>
+								<Route path='' element={<BrandPage />} />
+							</Route>
+
+							<Route
+								path={RoutePathList.banner}
+								element={<AuthProtect allowedRoles={['admin']} />}
+							>
+								<Route path='' element={<BannerPage />} />
 							</Route>
 
 							<Route
