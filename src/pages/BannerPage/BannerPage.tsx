@@ -81,15 +81,16 @@ const BannerPage = () => {
 
   const handleDeleteBanner = async (id: string) => {
     try {
-      await deleteFeature(id).then((response) =>
-        response?.status === 204
-          ? setBannerData(bannerData.filter((banner) => banner.id !== id))
-          : NotificationStore.addNotification(
-              "Удаление баннера",
-              "Ошибка при удалении баннера",
-              "error"
-            )
-      );
+      const response = await deleteFeature(id);
+      if (response?.status === 200) {
+        setBannerData(bannerData.filter((banner) => banner.id !== id));
+      } else {
+        NotificationStore.addNotification(
+          "Удаление баннера",
+          "Ошибка при удалении баннера",
+          "error"
+        );
+      }
     } catch (err: any) {
       setError(`Не удалось удалить баннер: ${err.message}`);
     }

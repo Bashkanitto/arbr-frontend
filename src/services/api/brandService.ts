@@ -134,7 +134,7 @@ export const createFeature = async (
 
 export const deleteFeature = async (featureId: string) => {
   try {
-    const response = await baseApi.delete(`/main-feauture/${featureId}`);
+    const response = await baseApi.delete(`/main-feature/${featureId}`);
     return response;
   } catch (error) {
     console.error("Error deleting feature:", error);

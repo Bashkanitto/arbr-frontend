@@ -17,6 +17,7 @@ import FullViewImageModal from "@components/molecules/FullViewImageModal/FullVie
 import { DownloadIcon } from "@assets/icons/DownloadIcon";
 import NotificationStore from "@store/NotificationStore";
 import { DeleteIcon } from "@assets/icons";
+import { wait } from "../../helpers";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -186,10 +187,6 @@ const ProductPage = () => {
         "error"
       );
       console.log(err);
-    } finally {
-      setTimeout(() => {
-        window.location.href = "/catalog";
-      }, 500);
     }
   };
 
@@ -243,6 +240,9 @@ const ProductPage = () => {
         "Продукт успешно удален!",
         "success"
       );
+      wait(2000).then(() => {
+        window.location.href = "/catalog";
+      });
     } catch (err) {
       NotificationStore.addNotification(
         "Продукт",
@@ -250,10 +250,6 @@ const ProductPage = () => {
         "error"
       );
       console.log(err);
-    } finally {
-      setTimeout(() => {
-        window.location.href = "/catalog";
-      }, 2000);
     }
   };
 
