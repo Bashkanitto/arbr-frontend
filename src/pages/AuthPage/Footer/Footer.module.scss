@@ -1,0 +1,31 @@
+@import '../../../constants/Variables.scss';
+footer {
+	height: 20vh;
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	padding: 30px 191px;
+	background: white;
+	display: flex;
+	justify-content: space-between;
+	gap: 100px;
+
+	.footerItem {
+		flex: 1;
+		height: 50px;
+
+		.number {
+			color: $secondary-color;
+		}
+	}
+
+	.socileIcons {
+		display: flex;
+		gap: 10px;
+
+		img {
+			width: 30px;
+			height: 26px;
+		}
+	}
+}

@@ -1,0 +1,31 @@
+@import '../../../constants/Variables.scss';
+
+section {
+	padding: 10px;
+}
+
+.EditProcent-modal {
+	header {
+		display: none;
+	}
+
+	input:select {
+		margin-top: 20px;
+	}
+	.checkbox {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		margin: 20px 0;
+		font-size: 14px;
+	}
+
+	.editProcent-button {
+		width: 100%;
+	}
+
+	.bonus {
+		text-align: end;
+		margin: 10px 0;
+	}
+}
