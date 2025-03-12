@@ -190,6 +190,11 @@ export const ApplicationTableAdmin = () => {
             onChange={(value) => setStatusFilter(value)}
           />
         </div>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
       <div className={styles["security-page-table"]}>
         <Table stickyHeader>
@@ -207,12 +212,6 @@ export const ApplicationTableAdmin = () => {
           <Table.Tbody>{renderRow()}</Table.Tbody>
         </Table>
       </div>
-
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
     </>
   );
 };

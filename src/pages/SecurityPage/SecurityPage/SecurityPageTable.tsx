@@ -150,7 +150,14 @@ export const SecurityPageTable = () => {
             value={statusFilter || ""}
           />
         </div>
-        <BaseButton onClick={handleExport}>Экспорт</BaseButton>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+          <BaseButton onClick={handleExport}>Экспорт</BaseButton>
+        </div>
       </div>
       <div className={styles["security-page-table"]}>
         <Table stickyHeader>
@@ -179,11 +186,6 @@ export const SecurityPageTable = () => {
       </div>
 
       {/* Pagination Component */}
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
     </>
   );
 };
