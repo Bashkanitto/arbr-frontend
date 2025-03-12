@@ -81,6 +81,7 @@ export const editBrand = async (
         isDiscount: discount >= 1,
       },
     });
+    console.log("brandfilename", brandFilename);
     await deleteImage(brandFilename).then((response) =>
       response.status === 200 ? uploadBrandImage(file, brandResponse.id) : null
     );
@@ -126,9 +127,15 @@ export const createFeature = async (
         brandId: brandId,
       }
     );
+
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+    }
+
     return response;
   } catch (error) {
     console.error("Error creating feature:", error);
+    throw error;
   }
 };
 

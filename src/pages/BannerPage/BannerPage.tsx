@@ -11,6 +11,7 @@ import { BaseButton } from "@components/atoms/Button/BaseButton";
 import NotificationStore from "@store/NotificationStore";
 import { Pagination } from "@components/molecules/Pagination/Pagination";
 import { DeleteIcon } from "../../assets/icons";
+import { wait } from "../../helpers";
 
 const BannerPage = () => {
   const [bannerData, setBannerData] = useState<any[]>([]);
@@ -21,6 +22,7 @@ const BannerPage = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [pageSize] = useState<number>(10);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
@@ -44,21 +46,16 @@ const BannerPage = () => {
 
   const handleCreateBanner = async () => {
     try {
+      const numericBrandId = Number(brandId);
       if (!brandId.trim()) {
         setError("Введите корректный номер бренда");
         return;
       }
-
-      const numericBrandId = Number(brandId);
-      if (isNaN(numericBrandId)) {
-        setError("Номер бренда должен быть числом");
-        return;
-      }
-
       setIsCreating(true);
-      const response: any = await createFeature(numericBrandId, page, pageSize);
-      const newBrand = response.records;
-      setBannerData([...bannerData, newBrand]);
+
+      await createFeature(numericBrandId, page, pageSize);
+      wait(1000).then(() => window.location.reload());
+
       setIsCreateModalOpen(false);
       setBrandId("");
 
@@ -81,8 +78,8 @@ const BannerPage = () => {
 
   const handleDeleteBanner = async (id: string) => {
     try {
-      const response = await deleteFeature(id);
-      if (response?.status === 200) {
+      const response: any = await deleteFeature(id);
+      if (response.createdAt) {
         setBannerData(bannerData.filter((banner) => banner.id !== id));
       } else {
         NotificationStore.addNotification(
@@ -93,6 +90,8 @@ const BannerPage = () => {
       }
     } catch (err: any) {
       setError(`Не удалось удалить баннер: ${err.message}`);
+    } finally {
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -105,7 +104,12 @@ const BannerPage = () => {
         <Table.Td>{item.brand.name}</Table.Td>
         <Table.Td>{item.brand.features?.discount}</Table.Td>
         <Table.Td style={{ width: "50px", padding: "0" }}>
-          <DeleteIcon onClick={() => handleDeleteBanner(item.id)} />
+          <DeleteIcon
+            onClick={() => {
+              setIsConfirmModalOpen(true);
+              setBrandId(item.id);
+            }}
+          />
         </Table.Td>
       </Table.Tr>
     ));
@@ -128,7 +132,7 @@ const BannerPage = () => {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Номер</Table.Th>
-              <Table.Th>Название</Table.Th>
+              <Table.Th>Название Бренда</Table.Th>
               <Table.Th>Скидки</Table.Th>
               <Table.Th style={{ width: "150px", padding: "0" }}>
                 Действие
@@ -139,6 +143,24 @@ const BannerPage = () => {
         </Table>
       </div>
 
+      {/* подтверждение удаления */}
+      <Modal
+        opened={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        title="Подтвердите удаление"
+        withCloseButton={false}
+      >
+        <p>Вы уверены, что хотите удалить этот бренд?</p>
+        <Button
+          style={{ marginRight: "20px" }}
+          onClick={() => handleDeleteBanner(brandId)}
+        >
+          Удалить
+        </Button>
+        <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
+      </Modal>
+
+      {/* добавление баннера */}
       <Modal
         opened={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
