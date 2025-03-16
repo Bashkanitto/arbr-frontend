@@ -20,7 +20,7 @@ interface BrandOption {
 interface FormData {
   accountId: string;
   name: string;
-  options: string;
+  description: string;
   quantity: number;
   price: number;
   brandId: string;
@@ -65,7 +65,7 @@ const AddProductModal = ({
   const [formData, setFormData] = useState<FormData>({
     accountId: isAdmin ? "" : profileData.id.toString(),
     name: "",
-    options: "",
+    description: "",
     quantity: 1,
     price: 0,
     brandId: "",
@@ -201,7 +201,7 @@ const AddProductModal = ({
       setLoading(true);
       const productResponse: any = await addProduct({
         name: formData.name,
-        options: formData.options,
+        options: formData.description,
         quantity: formData.quantity || 0,
         price: formData.price || 0,
         brandId: parseInt(formData.brandId, 10),
@@ -290,8 +290,10 @@ const AddProductModal = ({
       />
       <TextInput
         label="Описание"
-        value={formData.options}
-        onChange={(e) => handleInputChange("options", e.currentTarget.value)}
+        value={formData.description}
+        onChange={(e) =>
+          handleInputChange("description", e.currentTarget.value)
+        }
       />
       <NumberInput
         label="Количество"

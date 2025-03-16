@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
-import { addProductType, VendorResponse } from './Types'
+import { addProductType } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (
@@ -8,7 +8,7 @@ export const fetchAllVendors = async (
 	pageSize: number = 10
 ) => {
 	try {
-		const response: VendorResponse = await baseApi.get(
+		const response:any = await baseApi.get(
 			`/account/vendors?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		)
 		return response
@@ -169,7 +169,7 @@ export const fetchVendorGroups = async (
 	pageSize: number = 10
 ) => {
 	try {
-		const response: VendorResponse = await baseApi.get(
+		const response = await baseApi.get(
 			`/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=desc`
 		)
 		return response
@@ -219,7 +219,7 @@ export const deleteDocument = async (filename: string) => {
 
 export const deleteProduct = async (productId: number) => {
 	try {
-		const response = await baseApi.delete(`/product/${productId}`)
+		const response:any = await baseApi.delete(`/product/${productId}`)
 		return response
 	} catch (error) {
 		console.log(error)

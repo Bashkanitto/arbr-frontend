@@ -1,131 +1,119 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface UserType {
-	id(id: any): unknown
-	email: string
-	phone: string
-	role: string
-	loginAt: Date
-	firstName: string
-	lastName: string
-	userName: string
-	legalName: string
-	dateOfBirth: Date
-	fcm: string
-	iin: string
-	bin: string
-	bik: string
-	rating: number
-	status: string
-	bonusAmount: number
-	deliveryAddresses: string[]
-	transactions: string[]
+  id: number;
+  email: string;
+  password: string;
+  phone: string | null;
+  role: string;
+  loginAt: Date;
+  firstName: string;
+  lastName: string | null;
+  userName: string | null;
+  legalName: string;
+  dateOfBirth: Date | null;
+  fcm: string;
+  iin: string;
+  bin: string;
+  bik: string;
+  rating: number | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  orders: unknown[];
+  paymentCards: Array<{
+    account: unknown;
+    cvv: number;
+    cardNumber: string;
+    expiredMonth: number;
+    expiredYear: number;
+    ownerName: string;
+  }>;
+  status: string;
+  bonusAmount: number;
+  deliveryAddresses: string[];
+  transactions: unknown[];
+  wishlist: unknown[];
 }
 
 export interface BrandType {
-	name: string
-	products: any[]
-	image: any[]
-	rating: number
-	features: {
-		isBonus: boolean
-		isFreeDelivery: boolean
-		isDiscount: boolean
-		bonus: number
-		discount: number
-	}
+  name: string;
+  products: any[];
+  image: any[];
+  rating: number;
+  features: {
+    isBonus: boolean;
+    isFreeDelivery: boolean;
+    isDiscount: boolean;
+    bonus: number;
+    discount: number;
+  };
 }
 
 export interface ProductType {
-	name: string
-	brand?: BrandType
-	createdAt: string
-	deletedAt?: string
-	features?: {
-		isBonus: boolean
-		isFreeDelivery: boolean
-		isDiscount: boolean
-		bonus: string
-		discount: string
-	}
-	id: number
-	images?: any[]
-	price: number | null
-	quantity: number
-	rating: string
-	code?: string
-	ENSTRU?: string | null
-	GTIN?: string | null
-	KZTIN?: string | null
-	options?: string | null
-	options2?: string | null
-	options3?: string | null
-	package?: number | null
-	status: string
-	updatedAt: string
+  id: number;
+  name: string;
+  description: string | null;
+  brand?: BrandType;
+  subcategory?: {
+    name: string;
+    updatedAt: string;
+    createdAt: string;
+    deletedAt: string | null;
+    category: {
+      name: string;
+      mainCategory: unknown;
+      subcategories: unknown;
+    };
+  };
+  deletedAt?: string;
+  features?: {
+    isBonus: boolean;
+    isFreeDelivery: boolean;
+    isDiscount: boolean;
+    bonus: string;
+    discount: string;
+  };
+  images?: File[];
+  price: number;
+  quantity: number;
+  rating: string;
+  keywords: string;
+  code?: string;
+  ENSTRU?: string | null;
+  GTIN?: string | null;
+  KZTIN?: string | null;
+  package?: number | null;
+  options?: unknown | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  vendorGroups: VendorGroups[];
+  youtubeVideoUrl: string | null;
 }
 
 export interface VendorGroups {
-	id: number
-	price: number
-	product: ProductType
-}
-
-export interface VendorType {
-	createdAt: string
-	id: number
-	email: string
-	phone: string
-	role: string
-	loginAt: string
-	firstName: string
-	lastName: string
-	userName: string
-	legalName: string
-	dateOfBirth: string
-	fcm: string
-	iin: string
-	bin: string
-	bik: string
-	rating: number
-	status: string
-	bonusAmount: number
-	deliveryAddresses: string[]
-	paymentCards: Array<{
-		account: unknown
-		cvv: number
-		cardNumber: string
-		expiredMonth: number
-		expiredYear: number
-		ownerName: string
-	}>
-	transactions: string[]
-	vendorGroups: VendorGroups[]
-}
-
-export interface VendorResponse {
-	data: any
-	records: VendorType[]
-	meta: {
-		totalPages: number
-		page: number
-		total: number
-	}
+  id: number;
+  price: number;
+  createdAt: number;
+  deletedAt: number | null;
+  product: ProductType;
+  productDocuments: File[] | unknown;
 }
 
 export interface addProductType {
-	name: string
-	options: string
-	quantity: number
-	price: number
-	amountPrice: number
-	rating: number
-	brandId: number
-	subcategoryId: number
-	features: {
-		isBonus: boolean
-		isFreeDelivery: boolean
-		isDiscount: boolean
-		bonus: number | null
-		discount: number | null
-	}
+  name: string;
+  options: string;
+  quantity: number;
+  price: number;
+  amountPrice: number;
+  rating: number;
+  brandId: number;
+  subcategoryId: number;
+  features: {
+    isBonus: boolean;
+    isFreeDelivery: boolean;
+    isDiscount: boolean;
+    bonus: number | null;
+    discount: number | null;
+  };
 }

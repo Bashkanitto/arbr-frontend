@@ -1,6 +1,6 @@
 import { Skeleton } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { VendorType } from "@services/api/Types";
+import { UserType } from "@services/api/Types";
 import { fetchAllVendors } from "@services/api/productService";
 import Tender from "@components/molecules/Tender/Tender";
 import CatalogSwitch from "../CatalogPage/CatalogSwitch/CatalogSwitch";
@@ -10,7 +10,7 @@ import styles from "./SearchPage.module.scss";
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [vendorData, setVendorData] = useState<VendorType[]>([]);
+  const [vendorData, setVendorData] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchProfile } from "@services/api/authService";
 import { fetchVendorById } from "@services/api/productService";
-import { VendorType } from "@services/api/Types";
+import { UserType } from "@services/api/Types";
 import AddCatalogModal from "../CatalogPage/AddCatalogModal/AddCatalogModal";
 import AddProductModal from "../CatalogPage/AddProductModal/AddProductModal";
 import CatalogFilters from "../CatalogPage/CatalogFilter/CatalogFilters";
@@ -15,7 +15,7 @@ const VendorPage = () => {
   const [filterPeriod, setFilterPeriod] = useState<string | null>("3_months");
   const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false);
   const [profileData, setProfileData] = useState(0);
-  const [vendorData, setVendorData] = useState<VendorType[]>([]);
+  const [vendorData, setVendorData] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>(false);
@@ -88,7 +88,7 @@ const VendorPage = () => {
 
       <div className={styles["catalog-tenders"]}>
         {vendorData.length > 0 ? (
-          vendorData[0]?.vendorGroups.map((vendor) => (
+          vendorData[0]?.vendorGroups?.map((vendor) => (
             <div
               onClick={() => navigate(`/product/${vendor.product.id}`)}
               className={styles.catalogItem}

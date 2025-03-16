@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchProfile } from "@services/api/authService";
 import { fetchAllVendors } from "@services/api/productService";
-import { VendorType } from "@services/api/Types";
 import Tender from "@components/molecules/Tender/Tender";
 import AddCatalogModal from "./AddCatalogModal/AddCatalogModal";
 import AddProductModal from "./AddProductModal/AddProductModal";
@@ -9,6 +8,7 @@ import CatalogFilters from "./CatalogFilter/CatalogFilters";
 import styles from "./CatalogPage.module.scss";
 import CatalogSwitch from "./CatalogSwitch/CatalogSwitch";
 import { Skeleton } from "@mantine/core";
+import { UserType } from "@services/api/Types";
 
 const CatalogPage = () => {
   const [filterPeriod, setFilterPeriod] = useState<
@@ -16,7 +16,7 @@ const CatalogPage = () => {
   >("3_months");
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [isAddCatalogOpen, setIsAddCatalogOpen] = useState(false);
-  const [vendorData, setVendorData] = useState<VendorType[]>([]);
+  const [vendorData, setVendorData] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
