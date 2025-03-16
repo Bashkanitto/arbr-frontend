@@ -18,6 +18,7 @@ import { DownloadIcon } from "@assets/icons/DownloadIcon";
 import NotificationStore from "@store/NotificationStore";
 import { DeleteIcon } from "@assets/icons";
 import { wait } from "../../helpers";
+import WYSIWYGEditor from "@components/atoms/WYSIWYGEditor/WYSIWYGEditor";
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -306,6 +307,16 @@ const ProductPage = () => {
             </div>
           )
         )}
+        {product.youtubeVideoUrl && (
+          <iframe
+            width="600"
+            height="400"
+            src={product.youtubeVideoUrl}
+            title="YouTube"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        )}
         <BaseButton onClick={() => setIsImageModalOpen(true)}>
           Добавить фото
         </BaseButton>
@@ -328,7 +339,7 @@ const ProductPage = () => {
 
           {activeTab === "описание" && (
             <div id="description" className={styles.tabBody}>
-              {product.options}
+              <WYSIWYGEditor value={JSON.stringify(product.options)} />
             </div>
           )}
           {activeTab === "Документы" && (
@@ -401,7 +412,7 @@ const ProductPage = () => {
             <a onClick={() => setInfoVisibility(0)}>
               Характеристики
               <p style={{ height: infoVisibility == 0 ? "100px" : "0px" }}>
-                {product.options}
+                {/* {product.options} */}
               </p>
             </a>
             <a onClick={() => setInfoVisibility(1)}>
