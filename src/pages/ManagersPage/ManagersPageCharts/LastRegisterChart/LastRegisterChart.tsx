@@ -2,7 +2,7 @@
 import { Skeleton } from "@mantine/core";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { AccountType, fetchAccounts } from "@services/api/AccountsService";
+import { AccountType, fetchAllAccounts } from "@services/api/AccountsService";
 import { Avatar } from "@components/atoms/Avatar";
 import { DateItem } from "@components/atoms/DateItem";
 import { Table } from "@components/atoms/Table";
@@ -19,7 +19,7 @@ const LastRegisterChart = () => {
   useEffect(() => {
     const loadLastConfirmedAccounts = async () => {
       try {
-        const response = await fetchAccounts();
+        const response = await fetchAllAccounts();
         setLastConfirmedAccounts(response.records);
       } catch (err) {
         setError(

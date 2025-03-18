@@ -1,15 +1,21 @@
 // src/components/SecurityPageTable/SecurityPageTable.tsx
-import { Checkbox, Select, Skeleton } from "@mantine/core";
+import { Button, Checkbox, Modal, Select, Skeleton } from "@mantine/core";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ca, ru } from "date-fns/locale";
 import jsPDF from "jspdf";
 import { ChangeEvent, useEffect, useState } from "react";
-import { fetchAccounts } from "@services/api/AccountsService";
+import {
+  changeAccount,
+  deleteAccount,
+  fetchAllAccounts,
+} from "@services/api/AccountsService";
 import { BaseButton } from "@components/atoms/Button/BaseButton";
 import { DateItem } from "@components/atoms/DateItem";
 import { Table } from "@components/atoms/Table";
 import { Pagination } from "@components/molecules/Pagination/Pagination";
 import styles from "./SecurityPageTable.module.scss";
+import { DeleteIcon } from "@assets/icons";
+import NotificationStore from "@store/NotificationStore";
 
 interface User {
   firstName: string;
@@ -23,7 +29,12 @@ interface User {
 
 export const SecurityPageTable = () => {
   const [selectRows, setSelectRows] = useState<number[]>([]);
-  const [userData, setUserData] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
+  const [modals, setModals] = useState({
+    deleteModal: false,
+    editModal: false,
+  });
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,8 +47,8 @@ export const SecurityPageTable = () => {
       setLoading(true);
       setError(null);
       try {
-        const { records, meta }: any = await fetchAccounts(page, pageSize);
-        setUserData(records);
+        const { records, meta }: any = await fetchAllAccounts(page, pageSize);
+        setUsers(records);
         setTotalPages(meta.totalPages);
       } catch (err) {
         setError("Failed to load accounts");
@@ -50,13 +61,81 @@ export const SecurityPageTable = () => {
     loadAccounts();
   }, [page, pageSize]);
 
+  const handleDeleteAccount = async () => {
+    if (!userToDelete) return;
+
+    try {
+      const response: any = await deleteAccount(userToDelete);
+
+      if (response.status !== 200) {
+        throw new Error("Failed to delete account");
+      }
+
+      NotificationStore.addNotification(
+        "Успешно",
+        "Аккаунт успешно удален",
+        "success"
+      );
+
+      // Remove user from the list
+      setUsers(users.filter((user) => user.id !== userToDelete));
+    } catch (err) {
+      console.error(err);
+      NotificationStore.addNotification(
+        "Ошибка",
+        "Произошла ошибка при удалении аккаунта",
+        "error"
+      );
+    } finally {
+      setModals({ ...modals, deleteModal: false });
+      setUserToDelete(null);
+    }
+  };
+  const confirmDeleteAccount = (id: number) => {
+    setUserToDelete(id);
+    setModals({ ...modals, deleteModal: true });
+  };
+
+  const handleStatusChange = async (
+    userId: number,
+    newStatus: "active" | "inactive"
+  ) => {
+    try {
+      // Отправляем новый статус в API
+      const response = await changeAccount(userId, newStatus);
+      if (response.error) {
+        throw new Error("Failed to update status");
+      }
+
+      // Обновляем статус в локальном состоянии
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, status: newStatus } : user
+        )
+      );
+
+      NotificationStore.addNotification(
+        "Успешно",
+        "Статус обновлен",
+        "success"
+      );
+    } catch (error) {
+      console.error(error);
+      NotificationStore.addNotification(
+        "Ошибка",
+        "Не удалось обновить статус",
+        "error"
+      );
+    }
+  };
+
   if (loading) return <Skeleton />;
   if (error) return <div>Error: {error}</div>;
 
   const handleExport = () => {
     const doc = new jsPDF();
     doc.setFontSize(12);
-    userData.forEach((item, index) => {
+    users.forEach((item, index) => {
       doc.text(
         `${index + 1}. ${item.firstName} - ${item.role} - ${format(
           new Date(item.createdAt),
@@ -72,18 +151,9 @@ export const SecurityPageTable = () => {
   const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     if (checked) {
-      setSelectRows(userData.map((item) => item.id));
+      setSelectRows(users.map((item) => item.id));
     } else {
       setSelectRows([]);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "success";
-      case "inactive":
-        return "success";
     }
   };
 
@@ -99,8 +169,8 @@ export const SecurityPageTable = () => {
 
   const renderRow = () => {
     const filteredData = statusFilter
-      ? userData.filter((item) => item.status === statusFilter)
-      : userData;
+      ? users.filter((item) => item.status === statusFilter)
+      : users;
 
     return filteredData.map((item) => (
       <Table.Tr key={item.id}>
@@ -113,22 +183,24 @@ export const SecurityPageTable = () => {
         </Table.Td>
         <Table.Td>{item.firstName}</Table.Td>
         <Table.Td>
-          <DateItem variantColor={getStatusColor(item.status)}>
-            {item.status == "active" ? "активные" : "неактивные"}
-          </DateItem>
+          <Select
+            data={[
+              { value: "active", label: "Активный" },
+              { value: "inactive", label: "Неактивный" },
+            ]}
+            value={item.status}
+            onChange={(value) =>
+              handleStatusChange(item.id, value as "active" | "inactive")
+            }
+            size="xs"
+            style={{ width: "120px" }}
+          />
         </Table.Td>
         <Table.Td>
           {format(item.updatedAt, "dd MMMM, yyyy", { locale: ru })}
         </Table.Td>
         <Table.Td style={{ width: "50px", padding: "0" }}>
-          <a
-            style={{
-              color: item.status === "active" ? "#23B96C" : "secondary",
-            }}
-            href={`/profile/${item.id}`}
-          >
-            Смотреть профиль
-          </a>
+          <DeleteIcon onClick={() => confirmDeleteAccount(item.id)} />
         </Table.Td>
       </Table.Tr>
     ));
@@ -166,9 +238,9 @@ export const SecurityPageTable = () => {
               <Table.Th>
                 <Checkbox
                   size="xs"
-                  checked={selectRows.length === userData.length}
+                  checked={selectRows.length === users.length}
                   indeterminate={
-                    selectRows.length > 0 && selectRows.length < userData.length
+                    selectRows.length > 0 && selectRows.length < users.length
                   }
                   onChange={handleSelectAllChange}
                 />
@@ -185,7 +257,20 @@ export const SecurityPageTable = () => {
         </Table>
       </div>
 
-      {/* Pagination Component */}
+      <Modal
+        opened={modals.deleteModal}
+        onClose={() => setModals({ ...modals, deleteModal: false })}
+        withCloseButton={false}
+        title="Удаление аккаунта"
+      >
+        <p>Вы уверены, что хотите удалить этот аккаунт?</p>
+        <Button onClick={() => setModals({ ...modals, deleteModal: false })}>
+          Отмена
+        </Button>
+        <Button onClick={handleDeleteAccount} color="red">
+          Удалить
+        </Button>
+      </Modal>
     </>
   );
 };

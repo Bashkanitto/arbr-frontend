@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import jsPDF from "jspdf";
 import { useEffect, useState } from "react";
-import { AccountType, fetchAccounts } from "@services/api/AccountsService";
+import { AccountType, fetchAllAccounts } from "@services/api/AccountsService";
 import { BaseButton } from "@components/atoms/Button/BaseButton";
 import { Select } from "@components/atoms/Select";
 import { Tabs } from "@components/atoms/Tabs";
@@ -15,7 +15,7 @@ export const ManagersPageTabs = () => {
   useEffect(() => {
     const loadLastConfirmedAccounts = async () => {
       try {
-        const response = await fetchAccounts();
+        const response = await fetchAllAccounts();
         // Only set the records array to state
         setLastConfirmedAccounts(response.records);
       } catch (err: unknown) {
