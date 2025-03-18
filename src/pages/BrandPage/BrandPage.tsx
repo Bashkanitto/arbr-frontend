@@ -23,10 +23,10 @@ import { DeleteIcon, EditIcon } from "@assets/icons";
 interface Brand {
   id: string;
   name: string;
-  image?: {
+  image?: Array<{
     url: string;
     filename: string;
-  };
+  }>;
   rating: number;
   createdAt: string;
   status: "active" | "inactive";
@@ -165,9 +165,9 @@ const BrandPage = () => {
       <Table.Tr key={item.id}>
         <Table.Td>{item.id}</Table.Td>
         <Table.Td>
-          {item.image?.url ? (
+          {item.image && item.image[0]?.url ? (
             <img
-              src={item.image?.url.replace(
+              src={item.image[0].url.replace(
                 "http://3.76.32.115:3000",
                 "https://rbr.kz"
               )}
@@ -184,7 +184,7 @@ const BrandPage = () => {
           <EditIcon
             onClick={() => {
               setEditModalOpen(true);
-              setBrandFilename(item.image?.filename || "");
+              setBrandFilename((item.image && item.image[0].filename) || "");
               setBrandId(item.id);
             }}
           />
