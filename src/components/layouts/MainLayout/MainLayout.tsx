@@ -6,14 +6,17 @@ import { Notification } from '../../atoms/Notification/Notification'
 import { NotificationMenu } from '../../molecules/NotificationMenu/NotificationMenu'
 import { MainSidebar } from '../MainSidebar'
 import styles from './MainLayout.module.scss'
+import HelpDeskModal from '@components/atoms/HelpDesk/HelpDesk'
+import { helpDeskStore } from '@store/HelpDeskStore'
 
 export const MainLayout = observer(() => {
-	return (
-		<div className={cn(styles['main-layout'])}>
-			<MainSidebar />
-			<Outlet />
-			<NotificationMenu />
-			<Notification />
-		</div>
-	)
+  return (
+    <div className={cn(styles['main-layout'])}>
+      <MainSidebar />
+      <Outlet />
+      <NotificationMenu />
+      {helpDeskStore.isOpen && <HelpDeskModal />}
+      <Notification />
+    </div>
+  )
 })
