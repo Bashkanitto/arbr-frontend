@@ -12,6 +12,9 @@ import NotificationStore from "@store/NotificationStore";
 import { Pagination } from "@components/molecules/Pagination/Pagination";
 import { DeleteIcon } from "../../assets/icons";
 import { wait } from "../../helpers";
+import { ContentLayout } from "@components/layouts/ContentLayout";
+import { ContentTopBar } from "@components/layouts/ContentTopBar";
+import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
 
 const BannerPage = () => {
   const [bannerData, setBannerData] = useState<any[]>([]);
@@ -116,72 +119,82 @@ const BannerPage = () => {
   };
 
   return (
-    <>
-      <div className={styles["security-page-table"]}>
-        <div className={styles["security-page-table-head"]}>
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={(newPage) => setPage(newPage)}
-          />
-          <BaseButton onClick={() => setIsCreateModalOpen(true)}>
-            Создать Баннер
-          </BaseButton>
+    <ContentLayout
+      className={styles["withdraws-page"]}
+      header={
+        <>
+          <ContentTopBar title="Баннеры" />
+          <ContentUserInfo />
+        </>
+      }
+    >
+      <div>
+        <div className={styles["security-page-table"]}>
+          <div className={styles["security-page-table-head"]}>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+            <BaseButton onClick={() => setIsCreateModalOpen(true)}>
+              Создать Баннер
+            </BaseButton>
+          </div>
+          <Table stickyHeader>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Номер</Table.Th>
+                <Table.Th>Название Бренда</Table.Th>
+                <Table.Th>Скидки</Table.Th>
+                <Table.Th style={{ width: "150px", padding: "0" }}>
+                  Действие
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{renderRow()}</Table.Tbody>
+          </Table>
         </div>
-        <Table stickyHeader>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Номер</Table.Th>
-              <Table.Th>Название Бренда</Table.Th>
-              <Table.Th>Скидки</Table.Th>
-              <Table.Th style={{ width: "150px", padding: "0" }}>
-                Действие
-              </Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{renderRow()}</Table.Tbody>
-        </Table>
+
+        {/* подтверждение удаления */}
+        <Modal
+          opened={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          title="Подтвердите удаление"
+          withCloseButton={false}
+        >
+          <p>Вы уверены, что хотите удалить этот бренд?</p>
+          <Button
+            style={{ marginRight: "20px" }}
+            onClick={() => handleDeleteBanner(brandId)}
+          >
+            Удалить
+          </Button>
+          <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
+        </Modal>
+
+        {/* добавление баннера */}
+        <Modal
+          opened={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          title="Добавить Баннер"
+        >
+          {error && <div style={{ color: "red" }}>{error}</div>}
+          <TextInput
+            type="number"
+            label="Номер Бренда"
+            value={brandId}
+            onChange={(event) => setBrandId(event.target.value)}
+          />
+          <Button
+            style={{ marginTop: "20px" }}
+            onClick={handleCreateBanner}
+            loading={isCreating}
+          >
+            Добавить
+          </Button>
+        </Modal>
       </div>
-
-      {/* подтверждение удаления */}
-      <Modal
-        opened={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        title="Подтвердите удаление"
-        withCloseButton={false}
-      >
-        <p>Вы уверены, что хотите удалить этот бренд?</p>
-        <Button
-          style={{ marginRight: "20px" }}
-          onClick={() => handleDeleteBanner(brandId)}
-        >
-          Удалить
-        </Button>
-        <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
-      </Modal>
-
-      {/* добавление баннера */}
-      <Modal
-        opened={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        title="Добавить Баннер"
-      >
-        {error && <div style={{ color: "red" }}>{error}</div>}
-        <TextInput
-          type="number"
-          label="Номер Бренда"
-          value={brandId}
-          onChange={(event) => setBrandId(event.target.value)}
-        />
-        <Button
-          style={{ marginTop: "20px" }}
-          onClick={handleCreateBanner}
-          loading={isCreating}
-        >
-          Добавить
-        </Button>
-      </Modal>
-    </>
+    </ContentLayout>
   );
 };
 

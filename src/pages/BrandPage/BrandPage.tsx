@@ -19,6 +19,9 @@ import {
 import { BaseButton } from "@components/atoms/Button/BaseButton";
 import NotificationStore from "@store/NotificationStore";
 import { DeleteIcon, EditIcon } from "@assets/icons";
+import { ContentLayout } from "@components/layouts/ContentLayout";
+import { ContentTopBar } from "@components/layouts/ContentTopBar";
+import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
 
 interface Brand {
   id: string;
@@ -194,105 +197,115 @@ const BrandPage = () => {
   };
 
   return (
-    <>
-      <div className={styles["security-page-table"]}>
-        <div className={styles["security-page-table-head"]}>
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={(newPage) => setPage(newPage)}
-          />
-          <BaseButton onClick={() => setIsCreateModalOpen(true)}>
-            Создать бренд
-          </BaseButton>
+    <ContentLayout
+      className={styles["withdraws-page"]}
+      header={
+        <>
+          <ContentTopBar title="Бренды" />
+          <ContentUserInfo />
+        </>
+      }
+    >
+      <div>
+        <div className={styles["security-page-table"]}>
+          <div className={styles["security-page-table-head"]}>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+            <BaseButton onClick={() => setIsCreateModalOpen(true)}>
+              Создать бренд
+            </BaseButton>
+          </div>
+          <Table stickyHeader>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Номер</Table.Th>
+                <Table.Th>Логотип</Table.Th>
+                <Table.Th>Название</Table.Th>
+                <Table.Th>Рейтинг</Table.Th>
+                <Table.Th style={{ width: "150px", padding: "0" }}>
+                  Действие
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{renderRow()}</Table.Tbody>
+          </Table>
         </div>
-        <Table stickyHeader>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Номер</Table.Th>
-              <Table.Th>Логотип</Table.Th>
-              <Table.Th>Название</Table.Th>
-              <Table.Th>Рейтинг</Table.Th>
-              <Table.Th style={{ width: "150px", padding: "0" }}>
-                Действие
-              </Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{renderRow()}</Table.Tbody>
-        </Table>
+
+        <Modal
+          opened={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          title="Создать бренд"
+        >
+          <TextInput
+            label="Название бренда"
+            value={newBrandName}
+            onChange={(event) => setNewBrandName(event.currentTarget.value)}
+          />
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(event) => {
+              if (event.currentTarget.files?.length) {
+                setNewBrandImage(event.currentTarget.files[0]);
+              }
+            }}
+          />
+          <Button onClick={handleCreateBrand} loading={isCreating}>
+            Создать
+          </Button>
+        </Modal>
+
+        <Modal
+          opened={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          title="Подтвердите удаление"
+          withCloseButton={false}
+        >
+          <p>Вы уверены, что хотите удалить этот бренд?</p>
+          <Button style={{ marginRight: "20px" }} onClick={handleConfirmDelete}>
+            Удалить
+          </Button>
+          <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
+        </Modal>
+
+        <Modal
+          opened={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          title="Изменить бренд"
+          withCloseButton={false}
+        >
+          <TextInput
+            label="Новое название"
+            value={newBrandName}
+            onChange={(event) => setNewBrandName(event.currentTarget.value)}
+          />
+          <TextInput
+            label="Изменить Скидку"
+            value={newDiscount}
+            onChange={(event) => setNewDiscount(event.currentTarget.value)}
+          />
+          <TextInput
+            label="Изменить бонус"
+            value={newBonus}
+            onChange={(event) => setNewBonus(event.currentTarget.value)}
+          />
+          <Input
+            type="file"
+            aria-label="Изменить логотип"
+            accept="image/*"
+            onChange={(event) => {
+              if (event.currentTarget.files?.length) {
+                setNewBrandImage(event.currentTarget.files[0]);
+              }
+            }}
+          />
+          <Button onClick={() => handleEditBrand()}>Изменить</Button>
+        </Modal>
       </div>
-
-      <Modal
-        opened={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        title="Создать бренд"
-      >
-        <TextInput
-          label="Название бренда"
-          value={newBrandName}
-          onChange={(event) => setNewBrandName(event.currentTarget.value)}
-        />
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(event) => {
-            if (event.currentTarget.files?.length) {
-              setNewBrandImage(event.currentTarget.files[0]);
-            }
-          }}
-        />
-        <Button onClick={handleCreateBrand} loading={isCreating}>
-          Создать
-        </Button>
-      </Modal>
-
-      <Modal
-        opened={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        title="Подтвердите удаление"
-        withCloseButton={false}
-      >
-        <p>Вы уверены, что хотите удалить этот бренд?</p>
-        <Button style={{ marginRight: "20px" }} onClick={handleConfirmDelete}>
-          Удалить
-        </Button>
-        <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
-      </Modal>
-
-      <Modal
-        opened={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        title="Изменить бренд"
-        withCloseButton={false}
-      >
-        <TextInput
-          label="Новое название"
-          value={newBrandName}
-          onChange={(event) => setNewBrandName(event.currentTarget.value)}
-        />
-        <TextInput
-          label="Изменить Скидку"
-          value={newDiscount}
-          onChange={(event) => setNewDiscount(event.currentTarget.value)}
-        />
-        <TextInput
-          label="Изменить бонус"
-          value={newBonus}
-          onChange={(event) => setNewBonus(event.currentTarget.value)}
-        />
-        <Input
-          type="file"
-          aria-label="Изменить логотип"
-          accept="image/*"
-          onChange={(event) => {
-            if (event.currentTarget.files?.length) {
-              setNewBrandImage(event.currentTarget.files[0]);
-            }
-          }}
-        />
-        <Button onClick={() => handleEditBrand()}>Изменить</Button>
-      </Modal>
-    </>
+    </ContentLayout>
   );
 };
 
