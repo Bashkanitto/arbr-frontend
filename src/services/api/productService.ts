@@ -186,9 +186,11 @@ export const sendCatalogList = async (file: File): Promise<any> => {
   }
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
-export const fetchMyOrders = async () => {
+export const fetchMyOrders = async (page: number = 1, pageSize: number = 10) => {
   try {
-    const response: any = await baseApi.get(`/order/admin?relations=user`)
+    const response: any = await baseApi.get(
+      `/order/admin?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+    )
     return response
   } catch (error) {
     console.error('Error fetching order:', error)
