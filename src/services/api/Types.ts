@@ -52,7 +52,7 @@ export interface BrandType {
 export interface ProductType {
   id: number
   name: string
-  description: string | null
+  description: string | undefined
   brand?: BrandType
   subcategory?: {
     name: string
@@ -105,7 +105,8 @@ export interface VendorGroups {
 
 export interface addProductType {
   name: string
-  options: string
+  options?: string
+  description: string
   quantity: number
   price: number
   amountPrice: number

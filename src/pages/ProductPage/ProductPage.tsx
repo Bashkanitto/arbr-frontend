@@ -20,6 +20,7 @@ import { DeleteIcon } from '@assets/icons'
 import { wait } from '../../helpers'
 import MarkdownEditor from '@components/atoms/MarkdownEditor/MarkdownEditor'
 import { ProductType } from '@services/api/Types'
+import MDEditor from '@uiw/react-md-editor'
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -306,7 +307,7 @@ const ProductPage = () => {
 
           {activeTab === 'описание' && (
             <div id="description" className={styles.tabBody}>
-              <MarkdownEditor value={product.description} productId={Number(product.id)} />
+              <MDEditor.Markdown source={product.description} />
             </div>
           )}
           {activeTab === 'Документы' && (
@@ -356,12 +357,6 @@ const ProductPage = () => {
           </div>
           <button onClick={openEditModal}>% ИЗМЕНИТЬ ПРОЦЕНТ</button>
           <div className={styles['product-details']}>
-            <a onClick={() => setInfoVisibility(0)}>
-              Характеристики
-              <p style={{ height: infoVisibility == 0 ? '100px' : '0px' }}>
-                {/* {product.options} */}
-              </p>
-            </a>
             <a onClick={() => setInfoVisibility(1)}>
               ЕНС ТРУ
               <p style={{ height: infoVisibility == 1 ? '40px' : '0px' }}>{product.ENSTRU}</p>
@@ -388,7 +383,11 @@ const ProductPage = () => {
           >
             Удалить продукт
           </BaseButton>
-        ) : null}
+        ) : (
+          <p style={{ padding: '20px 40px', margin: '0 auto', color: 'grey' }}>
+            Продукт активно используется
+          </p>
+        )}
       </div>
 
       <EditProcentModal
