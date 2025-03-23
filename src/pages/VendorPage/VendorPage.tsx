@@ -1,76 +1,74 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Avatar, Skeleton } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { fetchProfile } from "@services/api/authService";
-import { fetchVendorById } from "@services/api/productService";
-import { UserType } from "@services/api/Types";
-import AddCatalogModal from "../CatalogPage/AddCatalogModal/AddCatalogModal";
-import AddProductModal from "../CatalogPage/AddProductModal/AddProductModal";
-import CatalogFilters from "../CatalogPage/CatalogFilter/CatalogFilters";
-import styles from "./VendorPage.module.scss";
+import { Avatar, Skeleton } from '@mantine/core'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { fetchProfile } from '@services/api/authService'
+import { fetchVendorById } from '@services/api/productService'
+import { UserType } from '@services/api/Types'
+import AddCatalogModal from '../CatalogPage/AddCatalogModal/AddCatalogModal'
+import AddProductModal from '../CatalogPage/AddProductModal/AddProductModal'
+import CatalogFilters from '../CatalogPage/CatalogFilter/CatalogFilters'
+import styles from './VendorPage.module.scss'
 
 const VendorPage = () => {
   // Local state for vendors, loading, and errors
-  const [filterPeriod, setFilterPeriod] = useState<string | null>("3_months");
-  const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false);
-  const [profileData, setProfileData] = useState(0);
-  const [vendorData, setVendorData] = useState<UserType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
+  const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
+  const [profileData, setProfileData] = useState(0)
+  const [vendorData, setVendorData] = useState<UserType[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isAddCatalogOpen, setIsAddCatalogOpen] = useState<boolean>(false)
+  const navigate = useNavigate()
+  const { id } = useParams<{ id: string }>()
 
   useEffect(() => {
     const loadVendors = async () => {
       try {
-        setLoading(true);
+        setLoading(true)
 
-        const profileData: any = await fetchProfile();
-        setProfileData(profileData);
-        const vendorId = profileData.id;
-        let response;
+        const profileData: any = await fetchProfile()
+        setProfileData(profileData)
+        const vendorId = profileData.id
+        let response
 
         // Если роль не admin, показываем только свои данные
-        if (profileData.role !== "admin") {
-          response = await fetchVendorById(vendorId);
+        if (profileData.role !== 'admin') {
+          response = await fetchVendorById(vendorId)
         } else {
           // Для админов — если в URL есть id и это число, используем его
           if (id && !isNaN(Number(id))) {
-            response = await fetchVendorById(id);
+            response = await fetchVendorById(id)
           } else {
             // Иначе используем vendorId из профиля
-            response = await fetchVendorById(vendorId);
+            response = await fetchVendorById(vendorId)
           }
         }
 
         // Устанавливаем данные о вендоре
-        setVendorData(response.records);
+        setVendorData(response.records)
       } catch (err: unknown) {
         setError(
-          `Failed to load vendor data: ${
-            err instanceof Error ? err.message : "Unknown error"
-          }`
-        );
+          `Failed to load vendor data: ${err instanceof Error ? err.message : 'Unknown error'}`
+        )
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadVendors();
-  }, [id]);
+    loadVendors()
+  }, [id])
 
   // Функции для управления модальными окнами
-  const addCatalog = () => setIsAddCatalogOpen(true);
-  const addProduct = () => setIsAddProductOpen(true);
+  const addCatalog = () => setIsAddCatalogOpen(true)
+  const addProduct = () => setIsAddProductOpen(true)
 
   // Лоадер на время загрузки данных
-  if (loading) return <Skeleton />;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <Skeleton />
+  if (error) return <p>Error: {error}</p>
 
   return (
-    <div className={styles["catalog-page"]}>
+    <div className={styles['catalog-page']}>
       {vendorData.length > 0 && (
         <>
           <Avatar w={100} h={100} />
@@ -86,9 +84,9 @@ const VendorPage = () => {
         filterPeriod={filterPeriod}
       />
 
-      <div className={styles["catalog-tenders"]}>
+      <div className={styles['catalog-tenders']}>
         {vendorData.length > 0 ? (
-          vendorData[0]?.vendorGroups?.map((vendor) => (
+          vendorData[0]?.vendorGroups?.map(vendor => (
             <div
               onClick={() => navigate(`/product/${vendor.product.id}`)}
               className={styles.catalogItem}
@@ -98,14 +96,14 @@ const VendorPage = () => {
                 src={
                   vendor.product.images && vendor.product.images.length > 0 ? (
                     vendor.product.images[0].url.replace(
-                      "http://3.76.32.115:3000",
-                      "https://rbr.kz"
+                      'http://3.76.32.115:3000',
+                      'https://api.arbr.kz'
                     )
                   ) : (
                     <Skeleton width={200} height={200} radius={300} />
                   )
                 }
-                alt={vendor.product.name || "Product image"}
+                alt={vendor.product.name || 'Product image'}
               />
               <p>{vendor.product.name}</p>
             </div>
@@ -116,10 +114,7 @@ const VendorPage = () => {
       </div>
 
       {isAddCatalogOpen && (
-        <AddCatalogModal
-          isOpen={isAddCatalogOpen}
-          onClose={() => setIsAddCatalogOpen(false)}
-        />
+        <AddCatalogModal isOpen={isAddCatalogOpen} onClose={() => setIsAddCatalogOpen(false)} />
       )}
 
       {isAddProductOpen && (
@@ -131,7 +126,7 @@ const VendorPage = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default VendorPage;
+export default VendorPage

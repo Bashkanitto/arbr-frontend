@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowUpRightIcon } from "../../../assets/icons/ArrowUpRightIcon";
-import { DiscountIcon } from "../../../assets/icons/DiscountIcon";
-import authStore from "../../../store/AuthStore";
-import { Avatar } from "../../atoms/Avatar";
-import DiscountModal from "@pages/CatalogPage/DiscountModal/DiscountModal";
-import EditProcentModal from "@pages/CatalogPage/EditProcentModal/EditProcentModal";
-import styles from "./Tender.module.scss";
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowUpRightIcon } from '../../../assets/icons/ArrowUpRightIcon'
+import { DiscountIcon } from '../../../assets/icons/DiscountIcon'
+import authStore from '../../../store/AuthStore'
+import { Avatar } from '../../atoms/Avatar'
+import DiscountModal from '@pages/CatalogPage/DiscountModal/DiscountModal'
+import EditProcentModal from '@pages/CatalogPage/EditProcentModal/EditProcentModal'
+import styles from './Tender.module.scss'
 
 const Tender = ({ user }: { user: any }) => {
-  const navigate = useNavigate();
-  const [isProcentModalOpen, setIsProcentModalOpen] = useState(false);
-  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
-  const { isAdmin } = authStore;
+  const navigate = useNavigate()
+  const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false)
+  const { isAdmin } = authStore
 
   // Filter unique brands
   const uniqueBrands: string[] = useMemo(() => {
@@ -23,34 +23,31 @@ const Tender = ({ user }: { user: any }) => {
           .map((item: any) => item.product?.brand?.name)
           .filter((brandName: string | undefined) => brandName)
       )
-    );
-  }, [user.vendorGroups]);
+    )
+  }, [user.vendorGroups])
 
   return (
-    <div className={styles["tender"]}>
-      <div className={styles["tender-user"]}>
-        <div className={styles["tender-user-info"]}>
+    <div className={styles['tender']}>
+      <div className={styles['tender-user']}>
+        <div className={styles['tender-user-info']}>
           <a href={`vendor/${user.id}`}>
             <Avatar />
             <div>
-              <p className={styles["tender-user-name"]}>{user.firstName}</p>
-              <p className={styles["tender-user-role"]}>
-                {user.role == "admin" ? "Админ" : "Поставщик"}
+              <p className={styles['tender-user-name']}>{user.firstName}</p>
+              <p className={styles['tender-user-role']}>
+                {user.role == 'admin' ? 'Админ' : 'Поставщик'}
               </p>
             </div>
           </a>
           {isAdmin && (
             <>
-              <button
-                onClick={() => setIsProcentModalOpen(true)}
-                className={styles["link"]}
-              >
+              <button onClick={() => setIsProcentModalOpen(true)} className={styles['link']}>
                 <ArrowUpRightIcon />
               </button>
               <button
                 onClick={() => setIsDiscountModalOpen(true)}
-                className={styles["link"]}
-                style={{ background: "black" }}
+                className={styles['link']}
+                style={{ background: 'black' }}
               >
                 <DiscountIcon />
               </button>
@@ -58,7 +55,7 @@ const Tender = ({ user }: { user: any }) => {
           )}
         </div>
 
-        <div className={styles["tender-user-statistics"]}>
+        <div className={styles['tender-user-statistics']}>
           {/* <p>
 						Рейтинг: <span>{user.rating}</span>
 					</p> */}
@@ -75,23 +72,23 @@ const Tender = ({ user }: { user: any }) => {
         </div>
       </div>
 
-      <div className={styles["tender-items"]}>
+      <div className={styles['tender-items']}>
         {user.vendorGroups
-          .filter((item: any) => item.product?.status === "active") // Filter only active products
+          .filter((item: any) => item.product?.status === 'active') // Filter only active products
           .map((item: any) => (
             <button
               onClick={() => navigate(`/product/${item.product.id}`)}
               key={item.id}
-              className={styles["tender-item"]}
+              className={styles['tender-item']}
             >
               <img
                 src={item.product?.images[0]?.url.replace(
-                  "http://3.76.32.115:3000",
-                  "https://rbr.kz"
+                  'http://3.76.32.115:3000',
+                  'https://api.arbr.kz'
                 )}
-                className={styles["tender-image"]}
+                className={styles['tender-image']}
               />
-              <p className={styles["tender-title"]}>{item.product?.name}</p>
+              <p className={styles['tender-title']}>{item.product?.name}</p>
             </button>
           ))}
       </div>
@@ -112,7 +109,7 @@ const Tender = ({ user }: { user: any }) => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Tender;
+export default Tender

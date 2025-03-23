@@ -1,40 +1,39 @@
-import { Loader } from "@mantine/core";
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { MainLayout } from "@components/layouts/MainLayout";
-import ManagersPage from "@pages/ManagersPage/ManagersPage";
-import { RouteNavList, RoutePathList } from "../constants/router";
-import authStore from "../store/AuthStore";
-import { AuthProtect } from "./AuthProtect";
-import BrandPage from "@pages/BrandPage/BrandPage";
-import BannerPage from "@pages/BannerPage/BannerPage";
+import { Loader } from '@mantine/core'
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { MainLayout } from '@components/layouts/MainLayout'
+import ManagersPage from '@pages/ManagersPage/ManagersPage'
+import { RouteNavList, RoutePathList } from '../constants/router'
+import authStore from '../store/AuthStore'
+import { AuthProtect } from './AuthProtect'
+import BrandPage from '@pages/BrandPage/BrandPage'
+import BannerPage from '@pages/BannerPage/BannerPage'
+import LogsPage from '@pages/logsPage/LogsPage'
 
 // Lazy load components
-const ApplicationPage = lazy(
-  () => import("@pages/ApplicationPage/ApplicationPage")
-);
-const AuthPage = lazy(() => import("@pages/AuthPage/AuthPage"));
-const CatalogPage = lazy(() => import("@pages/CatalogPage/CatalogPage"));
-const MyOrdersPage = lazy(() => import("@pages/MyOrdersPage/MyOrdersPage"));
-const NotFoundPage = lazy(() => import("@pages/NotFoundPage/NotFoundPage"));
-const ProductPage = lazy(() => import("@pages/ProductPage/ProductPage"));
-const SearchPage = lazy(() => import("@pages/SearchPage/SearchPage"));
-const SecurityPage = lazy(() => import("@pages/SecurityPage/SecurityPage"));
-const SuppliesPage = lazy(() => import("@pages/SuppliesPage/SuppliesPage"));
-const VendorPage = lazy(() => import("@pages/VendorPage/VendorPage"));
-const WithdrawsPage = lazy(() => import("@pages/WithdrawsPage/WithdrawsPage"));
+const ApplicationPage = lazy(() => import('@pages/ApplicationPage/ApplicationPage'))
+const AuthPage = lazy(() => import('@pages/AuthPage/AuthPage'))
+const CatalogPage = lazy(() => import('@pages/CatalogPage/CatalogPage'))
+const MyOrdersPage = lazy(() => import('@pages/MyOrdersPage/MyOrdersPage'))
+const NotFoundPage = lazy(() => import('@pages/NotFoundPage/NotFoundPage'))
+const ProductPage = lazy(() => import('@pages/ProductPage/ProductPage'))
+const SearchPage = lazy(() => import('@pages/SearchPage/SearchPage'))
+const SecurityPage = lazy(() => import('@pages/SecurityPage/SecurityPage'))
+const SuppliesPage = lazy(() => import('@pages/SuppliesPage/SuppliesPage'))
+const VendorPage = lazy(() => import('@pages/VendorPage/VendorPage'))
+const WithdrawsPage = lazy(() => import('@pages/WithdrawsPage/WithdrawsPage'))
 
 export const AppRouter = () => {
-  const { userProfile } = authStore;
+  const { userProfile } = authStore
   return (
     <Suspense
       fallback={
         <div
           style={{
             flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Loader size={40} />
@@ -46,7 +45,7 @@ export const AppRouter = () => {
           <Route
             path="/"
             element={
-              userProfile?.role == "admin" ? (
+              userProfile?.role == 'admin' ? (
                 <Navigate to={RouteNavList.managers()} />
               ) : (
                 <Navigate to={RouteNavList.vendor()} />
@@ -56,11 +55,11 @@ export const AppRouter = () => {
           <Route path={RoutePathList.auth} element={<AuthPage />} />
 
           {/* Protected Routes */}
-          <Route element={<AuthProtect allowedRoles={["admin", "vendor"]} />}>
+          <Route element={<AuthProtect allowedRoles={['admin', 'vendor']} />}>
             <Route element={<MainLayout />}>
               <Route
                 path={RoutePathList.managers}
-                element={<AuthProtect allowedRoles={["admin"]} />}
+                element={<AuthProtect allowedRoles={['admin']} />}
               >
                 <Route path="" element={<ManagersPage />} />
               </Route>
@@ -68,81 +67,70 @@ export const AppRouter = () => {
               {/* Vendor and Admin shared routes */}
               <Route
                 path={RoutePathList.catalog}
-                element={<AuthProtect allowedRoles={["admin"]} />}
+                element={<AuthProtect allowedRoles={['admin']} />}
               >
                 <Route path="" element={<CatalogPage />} />
               </Route>
-              <Route
-                path={RoutePathList.brand}
-                element={<AuthProtect allowedRoles={["admin"]} />}
-              >
+              <Route path={RoutePathList.brand} element={<AuthProtect allowedRoles={['admin']} />}>
                 <Route path="" element={<BrandPage />} />
               </Route>
 
-              <Route
-                path={RoutePathList.banner}
-                element={<AuthProtect allowedRoles={["admin"]} />}
-              >
+              <Route path={RoutePathList.logs} element={<AuthProtect allowedRoles={['admin']} />}>
+                <Route path="" element={<LogsPage />} />
+              </Route>
+
+              <Route path={RoutePathList.banner} element={<AuthProtect allowedRoles={['admin']} />}>
                 <Route path="" element={<BannerPage />} />
               </Route>
 
-              <Route
-                path={RoutePathList.order}
-                element={<AuthProtect allowedRoles={["vendor"]} />}
-              >
+              <Route path={RoutePathList.order} element={<AuthProtect allowedRoles={['vendor']} />}>
                 <Route path="" element={<MyOrdersPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.applications}
-                element={<AuthProtect allowedRoles={["admin", "vendor"]} />}
+                element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
               >
                 <Route path="" element={<ApplicationPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.withdraws}
-                element={<AuthProtect allowedRoles={["admin"]} />}
+                element={<AuthProtect allowedRoles={['admin']} />}
               >
                 <Route path="" element={<WithdrawsPage />} />
               </Route>
 
-              <Route
-                path={RoutePathList.search}
-                element={<AuthProtect allowedRoles={["admin"]} />}
-              >
+              <Route path={RoutePathList.search} element={<AuthProtect allowedRoles={['admin']} />}>
                 <Route path="" element={<SearchPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.vendor}
-                element={<AuthProtect allowedRoles={["admin", "vendor"]} />}
+                element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
               >
                 <Route path="" element={<VendorPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.supplies}
-                element={<AuthProtect allowedRoles={["vendor"]} />}
+                element={<AuthProtect allowedRoles={['vendor']} />}
               >
                 <Route path="" element={<SuppliesPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.product}
-                element={<AuthProtect allowedRoles={["admin", "vendor"]} />}
+                element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
               >
                 <Route path="" element={<ProductPage />} />
               </Route>
 
               <Route
                 path={RoutePathList.security}
-                element={<AuthProtect allowedRoles={["admin"]} />}
+                element={<AuthProtect allowedRoles={['admin']} />}
               >
-                <Route
-                  path={RoutePathList.security}
-                  element={<SecurityPage />}
-                />
+                <Route path={RoutePathList.security} element={<SecurityPage />} />
               </Route>
               <Route path={RoutePathList.notfound} element={<NotFoundPage />} />
             </Route>
@@ -152,5 +140,5 @@ export const AppRouter = () => {
         </Routes>
       </BrowserRouter>
     </Suspense>
-  );
-};
+  )
+}

@@ -1,113 +1,112 @@
-import { Link, useLocation } from "react-router-dom";
-import {
-  CoinsIcon,
-  LockIcon,
-  SearchIcon,
-  StatusIcon,
-} from "../../../../assets/icons";
-import { CalendarIcon } from "../../../../assets/icons/CalendarIcon";
-import { CatalogIcon } from "../../../../assets/icons/CatalogIcon";
-import { HistoryIcon } from "../../../../assets/icons/HistoryIcon";
-import { UserIcon } from "../../../../assets/icons/UserIcon";
-import { RouteNavList } from "../../../../constants/router";
-import authStore from "../../../../store/AuthStore";
-import styles from "./MainSidebarNav.module.scss";
-import { BrandIcon } from "../../../../assets/icons/BrandIcon";
+import { Link, useLocation } from 'react-router-dom'
+import { CoinsIcon, LockIcon, SearchIcon, StatusIcon } from '../../../../assets/icons'
+import { CalendarIcon } from '../../../../assets/icons/CalendarIcon'
+import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
+import { HistoryIcon } from '../../../../assets/icons/HistoryIcon'
+import { UserIcon } from '../../../../assets/icons/UserIcon'
+import { RouteNavList } from '../../../../constants/router'
+import authStore from '../../../../store/AuthStore'
+import styles from './MainSidebarNav.module.scss'
+import { BrandIcon } from '../../../../assets/icons/BrandIcon'
 
 const navItems = [
   {
     icon: <UserIcon />,
-    title: "Менеджеры",
+    title: 'Менеджеры',
     route: RouteNavList.managers(),
   },
   {
     icon: <CatalogIcon />,
-    title: "Каталог",
+    title: 'Каталог',
     route: RouteNavList.catalog(),
   },
   {
     icon: <HistoryIcon />,
-    title: "История",
+    title: 'История',
     route: RouteNavList.history(),
   },
   {
     icon: <SearchIcon />,
-    title: "Поиск",
+    title: 'Поиск',
     route: RouteNavList.search(),
   },
   {
     icon: <BrandIcon />,
-    title: "Бренды",
+    title: 'Бренды',
     route: RouteNavList.brand(),
   },
   {
     icon: <BrandIcon />,
-    title: "Баннеры",
+    title: 'Баннеры',
     route: RouteNavList.banner(),
   },
   {
     icon: <StatusIcon />,
-    title: "Мои Поставки",
+    title: 'Мои Поставки',
     route: RouteNavList.order(),
   },
   {
     icon: <CoinsIcon />,
-    title: "Выплаты",
+    title: 'Выплаты',
     route: RouteNavList.withdraws(),
   },
   {
     icon: <LockIcon />,
-    title: "Безопасность",
+    title: 'Безопасность',
     route: RouteNavList.security(),
   },
   {
     icon: <CalendarIcon />,
-    title: "Заявки",
+    title: 'Заявки',
     route: RouteNavList.applications(),
   },
-];
+  {
+    icon: <CalendarIcon />,
+    title: 'Логи',
+    route: RouteNavList.logs(),
+  },
+]
 
 export const MainSidebarNav = () => {
-  const location = useLocation();
-  const { userProfile } = authStore;
+  const location = useLocation()
+  const { userProfile } = authStore
 
   // Фильтрация пунктов меню на основе роли(админ видит все, vedor - массив)
-  const filteredNavItems = navItems.filter((item) => {
-    if (!userProfile) return false;
-    if (userProfile.role === "admin") {
+  const filteredNavItems = navItems.filter(item => {
+    if (!userProfile) return false
+    if (userProfile.role === 'admin') {
       return [
-        "Менеджеры",
-        "Каталог",
+        'Менеджеры',
+        'Каталог',
         // 'Поиск',
         // "Выплаты",
-        "Бренды",
-        "Баннеры",
-        "Безопасность",
+        'Бренды',
+        'Баннеры',
+        'Безопасность',
         // 'История',
-        "Заявки",
-      ].includes(item.title);
+        'Заявки',
+        'Логи',
+      ].includes(item.title)
     }
-    if (userProfile.role === "vendor") {
-      return ["Каталог", "Мои Поставки", "История", "Заявки"].includes(
-        item.title
-      );
+    if (userProfile.role === 'vendor') {
+      return ['Каталог', 'Мои Поставки', 'История', 'Заявки'].includes(item.title)
     }
-    return false;
-  });
+    return false
+  })
 
   return (
-    <nav className={styles["main-sidebar-nav"]}>
+    <nav className={styles['main-sidebar-nav']}>
       {filteredNavItems.map((item, index) => (
         <Link
           key={index}
-          className={styles["nav-item"]}
+          className={styles['nav-item']}
           data-active={location.pathname.includes(item.route)}
           to={item.route}
         >
-          <span className={styles["icon"]}>{item.icon}</span>
-          <span className={styles["title"]}>{item.title}</span>
+          <span className={styles['icon']}>{item.icon}</span>
+          <span className={styles['title']}>{item.title}</span>
         </Link>
       ))}
     </nav>
-  );
-};
+  )
+}

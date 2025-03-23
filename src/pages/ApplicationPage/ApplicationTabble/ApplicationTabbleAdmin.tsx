@@ -1,116 +1,113 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Select, Skeleton } from "@mantine/core";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { useEffect, useState } from "react";
-import { fetchVendorGroups, patchStatus } from "@services/api/productService";
-import NotificationStore from "@store/NotificationStore";
-import { Table } from "@components/atoms/Table";
-import { Pagination } from "@components/molecules/Pagination/Pagination";
-import styles from "./ApplicationTabble.module.scss";
-import Status from "../../../helpers/status";
+import { Select, Skeleton } from '@mantine/core'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
+import { useEffect, useState } from 'react'
+import { fetchVendorGroups, patchStatus } from '@services/api/productService'
+import NotificationStore from '@store/NotificationStore'
+import { Table } from '@components/atoms/Table'
+import { Pagination } from '@components/molecules/Pagination/Pagination'
+import styles from './ApplicationTabble.module.scss'
+import Status from '../../../helpers/status'
 
 export const ApplicationTableAdmin = () => {
-  const [productData, setProductData] = useState<any[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string | null>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [pageSize] = useState<number>(7);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [productData, setProductData] = useState<any[]>([])
+  const [statusFilter, setStatusFilter] = useState<string | null>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
+  const [page, setPage] = useState<number>(1)
+  const [pageSize] = useState<number>(7)
+  const [totalPages, setTotalPages] = useState<number>(1)
 
   useEffect(() => {
     // загрузка данных
     const loadVendors = async () => {
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
       try {
-        const { records, meta }: any = await fetchVendorGroups(page, pageSize);
-        setProductData(records);
-        setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize));
+        const { records, meta }: any = await fetchVendorGroups(page, pageSize)
+        setProductData(records)
+        setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
       } catch (err) {
-        setError("Не удалось загрузить данные");
-        console.error(err);
+        setError('Не удалось загрузить данные')
+        console.error(err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadVendors();
-  }, [page, pageSize]);
+    loadVendors()
+  }, [page, pageSize])
 
-  const handleStatusChange = async (
-    productId: number,
-    newStatus: "active" | "inactive"
-  ) => {
+  const handleStatusChange = async (productId: number, newStatus: 'active' | 'inactive') => {
     try {
-      setProductData((prevData) =>
-        prevData.map((item) =>
+      setProductData(prevData =>
+        prevData.map(item =>
           item.product.id === productId
             ? { ...item, product: { ...item.product, status: newStatus } }
             : item
         )
-      );
-      await patchStatus(productId, newStatus);
+      )
+      await patchStatus(productId, newStatus)
       NotificationStore.addNotification(
-        "Заявка",
+        'Заявка',
         `Заявка продукта под номером ${productId} успешно изменена`,
-        "success"
-      );
+        'success'
+      )
     } catch (error: any) {
-      setError("Не удалось изменить статус продукта");
-      console.error(error);
+      setError('Не удалось изменить статус продукта')
+      console.error(error)
 
-      const revertedData = productData.map((item) =>
+      const revertedData = productData.map(item =>
         item.product.id === productId
-          ? { ...item, product: { ...item.product, status: "active" } } // Assuming "active" is the previous status
+          ? { ...item, product: { ...item.product, status: 'active' } } // Assuming "active" is the previous status
           : item
-      );
-      setProductData(revertedData);
+      )
+      setProductData(revertedData)
 
       NotificationStore.addNotification(
-        "Заявка",
+        'Заявка',
         `Произошла ошибка при попытке измененить заявку`,
-        "error"
-      );
+        'error'
+      )
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  if (loading) return <Skeleton />;
-  if (error) return <div>Ошибка: {error}</div>;
+  if (loading) return <Skeleton />
+  if (error) return <div>Ошибка: {error}</div>
 
   // Логика фильтрации данных по запросу поиска
-  const filteredData = productData.filter((item) => {
-    const productName = item.product?.name.toLowerCase() || "";
-    return productName.includes(searchQuery.toLowerCase());
-  });
+  const filteredData = productData.filter(item => {
+    const productName = item.product?.name.toLowerCase() || ''
+    return productName.includes(searchQuery.toLowerCase())
+  })
 
   // Логика фильтрации по статусу
   const filteredByStatus = statusFilter
-    ? filteredData.filter((group) => group.product.status === statusFilter)
-    : filteredData;
+    ? filteredData.filter(group => group.product.status === statusFilter)
+    : filteredData
 
   const handleDownload = async (url: string, customFileName: string) => {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url)
 
-      const blob = await response.blob();
-      const link = document.createElement("a");
-      const objectUrl = URL.createObjectURL(blob);
-      link.href = objectUrl;
-      link.download = `${customFileName}.xlsx`;
-      link.click();
-      URL.revokeObjectURL(objectUrl);
+      const blob = await response.blob()
+      const link = document.createElement('a')
+      const objectUrl = URL.createObjectURL(blob)
+      link.href = objectUrl
+      link.download = `${customFileName}.xlsx`
+      link.click()
+      URL.revokeObjectURL(objectUrl)
     } catch (error) {
-      console.error("Error while downloading file:", error);
+      console.error('Error while downloading file:', error)
     }
-  };
+  }
 
   const renderRow = () => {
-    return filteredByStatus.map((item) => {
+    return filteredByStatus.map(item => {
       return (
         <Table.Tr key={item.id}>
           <Table.Td>{item.product.id}</Table.Td>
@@ -122,18 +119,18 @@ export const ApplicationTableAdmin = () => {
             <Status>{item.product.status}</Status>
           </Table.Td>
           <Table.Td>
-            {format(new Date(item.product.createdAt), "dd MMMM, yyyy", {
+            {format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
               locale: ru,
             })}
           </Table.Td>
-          <Table.Td style={{ width: "50px", padding: "0" }}>
+          <Table.Td style={{ width: '50px', padding: '0' }}>
             <a
               href="#"
               onClick={() =>
                 handleDownload(
                   item.productDocuments[0].url.replace(
-                    "http://3.76.32.115:3000",
-                    "https://rbr.kz"
+                    'http://3.76.32.115:3000',
+                    'https://api.arbr.kz'
                   ),
                   item.productDocuments[0].bucket
                 )
@@ -144,74 +141,74 @@ export const ApplicationTableAdmin = () => {
           </Table.Td>
           <Table.Td
             style={{
-              textAlign: "end",
-              display: "flex",
-              gap: "5px",
-              justifyContent: "flex-end",
+              textAlign: 'end',
+              display: 'flex',
+              gap: '5px',
+              justifyContent: 'flex-end',
             }}
           >
             <button
               className={styles.statusNotBtn}
-              onClick={() => handleStatusChange(item.product.id, "inactive")}
+              onClick={() => handleStatusChange(item.product.id, 'inactive')}
             >
               <img src="/images/diskLike_photo.svg" alt="" />
             </button>
             <button
               className={styles.statusYesBtn}
-              onClick={() => handleStatusChange(item.product.id, "active")}
+              onClick={() => handleStatusChange(item.product.id, 'active')}
             >
               <img src="/images/like_photo.svg" alt="" />
             </button>
           </Table.Td>
         </Table.Tr>
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
     <>
-      <div className={styles["security-page-table-head"]}>
+      <div className={styles['security-page-table-head']}>
         <div>
           <input
             type="text"
             placeholder="Поиск"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
           <Select
             placeholder="Статус"
             defaultValue={statusFilter}
             data={[
-              { value: "", label: "Все" },
-              { value: "active", label: "Разрешено" },
-              { value: "pending", label: "В ожидании" },
-              { value: "inactive", label: "Отклонено" },
+              { value: '', label: 'Все' },
+              { value: 'active', label: 'Разрешено' },
+              { value: 'pending', label: 'В ожидании' },
+              { value: 'inactive', label: 'Отклонено' },
             ]}
-            onChange={(value) => setStatusFilter(value)}
+            onChange={value => setStatusFilter(value)}
           />
         </div>
         <Pagination
           page={page}
           totalPages={totalPages}
-          onPageChange={(newPage) => setPage(newPage)}
+          onPageChange={newPage => setPage(newPage)}
         />
       </div>
-      <div className={styles["security-page-table"]}>
+      <div className={styles['security-page-table']}>
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>ID заказа</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Продавец</Table.Th>
-              <Table.Th style={{ textAlign: "center" }}>Статус</Table.Th>
+              <Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>
               <Table.Th>Дата</Table.Th>
               <Table.Th>Просмотр документов</Table.Th>
-              <Table.Th style={{ textAlign: "end" }}>Действие</Table.Th>
+              <Table.Th style={{ textAlign: 'end' }}>Действие</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{renderRow()}</Table.Tbody>
         </Table>
       </div>
     </>
-  );
-};
+  )
+}

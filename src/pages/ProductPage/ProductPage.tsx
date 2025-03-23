@@ -255,7 +255,7 @@ const ProductPage = () => {
                   onClick={() => openViewModal(image.url)}
                   style={{ cursor: 'pointer' }}
                   key={product.id}
-                  src={image.url.replace('http://3.76.32.115:3000', 'https://rbr.kz')}
+                  src={image.url.replace('http://3.76.32.115:3000', 'https://api.arbr.kz')}
                   alt=""
                 />
                 <div
