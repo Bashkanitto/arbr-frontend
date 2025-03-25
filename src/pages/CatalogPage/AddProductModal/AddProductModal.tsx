@@ -275,7 +275,7 @@ const AddProductModal = ({
         }}
       />
       <label style={{ fontSize: '14px', fontWeight: '500' }} htmlFor="mdEditor">
-        Характеристики
+        Описание
       </label>
       <MDEditor
         id="mdEditor"

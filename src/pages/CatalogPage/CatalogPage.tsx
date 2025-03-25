@@ -1,106 +1,95 @@
-import { useEffect, useState, useCallback } from "react";
-import { fetchProfile } from "@services/api/authService";
-import { fetchAllVendors } from "@services/api/productService";
-import Tender from "@components/molecules/Tender/Tender";
-import AddCatalogModal from "./AddCatalogModal/AddCatalogModal";
-import AddProductModal from "./AddProductModal/AddProductModal";
-import CatalogFilters from "./CatalogFilter/CatalogFilters";
-import styles from "./CatalogPage.module.scss";
-import CatalogSwitch from "./CatalogSwitch/CatalogSwitch";
-import { Skeleton } from "@mantine/core";
-import { UserType } from "@services/api/Types";
+import { useEffect, useState, useCallback } from 'react'
+import { fetchProfile } from '@services/api/authService'
+import { fetchAllVendors } from '@services/api/productService'
+import Tender from '@components/molecules/Tender/Tender'
+import AddCatalogModal from './AddCatalogModal/AddCatalogModal'
+import AddProductModal from './AddProductModal/AddProductModal'
+import CatalogFilters from './CatalogFilter/CatalogFilters'
+import styles from './CatalogPage.module.scss'
+import CatalogSwitch from './CatalogSwitch/CatalogSwitch'
+import { Skeleton } from '@mantine/core'
+import { UserType } from '@services/api/Types'
 
 const CatalogPage = () => {
-  const [filterPeriod, setFilterPeriod] = useState<
-    "3_months" | "6_months" | "1_year"
-  >("3_months");
-  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-  const [isAddCatalogOpen, setIsAddCatalogOpen] = useState(false);
-  const [vendorData, setVendorData] = useState<UserType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [filterPeriod, setFilterPeriod] = useState<'3_months' | '6_months' | '1_year'>('3_months')
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false)
+  const [isAddCatalogOpen, setIsAddCatalogOpen] = useState(false)
+  const [vendorData, setVendorData] = useState<UserType[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const calculateStartDate = useCallback((period: string): Date => {
-    const date = new Date();
-    if (period === "3_months") date.setMonth(date.getMonth() - 3);
-    else if (period === "6_months") date.setMonth(date.getMonth() - 6);
-    else if (period === "1_year") date.setFullYear(date.getFullYear() - 1);
-    return date;
-  }, []);
+    const date = new Date()
+    if (period === '3_months') date.setMonth(date.getMonth() - 3)
+    else if (period === '6_months') date.setMonth(date.getMonth() - 6)
+    else if (period === '1_year') date.setFullYear(date.getFullYear() - 1)
+    return date
+  }, [])
 
   const loadVendors = useCallback(async () => {
     try {
-      setLoading(true);
-      const [vendorsResponse, profileData] = await Promise.all([
-        fetchAllVendors(),
-        fetchProfile(),
-      ]);
+      setLoading(true)
+      const [vendorsResponse, profileData] = await Promise.all([fetchAllVendors(), fetchProfile()])
 
-      let filteredVendors = vendorsResponse?.records || [];
+      let filteredVendors = vendorsResponse?.records || []
 
       // Фильтрация по периоду
-      const periodStart = calculateStartDate(filterPeriod);
+      const periodStart = calculateStartDate(filterPeriod)
       filteredVendors = filteredVendors.filter(
-        (vendor) => new Date(vendor.createdAt) >= periodStart
-      );
+        (vendor: any) => new Date(vendor.createdAt) >= periodStart
+      )
 
       // Фильтрация по пользователю
-      if (profileData.role !== "admin") {
+      if (profileData.role !== 'admin') {
         filteredVendors = filteredVendors.filter(
-          (vendor) => vendor.firstName === profileData.firstName
-        );
+          (vendor: any) => vendor.firstName === profileData.firstName
+        )
       }
 
-      setVendorData(filteredVendors);
+      setVendorData(filteredVendors)
     } catch (err) {
-      setError(`Failed to load vendor data: ${err}`);
+      setError(`Failed to load vendor data: ${err}`)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [filterPeriod, calculateStartDate]);
+  }, [filterPeriod, calculateStartDate])
 
   useEffect(() => {
-    loadVendors();
-  }, [loadVendors]);
+    loadVendors()
+  }, [loadVendors])
 
-  const toggleAddCatalog = () => setIsAddCatalogOpen((prev) => !prev);
-  const toggleAddProduct = () => setIsAddProductOpen((prev) => !prev);
+  const toggleAddCatalog = () => setIsAddCatalogOpen(prev => !prev)
+  const toggleAddProduct = () => setIsAddProductOpen(prev => !prev)
 
   return (
-    <div className={styles["catalog-page"]}>
+    <div className={styles['catalog-page']}>
       <CatalogSwitch />
-      <p className={styles["catalog-title"]}>Каталог</p>
-      <p className={styles["catalog-description"]}>Топ - {vendorData.length}</p>
+      <p className={styles['catalog-title']}>Каталог</p>
+      <p className={styles['catalog-description']}>Топ - {vendorData.length}</p>
       <CatalogFilters
         onFilterChange={setFilterPeriod}
         addCatalog={toggleAddCatalog}
         addProduct={toggleAddProduct}
         filterPeriod={filterPeriod}
       />
-      <div className={styles["catalog-tenders"]}>
+      <div className={styles['catalog-tenders']}>
         {loading
           ? Array.from({ length: 3 }).map((_, index) => (
               <Skeleton
                 key={index}
-                style={{ marginBottom: "30px" }}
+                style={{ marginBottom: '30px' }}
                 width="100%"
                 height={200}
                 radius={30}
               />
             ))
-          : vendorData.map((vendor) => (
-              <Tender key={vendor.id} user={vendor} />
-            ))}
+          : vendorData.map(vendor => <Tender key={vendor.id} user={vendor} />)}
       </div>
-      {isAddCatalogOpen && (
-        <AddCatalogModal isOpen={isAddCatalogOpen} onClose={toggleAddCatalog} />
-      )}
-      {isAddProductOpen && (
-        <AddProductModal isOpen={isAddProductOpen} onClose={toggleAddProduct} />
-      )}
-      {error && <p className={styles["error"]}>{error}</p>}
+      {isAddCatalogOpen && <AddCatalogModal isOpen={isAddCatalogOpen} onClose={toggleAddCatalog} />}
+      {isAddProductOpen && <AddProductModal isOpen={isAddProductOpen} onClose={toggleAddProduct} />}
+      {error && <p className={styles['error']}>{error}</p>}
     </div>
-  );
-};
+  )
+}
 
-export default CatalogPage;
+export default CatalogPage

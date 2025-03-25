@@ -32,6 +32,7 @@ export interface UserType {
   bonusAmount: number
   deliveryAddresses: string[]
   transactions: unknown[]
+  vendorGroups: Array<VendorGroups>
   wishlist: unknown[]
 }
 
@@ -73,10 +74,7 @@ export interface ProductType {
     bonus: string
     discount: string
   }
-  images?: Array<{
-    url: string
-    filename: string
-  }>
+  images: any
   price: number
   quantity: number
   rating: string

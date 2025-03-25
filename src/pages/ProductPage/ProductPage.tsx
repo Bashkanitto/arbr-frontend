@@ -18,7 +18,6 @@ import { DownloadIcon } from '@assets/icons/DownloadIcon'
 import NotificationStore from '@store/NotificationStore'
 import { DeleteIcon } from '@assets/icons'
 import { wait } from '../../helpers'
-import MarkdownEditor from '@components/atoms/MarkdownEditor/MarkdownEditor'
 import { ProductType } from '@services/api/Types'
 import MDEditor from '@uiw/react-md-editor'
 
