@@ -37,6 +37,9 @@ export interface UserType {
 }
 
 export interface BrandType {
+  filter(
+    arg0: (brand: any) => any
+  ): import('react').SetStateAction<{ value: string; label: string }[]>
   name: string
   products: any[]
   image: any[]
@@ -67,16 +70,10 @@ export interface ProductType {
     }
   }
   deletedAt?: string
-  features?: {
-    isBonus: boolean
-    isFreeDelivery: boolean
-    isDiscount: boolean
-    bonus: string
-    discount: string
-  }
   images: any
   price: number
   quantity: number
+  location: string
   rating: string
   keywords: string
   code?: string
@@ -96,26 +93,14 @@ export interface VendorGroups {
   id: number
   price: number
   createdAt: number
-  deletedAt: number | null
-  product: ProductType
-  productDocuments: Array<{ id: string; originalname: string; url: string; filename: string }>
-}
-
-export interface addProductType {
-  name: string
-  options?: string
-  description: string
-  quantity: number
-  price: number
-  amountPrice: number
-  rating: number
-  brandId: number
-  subcategoryId: number
-  features: {
+  features?: {
     isBonus: boolean
     isFreeDelivery: boolean
     isDiscount: boolean
-    bonus: number | null
-    discount: number | null
+    bonus: string
+    discount: number
   }
+  deletedAt: number | null
+  product: ProductType
+  productDocuments: Array<{ id: string; originalname: string; url: string; filename: string }>
 }

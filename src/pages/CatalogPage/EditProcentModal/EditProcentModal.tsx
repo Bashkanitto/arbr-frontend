@@ -1,73 +1,63 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Checkbox, Modal, Select, Slider } from "@mantine/core";
-import { useState } from "react";
-import { updateBonus } from "@services/api/procentService";
-import NotificationStore from "@store/NotificationStore";
-import { BaseButton } from "@components/atoms/Button/BaseButton";
-import styles from "./EditProcentModal.module.scss";
-import { fetchProductById } from "@services/api/productService";
+import { Checkbox, Modal, Select, Slider } from '@mantine/core'
+import { useState } from 'react'
+import { updateBonus } from '@services/api/procentService'
+import NotificationStore from '@store/NotificationStore'
+import { BaseButton } from '@components/atoms/Button/BaseButton'
+import styles from './EditProcentModal.module.scss'
+import { fetchProductById } from '@services/api/productService'
 
 interface EditProcentModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  user: any;
+  isOpen: boolean
+  onClose: () => void
+  user: any
 }
 
 const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
-  const [sliderValue, setSliderValue] = useState<number>(0);
-  const [bonus, setBonus] = useState<number>(0);
-  const [userPrice, setUserPrice] = useState<number>(0);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(
-    null
-  );
-  const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false);
+  const [sliderValue, setSliderValue] = useState<number>(0)
+  const [bonus, setBonus] = useState<number>(0)
+  const [userPrice, setUserPrice] = useState<number>(0)
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
+  const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false)
 
   const handleSave = async () => {
     try {
-      await updateBonus(selectedProductId, sliderValue);
+      await updateBonus(selectedProductId, sliderValue)
       NotificationStore.addNotification(
-        "Изменение бонуса",
+        'Изменение бонуса',
         `Бонус для продукта c номером ${selectedProductId} успешно изменен`,
-        "success"
-      );
-      onClose();
+        'success'
+      )
+      onClose()
     } catch (error) {
-      console.error("Error updating bonus:", error);
-      NotificationStore.addNotification(
-        "Изменение бонуса",
-        "Что то пошло не так",
-        "error"
-      );
+      console.error('Error updating bonus:', error)
+      NotificationStore.addNotification('Изменение бонуса', 'Что то пошло не так', 'error')
     }
-  };
+  }
 
   const handleSliderChange = (value: number) => {
-    setSliderValue(value);
-    setBonus(Number((userPrice * (value / 100)).toFixed(2)));
-  };
+    setSliderValue(value)
+    setBonus(Number((userPrice * (value / 100)).toFixed(2)))
+  }
 
   const handleSelectChange = async (value: string | null) => {
-    const productId = Number(value);
+    const productId = Number(value)
 
     try {
-      const response: any = await fetchProductById(productId);
+      const response: any = await fetchProductById(productId)
 
-      const bonusValue = response.features?.bonus || 0;
-      setSelectedProductId(productId);
-      setSliderValue(bonusValue);
-      setUserPrice(response.price);
-      setBonus(response.price * (bonusValue / 100));
+      const bonusValue = response.data.vendorGroups[0].features?.bonus || 0
+      setSelectedProductId(productId)
+      setSliderValue(bonusValue)
+      setUserPrice(response.data.price)
+      setBonus(response.data.price * (bonusValue / 100))
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   return (
-    <Modal
-      className={styles["EditProcent-modal"]}
-      opened={isOpen}
-      onClose={onClose}
-    >
+    <Modal className={styles['EditProcent-modal']} opened={isOpen} onClose={onClose}>
       <Select
         placeholder="Выберите товар"
         onChange={handleSelectChange}
@@ -76,31 +66,25 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
           label: group.product.name,
         }))}
       />
-      <div className={styles["checkbox"]}>
+      <div className={styles['checkbox']}>
         <Checkbox
           size="xs"
           checked={isApplyToAll}
-          onChange={(e) => setIsApplyToAll(e.target.checked)}
+          onChange={e => setIsApplyToAll(e.target.checked)}
         />
         Применить ко всем товарам
       </div>
-      <Slider
-        color="blue"
-        value={sliderValue}
-        onChange={handleSliderChange}
-        min={0}
-        max={100}
-      />
+      <Slider color="blue" value={sliderValue} onChange={handleSliderChange} min={0} max={100} />
       <p className={styles.bonus}>Процент {bonus}₸ </p>
       <BaseButton
         onClick={handleSave}
-        className={styles["editProcent-button"]}
+        className={styles['editProcent-button']}
         variantColor="primary"
       >
         Сохранить
       </BaseButton>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditProcentModal;
+export default EditProcentModal

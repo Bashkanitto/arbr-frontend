@@ -27,11 +27,11 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 // –––––––––––––––––––––––––––––––Login–––––––––––––––––––––––––––––––
 export const login = async (identifier: string, password: string): Promise<LoginResponse> => {
   try {
-    const response: LoginResponse = await baseApi.post('/auth/login', {
+    const response: any = await baseApi.post('/auth/login', {
       identifier,
       password,
     })
-    const { accessToken, refreshToken } = response
+    const { accessToken, refreshToken } = response.data
 
     setTokens(accessToken, refreshToken)
 
@@ -57,8 +57,8 @@ export const logout = () => {
 // –––––––––––––––––––––––––––––––Данные пользователя–––––––––––––––––––––––––––––––
 export const fetchProfile = async (): Promise<UserType> => {
   try {
-    const response: UserType = await baseApi.get('/account/profile')
-    return response
+    const response: any = await baseApi.get('/account/profile')
+    return response.data
   } catch (error) {
     console.error('Unknown error type:', error)
 
@@ -77,7 +77,7 @@ export const sendOtpResetPassword = async (identifier: string): Promise<void> =>
       identifier,
     })
 
-    const { verifyOtpToken } = response
+    const { verifyOtpToken } = response.data
     if (!verifyOtpToken) {
       throw new Error('Сервер не вернул verifyOtpToken.')
     }

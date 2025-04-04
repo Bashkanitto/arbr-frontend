@@ -15,9 +15,8 @@ const LogsTable = () => {
 
       try {
         const response: any = await fetchLogger()
-        const parsedLogs = parseLogs(response)
+        const parsedLogs = parseLogs(response.data)
         setLoggerData(parsedLogs) // ✅ Исправлено
-        console.log(response)
       } catch (err: any) {
         setError(`Не удалось загрузить данные: ${err.message}`)
       } finally {

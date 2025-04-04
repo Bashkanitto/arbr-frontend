@@ -1,80 +1,75 @@
-import { format } from "date-fns";
-import jsPDF from "jspdf";
-import { useEffect, useState } from "react";
-import { AccountType, fetchAllAccounts } from "@services/api/AccountsService";
-import { BaseButton } from "@components/atoms/Button/BaseButton";
-import { Select } from "@components/atoms/Select";
-import { Tabs } from "@components/atoms/Tabs";
-import styles from "./ManagersPageTabs.module.scss";
+import { format } from 'date-fns'
+import jsPDF from 'jspdf'
+import { useEffect, useState } from 'react'
+import { AccountType, fetchAllAccounts } from '@services/api/AccountsService'
+import { BaseButton } from '@components/atoms/Button/BaseButton'
+import { Select } from '@components/atoms/Select'
+import { Tabs } from '@components/atoms/Tabs'
+import styles from './ManagersPageTabs.module.scss'
 
 export const ManagersPageTabs = () => {
-  const [lastConfirmedAccounts, setLastConfirmedAccounts] = useState<
-    AccountType[]
-  >([]);
+  const [lastConfirmedAccounts, setLastConfirmedAccounts] = useState<AccountType[]>([])
 
   useEffect(() => {
     const loadLastConfirmedAccounts = async () => {
       try {
-        const response = await fetchAllAccounts();
+        const response: any = await fetchAllAccounts()
         // Only set the records array to state
-        setLastConfirmedAccounts(response.records);
+        setLastConfirmedAccounts(response.data.records)
       } catch (err: unknown) {
-        console.error(err);
+        console.error(err)
       }
-    };
+    }
 
-    loadLastConfirmedAccounts();
-  }, []);
+    loadLastConfirmedAccounts()
+  }, [])
 
   const handleExport = () => {
     // Ensure lastConfirmedAccounts is an array before calling forEach
     if (Array.isArray(lastConfirmedAccounts)) {
       // Create a new instance of jsPDF
-      const doc = new jsPDF();
+      const doc = new jsPDF()
       // Example table or data
-      doc.setFontSize(12);
+      doc.setFontSize(12)
       lastConfirmedAccounts.forEach((item, index) => {
         doc.text(
           `${index + 1}. ${item.firstName} - ${item.role} - ${format(
             new Date(item.createdAt),
-            "dd.MM.yy - HH:mm"
+            'dd.MM.yy - HH:mm'
           )}`,
           10,
           50 + index * 10
-        );
-      });
+        )
+      })
 
       // Save the file
-      doc.save("managers_report.pdf");
+      doc.save('managers_report.pdf')
     } else {
-      console.error(
-        "lastConfirmedAccounts is not an array:",
-        lastConfirmedAccounts
-      );
+      console.error('lastConfirmedAccounts is not an array:', lastConfirmedAccounts)
     }
-  };
+  }
 
   return (
-    <div className={styles["managers-page-tabs"]}>
-      <Tabs className={styles["tab"]} defaultValue="all">
+    <div className={styles['managers-page-tabs']}>
+      <Tabs className={styles['tab']} defaultValue="all">
         <Tabs.List>
           <Tabs.Tab value="all">Все карты</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel className={styles["panel"]} value="all">
+        <Tabs.Panel className={styles['panel']} value="all">
           <Select
             placeholder="Типы менеджеров"
             data={[
-              { value: "all", label: "Все" },
-              { value: "active", label: "Активные" },
-              { value: "inactive", label: "Неактивные" },
+              { value: 'all', label: 'Все' },
+              { value: 'active', label: 'Активные' },
+              { value: 'inactive', label: 'Неактивные' },
             ]}
           />
           <Select
             placeholder="Статус"
             data={[
-              { value: "all", label: "Все" },
-              { value: "active", label: "Активные" },
-              { value: "inactive", label: "Неактивные" },
+              { value: 'all', label: 'Все' },
+              { value: 'active', label: 'Активные' },
+              { value: 'inactive', label: 'Неактивные' },
             ]}
           />
           <BaseButton onClick={handleExport}>Экспорт</BaseButton>
@@ -84,5 +79,5 @@ export const ManagersPageTabs = () => {
         </Tabs.Panel>
       </Tabs>
     </div>
-  );
-};
+  )
+}

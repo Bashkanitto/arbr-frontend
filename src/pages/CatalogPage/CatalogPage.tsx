@@ -31,7 +31,7 @@ const CatalogPage = () => {
       setLoading(true)
       const [vendorsResponse, profileData] = await Promise.all([fetchAllVendors(), fetchProfile()])
 
-      let filteredVendors = vendorsResponse?.records || []
+      let filteredVendors = vendorsResponse.data?.records || []
 
       // Фильтрация по периоду
       const periodStart = calculateStartDate(filterPeriod)

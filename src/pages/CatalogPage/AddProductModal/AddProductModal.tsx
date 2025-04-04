@@ -24,6 +24,9 @@ interface FormData {
   description: string
   quantity: number
   price: number
+  KZTIN: number
+  GTIN: number
+  ENSTRU: number
   brandId: string
   subcategoryId: number
   isBonus: boolean
@@ -47,7 +50,6 @@ const AddProductModal = ({
   const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
   const [brandSearch, setBrandSearch] = useState<string>('')
   const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
-
   const [subcategorySearch, setSubcategorySearch] = useState<string>('')
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
   const [filteredCategories, setFilteredCategories] = useState<{ value: string; label: string }[]>(
@@ -55,7 +57,6 @@ const AddProductModal = ({
   )
 
   const [accounts, setAccounts] = useState<BrandOption[]>([])
-
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
@@ -66,6 +67,9 @@ const AddProductModal = ({
     quantity: 1,
     price: 0,
     brandId: '',
+    KZTIN: 0,
+    GTIN: 0,
+    ENSTRU: 0,
     subcategoryId: 0,
     isBonus: false,
     isFreeDelivery: false,
@@ -100,7 +104,7 @@ const AddProductModal = ({
           ])
 
           // Категории
-          const categoryOptions = categoriesResponse.records.map((category: any) => ({
+          const categoryOptions = categoriesResponse.data.records.map((category: any) => ({
             value: category.id.toString(),
             label: category.name,
           }))
@@ -108,7 +112,7 @@ const AddProductModal = ({
           setFilteredCategories(categoryOptions)
 
           // Бренды
-          const brandOptions = brandsResponse.records.map((brand: any) => ({
+          const brandOptions = brandsResponse.data.records.map((brand: any) => ({
             value: brand.id.toString(),
             label: brand.name,
           }))
@@ -116,7 +120,7 @@ const AddProductModal = ({
           setFilteredBrands(brandOptions)
 
           // Поставщики
-          const vendorOptions = vendorResponse.records.map((vendor: any) => ({
+          const vendorOptions = vendorResponse.data.records.map((vendor: any) => ({
             value: vendor.id.toString(),
             label: vendor.firstName,
           }))
@@ -194,20 +198,28 @@ const AddProductModal = ({
         description: formData.description,
         quantity: formData.quantity || 0,
         price: formData.price || 0,
-        brandId: parseInt(formData.brandId, 10),
+        KZTIN: formData.KZTIN,
+        GTIN: formData.GTIN,
+        ENCTRU: formData.ENSTRU,
+        brandId: formData.brandId,
         subcategoryId: formData.subcategoryId || 1,
-        features: {
-          isBonus: formData.isBonus,
-          isFreeDelivery: formData.isFreeDelivery,
-          isDiscount: formData.isDiscount,
-          bonus: formData.bonus || null,
-          discount: formData.discount || null,
-        },
+        vendorGroups: [
+          {
+            features: {
+              isBonus: formData.isBonus,
+              isFreeDelivery: formData.isFreeDelivery,
+              isDiscount: formData.isDiscount,
+              bonus: formData.bonus || null,
+              discount: formData.discount || null,
+            },
+          },
+        ],
         amountPrice: 0,
         rating: 0,
       })
 
-      const productId = productResponse.id
+      console.log(productResponse)
+      const productId = productResponse.data.id
 
       await uploadMultipleImages(selectedFiles, productId)
 
@@ -251,7 +263,7 @@ const AddProductModal = ({
                   label: profileData.firstName,
                 },
               ]
-        } // Wrap the profileData.id in an object
+        }
         value={formData.accountId}
         onChange={value => handleInputChange('accountId', value ?? '')}
         placeholder="Выберите имя поставщика"
@@ -274,9 +286,7 @@ const AddProductModal = ({
           setFormData(prev => ({ ...prev, subcategoryId: Number(value) }))
         }}
       />
-      <label style={{ fontSize: '14px', fontWeight: '500' }} htmlFor="mdEditor">
-        Описание
-      </label>
+      <label htmlFor="mdEditor">Описание</label>
       <MDEditor
         id="mdEditor"
         value={formData.description}
@@ -306,7 +316,7 @@ const AddProductModal = ({
       </div>
       <Select
         label="Бренд"
-        data={filteredBrands} // Фильтрованный список
+        data={filteredBrands}
         searchable
         searchValue={brandSearch}
         onSearchChange={setBrandSearch}
@@ -326,6 +336,22 @@ const AddProductModal = ({
         placeholder="Введите бонус (0 - 100)"
         onChange={value => handleInputChange('discount', value ?? 0)}
       />
+      <TextInput
+        label="KZTIN"
+        placeholder="Введите KZTIN"
+        onChange={value => handleInputChange('KZTIN', value ?? 0)}
+      />
+      <TextInput
+        label="ЕНС ТРУ"
+        placeholder="Введите ЕНС ТРУ"
+        onChange={value => handleInputChange('ENSTRU', value ?? 0)}
+      />
+      <TextInput
+        label="GTIN"
+        placeholder="Введите GTIN"
+        onChange={value => handleInputChange('GTIN', value ?? 0)}
+      />
+
       {error && <p className="danger">{error}</p>}
       <BaseButton
         className={styles['AddCatalog-button']}

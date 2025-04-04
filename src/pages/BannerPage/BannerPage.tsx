@@ -1,126 +1,114 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Skeleton, Table, Button, Modal, TextInput } from "@mantine/core";
-import { useEffect, useState } from "react";
-import styles from "./BannerPage.module.scss";
-import {
-  createFeature,
-  fetchFeatures,
-  deleteFeature,
-} from "@services/api/brandService";
-import { BaseButton } from "@components/atoms/Button/BaseButton";
-import NotificationStore from "@store/NotificationStore";
-import { Pagination } from "@components/molecules/Pagination/Pagination";
-import { DeleteIcon } from "../../assets/icons";
-import { wait } from "../../helpers";
-import { ContentLayout } from "@components/layouts/ContentLayout";
-import { ContentTopBar } from "@components/layouts/ContentTopBar";
-import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
+import { Skeleton, Table, Button, Modal, TextInput } from '@mantine/core'
+import { useEffect, useState } from 'react'
+import styles from './BannerPage.module.scss'
+import { createFeature, fetchFeatures, deleteFeature } from '@services/api/brandService'
+import { BaseButton } from '@components/atoms/Button/BaseButton'
+import NotificationStore from '@store/NotificationStore'
+import { Pagination } from '@components/molecules/Pagination/Pagination'
+import { DeleteIcon } from '../../assets/icons'
+import { wait } from '../../helpers'
+import { ContentLayout } from '@components/layouts/ContentLayout'
+import { ContentTopBar } from '@components/layouts/ContentTopBar'
+import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
 
 const BannerPage = () => {
-  const [bannerData, setBannerData] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-  const [brandId, setBrandId] = useState<string>("");
-  const [isCreating, setIsCreating] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const [pageSize] = useState<number>(10);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [bannerData, setBannerData] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
+  const [brandId, setBrandId] = useState<string>('')
+  const [isCreating, setIsCreating] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(1)
+  const [pageSize] = useState<number>(10)
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
+  const [totalPages, setTotalPages] = useState<number>(1)
 
   useEffect(() => {
     const loadBanners = async () => {
       try {
-        setLoading(true);
-        const response: any = await fetchFeatures(page, pageSize);
+        setLoading(true)
+        const response: any = await fetchFeatures(page, pageSize)
         setTotalPages(
-          response.meta?.totalPages ||
-            Math.ceil(response.records.length / pageSize)
-        );
-        setBannerData(response.records);
+          response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
+        )
+        setBannerData(response.data.records)
       } catch (err: any) {
-        setError(`Не удалось загрузить данные: ${err.message}`);
+        setError(`Не удалось загрузить данные: ${err.message}`)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    loadBanners();
-  }, [page, pageSize]);
+    }
+    loadBanners()
+  }, [page, pageSize])
 
   const handleCreateBanner = async () => {
     try {
-      const numericBrandId = Number(brandId);
+      const numericBrandId = Number(brandId)
       if (!brandId.trim()) {
-        setError("Введите корректный номер бренда");
-        return;
+        setError('Введите корректный номер бренда')
+        return
       }
-      setIsCreating(true);
+      setIsCreating(true)
 
-      await createFeature(numericBrandId, page, pageSize);
-      wait(1000).then(() => window.location.reload());
+      await createFeature(numericBrandId, page, pageSize)
 
-      setIsCreateModalOpen(false);
-      setBrandId("");
+      setIsCreateModalOpen(false)
+      setBrandId('')
+      wait(1000)
+      // window.location.reload()
 
-      NotificationStore.addNotification(
-        "Добавление баннера",
-        "Баннер успешно создан",
-        "success"
-      );
+      NotificationStore.addNotification('Добавление баннера', 'Баннер успешно создан', 'success')
     } catch (err: any) {
-      console.log(`Не удалось создать баннер: ${err.message}`);
-      NotificationStore.addNotification(
-        "Добавление баннера",
-        "Ошибка при создании баннера",
-        "error"
-      );
+      console.log(`Не удалось создать баннер: ${err}`)
+      NotificationStore.addNotification('Добавление баннера', `${err.message}`, 'error')
     } finally {
-      setIsCreating(false);
+      setIsCreating(false)
     }
-  };
+  }
 
   const handleDeleteBanner = async (id: string) => {
     try {
-      const response: any = await deleteFeature(id);
-      if (response.createdAt) {
-        setBannerData(bannerData.filter((banner) => banner.id !== id));
+      const response: any = await deleteFeature(id)
+      if (response.data.createdAt) {
+        setBannerData(bannerData.filter(banner => banner.id !== id))
       } else {
         NotificationStore.addNotification(
-          "Удаление баннера",
-          "Ошибка при удалении баннера",
-          "error"
-        );
+          'Удаление баннера',
+          'Ошибка при удалении баннера',
+          'error'
+        )
       }
     } catch (err: any) {
-      setError(`Не удалось удалить баннер: ${err.message}`);
+      setError(`Не удалось удалить баннер: ${err.message}`)
     } finally {
-      setIsConfirmModalOpen(false);
+      setIsConfirmModalOpen(false)
     }
-  };
+  }
 
-  if (loading) return <Skeleton />;
+  if (loading) return <Skeleton />
 
   const renderRow = () => {
-    return bannerData.map((item) => (
+    return bannerData.map(item => (
       <Table.Tr key={item.id}>
         <Table.Td>{item.id}</Table.Td>
         <Table.Td>{item.brand.name}</Table.Td>
         <Table.Td>{item.brand.features?.discount}</Table.Td>
-        <Table.Td style={{ width: "50px", padding: "0" }}>
+        <Table.Td style={{ width: '50px', padding: '0' }}>
           <DeleteIcon
             onClick={() => {
-              setIsConfirmModalOpen(true);
-              setBrandId(item.id);
+              setIsConfirmModalOpen(true)
+              setBrandId(item.id)
             }}
           />
         </Table.Td>
       </Table.Tr>
-    ));
-  };
+    ))
+  }
 
   return (
     <ContentLayout
-      className={styles["withdraws-page"]}
+      className={styles['withdraws-page']}
       header={
         <>
           <ContentTopBar title="Баннеры" />
@@ -129,16 +117,14 @@ const BannerPage = () => {
       }
     >
       <div>
-        <div className={styles["security-page-table"]}>
-          <div className={styles["security-page-table-head"]}>
+        <div className={styles['security-page-table']}>
+          <div className={styles['security-page-table-head']}>
             <Pagination
               page={page}
               totalPages={totalPages}
-              onPageChange={(newPage) => setPage(newPage)}
+              onPageChange={newPage => setPage(newPage)}
             />
-            <BaseButton onClick={() => setIsCreateModalOpen(true)}>
-              Создать Баннер
-            </BaseButton>
+            <BaseButton onClick={() => setIsCreateModalOpen(true)}>Создать Баннер</BaseButton>
           </div>
           <Table stickyHeader>
             <Table.Thead>
@@ -146,9 +132,7 @@ const BannerPage = () => {
                 <Table.Th>Номер</Table.Th>
                 <Table.Th>Название Бренда</Table.Th>
                 <Table.Th>Скидки</Table.Th>
-                <Table.Th style={{ width: "150px", padding: "0" }}>
-                  Действие
-                </Table.Th>
+                <Table.Th style={{ width: '150px', padding: '0' }}>Действие</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{renderRow()}</Table.Tbody>
@@ -163,10 +147,7 @@ const BannerPage = () => {
           withCloseButton={false}
         >
           <p>Вы уверены, что хотите удалить этот бренд?</p>
-          <Button
-            style={{ marginRight: "20px" }}
-            onClick={() => handleDeleteBanner(brandId)}
-          >
+          <Button style={{ marginRight: '20px' }} onClick={() => handleDeleteBanner(brandId)}>
             Удалить
           </Button>
           <Button onClick={() => setIsConfirmModalOpen(false)}>Отмена</Button>
@@ -178,24 +159,20 @@ const BannerPage = () => {
           onClose={() => setIsCreateModalOpen(false)}
           title="Добавить Баннер"
         >
-          {error && <div style={{ color: "red" }}>{error}</div>}
+          {error && <div style={{ color: 'red' }}>{error}</div>}
           <TextInput
             type="number"
             label="Номер Бренда"
             value={brandId}
-            onChange={(event) => setBrandId(event.target.value)}
+            onChange={event => setBrandId(event.target.value)}
           />
-          <Button
-            style={{ marginTop: "20px" }}
-            onClick={handleCreateBanner}
-            loading={isCreating}
-          >
+          <Button style={{ marginTop: '20px' }} onClick={handleCreateBanner} loading={isCreating}>
             Добавить
           </Button>
         </Modal>
       </div>
     </ContentLayout>
-  );
-};
+  )
+}
 
-export default BannerPage;
+export default BannerPage

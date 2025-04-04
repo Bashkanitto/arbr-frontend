@@ -44,8 +44,10 @@ const BrandPage = () => {
       try {
         setLoading(true)
         const response: any = await fetchBrandsPage(page, pageSize)
-        setBrandData(response.records)
-        setTotalPages(response.meta?.totalPages || Math.ceil(response.records.length / pageSize))
+        setBrandData(response.data.records)
+        setTotalPages(
+          response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
+        )
       } catch (err: any) {
         setError(`Не удалось загрузить данные: ${err.message}`)
       } finally {
@@ -82,7 +84,7 @@ const BrandPage = () => {
         setErrorText('Заполните поля')
       } else {
         const response = await editBrand(brand, newBrandName, newBrandImage, brandFilename)
-        setBrandData(prev => prev.map(item => (item.id === brand.id ? response : item)))
+        setBrandData(prev => prev.map(item => (item.id === brand.id ? response.data : item)))
         setEditModalOpen(false)
         NotificationStore.addNotification('Изменение бренда', 'Бренд успешно изменен', 'success')
       }
@@ -128,7 +130,7 @@ const BrandPage = () => {
               width={80}
             />
           ) : (
-            'No Image'
+            <p style={{ color: 'grey' }}>Нет лого</p>
           )}
         </Table.Td>
         <Table.Td>{item.name}</Table.Td>
@@ -220,7 +222,6 @@ const BrandPage = () => {
         <Modal
           opened={editModalOpen}
           onClose={() => setEditModalOpen(false)}
-          // title="Изменить бренд"
           withCloseButton={false}
         >
           <label htmlFor="brandName">Новые название</label>

@@ -107,8 +107,9 @@ export const createFeature = async (brandId: number, page: number = 1, pageSize:
       }
     )
 
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(`Ошибка ${response.status}: ${response.statusText}`)
+    if (response.data.error) {
+      console.log(response.data.error)
+      throw new Error(`Ошибка при создании баннера: ${response}`)
     }
 
     return response

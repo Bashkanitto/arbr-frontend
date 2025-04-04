@@ -46,7 +46,7 @@ const VendorPage = () => {
         }
 
         // Устанавливаем данные о вендоре
-        setVendorData(response.records)
+        setVendorData(response.data.records)
       } catch (err: unknown) {
         setError(
           `Failed to load vendor data: ${err instanceof Error ? err.message : 'Unknown error'}`

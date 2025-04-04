@@ -26,9 +26,11 @@ export const ApplicationTableAdmin = () => {
       setLoading(true)
       setError(null)
       try {
-        const { records, meta }: any = await fetchVendorGroups(page, pageSize)
-        setProductData(records)
-        setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
+        const response: any = await fetchVendorGroups(page, pageSize)
+        setProductData(response.data.records)
+        setTotalPages(
+          response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
+        )
       } catch (err) {
         setError('Не удалось загрузить данные')
         console.error(err)
@@ -90,22 +92,6 @@ export const ApplicationTableAdmin = () => {
     ? filteredData.filter(group => group.product.status === statusFilter)
     : filteredData
 
-  const handleDownload = async (url: string, customFileName: string) => {
-    try {
-      const response = await fetch(url)
-
-      const blob = await response.blob()
-      const link = document.createElement('a')
-      const objectUrl = URL.createObjectURL(blob)
-      link.href = objectUrl
-      link.download = `${customFileName}.xlsx`
-      link.click()
-      URL.revokeObjectURL(objectUrl)
-    } catch (error) {
-      console.error('Error while downloading file:', error)
-    }
-  }
-
   const renderRow = () => {
     return filteredByStatus.map(item => {
       return (
@@ -122,22 +108,6 @@ export const ApplicationTableAdmin = () => {
             {format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
               locale: ru,
             })}
-          </Table.Td>
-          <Table.Td style={{ width: '50px', padding: '0' }}>
-            <a
-              href="#"
-              onClick={() =>
-                handleDownload(
-                  item.productDocuments[0].url.replace(
-                    'http://3.76.32.115:3000',
-                    'https://api.arbr.kz'
-                  ),
-                  item.productDocuments[0].bucket
-                )
-              }
-            >
-              Посмотреть документы
-            </a>
           </Table.Td>
           <Table.Td
             style={{
@@ -202,7 +172,6 @@ export const ApplicationTableAdmin = () => {
               <Table.Th>Продавец</Table.Th>
               <Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>
               <Table.Th>Дата</Table.Th>
-              <Table.Th>Просмотр документов</Table.Th>
               <Table.Th style={{ textAlign: 'end' }}>Действие</Table.Th>
             </Table.Tr>
           </Table.Thead>

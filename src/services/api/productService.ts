@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import baseApi from './base'
-import { addProductType } from './Types'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (page: number = 1, pageSize: number = 10) => {
@@ -29,7 +28,7 @@ export const fetchVendorById = async (id: any) => {
 export const fetchProductById = async (productId: any) => {
   try {
     const response = await baseApi.get(
-      `/product/${productId}?relations=images,features,vendorGroups,vendorGroups.productDocuments`
+      `/product/${productId}?relations=images,features,vendorGroups,vendorGroups.features,vendorGroups.productDocuments`
     )
     return response
   } catch (error) {
@@ -38,7 +37,7 @@ export const fetchProductById = async (productId: any) => {
 }
 
 // –––––––––––––––––- Добавление продукта –––––––––––––
-export const addProduct = async (productData: addProductType) => {
+export const addProduct = async (productData: any) => {
   try {
     const response = await baseApi.post('/product', productData)
     return response
@@ -197,15 +196,6 @@ export const fetchMyOrders = async (page: number = 1, pageSize: number = 10) => 
   }
 }
 
-export const deleteDocument = async (filename: string) => {
-  try {
-    const response = await baseApi.delete(`/upload/${filename}`)
-    return response
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const deleteProduct = async (productId: number) => {
   try {
     const response: any = await baseApi.delete(`/product/${productId}`)
@@ -216,7 +206,7 @@ export const deleteProduct = async (productId: number) => {
 }
 
 export const editProduct = async (
-  productId: number,
+  productId: number | undefined,
   data: { description: string | null | undefined }
 ) => {
   try {
