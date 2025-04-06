@@ -2,7 +2,7 @@
 import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteProduct, fetchProductById } from '@services/api/productService'
+import { deleteProduct, fetchGroup, fetchProductById } from '@services/api/productService'
 import styles from './ProductPage.module.scss'
 import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
@@ -10,6 +10,7 @@ import { wait } from '../../helpers'
 import { ProductType } from '@services/api/Types'
 import ProductImageSection from './ProductImageSection'
 import ProductEditModal from './ProductEditModal'
+import authStore from '@store/AuthStore'
 
 export interface FormData {
   name?: string
@@ -44,14 +45,18 @@ const ProductPage = () => {
   const [formData, setFormData] = useState<FormData>()
 
   const navigate = useNavigate()
+  const user = authStore.userProfile
+  const canEditProduct =
+    user?.role === 'admin' || (user?.role === 'vendor' && user.id === product?.id)
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const response: any = await fetchProductById(id)
-        setFormData(response.data)
-        const productData = response.data
-        setProduct(productData)
+        const productResponse: any = await fetchProductById(id)
+        const groupResponse: any = await fetchGroup()
+        console.log(groupResponse)
+        setFormData(productResponse.data)
+        setProduct(productResponse.data)
       } catch (err: any) {
         setError(err.message || 'An unknown error occurred')
       }
@@ -63,7 +68,6 @@ const ProductPage = () => {
     try {
       await deleteProduct(productId)
       NotificationStore.addNotification('Продукт', 'Продукт успешно удален!', 'success')
-      і
     } catch (err) {
       NotificationStore.addNotification(
         'Продукт',
@@ -109,7 +113,9 @@ const ProductPage = () => {
               ₸
             </p>
           </div>
-          <button onClick={() => setIsEditModalOpen(true)}>ИЗМЕНИТЬ ПРОДУКТ</button>
+          {canEditProduct && (
+            <button onClick={() => setIsEditModalOpen(true)}>ИЗМЕНИТЬ ПРОДУКТ</button>
+          )}
 
           <div className={styles['product-details']}>
             <a onClick={() => setInfoVisibility(1)}>

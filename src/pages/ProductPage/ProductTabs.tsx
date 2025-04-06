@@ -7,7 +7,6 @@ import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
 import baseApi from '@services/api/base'
 import { Modal, TextInput } from '@mantine/core'
-import { is } from 'date-fns/locale'
 import { uploadProductDocument } from '@services/api/productService'
 
 const ProductTabs = ({ product }: any) => {

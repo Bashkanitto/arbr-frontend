@@ -1,25 +1,25 @@
 import { ContentLayout } from '@components/layouts/ContentLayout'
 import { ContentTopBar } from '@components/layouts/ContentTopBar'
 import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
-import { WithdrawsPageTable } from '../WithdrawsPage/WithdrawsPageTable/WithdrawsPageTable'
-import styles from './SuppliesPage.module.scss'
+import styles from './PaymentRequestPage.module.scss'
+import { PaymentRequestTable } from './PaymentRequestTable'
 
-const SuppliesPage = () => {
+const PaymentRequestPage = () => {
   return (
     <ContentLayout
-      className={styles['supplies-page']}
+      className={styles['paymentRequest-page']}
       header={
         <>
-          <ContentTopBar title="Мои Заказы" />
+          <ContentTopBar title="Запрос на вывод" />
           <ContentUserInfo />
         </>
       }
     >
       <div className={styles['']}>
-        <WithdrawsPageTable />
+        <PaymentRequestTable />
       </div>
     </ContentLayout>
   )
 }
 
-export default SuppliesPage
+export default PaymentRequestPage

@@ -51,6 +51,11 @@ const navItems = [
     route: RouteNavList.withdraws(),
   },
   {
+    icon: <CoinsIcon />,
+    title: 'Запрос на вывод',
+    route: RouteNavList.paymentRequest(),
+  },
+  {
     icon: <LockIcon />,
     title: 'Безопасность',
     route: RouteNavList.security(),
@@ -82,6 +87,7 @@ export const MainSidebarNav = () => {
         // "Выплаты",
         'Бренды',
         'Баннеры',
+        'Запрос на вывод',
         'Безопасность',
         // 'История',
         'Заявки',
@@ -89,7 +95,7 @@ export const MainSidebarNav = () => {
       ].includes(item.title)
     }
     if (userProfile.role === 'vendor') {
-      return ['Каталог', 'Мои Заказы', 'История', 'Заявки'].includes(item.title)
+      return ['Каталог', 'Мои Заказы', 'История', 'Запрос на вывод', 'Заявки'].includes(item.title)
     }
     return false
   })

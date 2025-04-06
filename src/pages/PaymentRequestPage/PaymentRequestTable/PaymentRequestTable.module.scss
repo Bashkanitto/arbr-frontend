@@ -1,0 +1,43 @@
+.payment-page-table-head {
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+
+  div {
+    display: flex;
+    gap: 20px;
+  }
+
+  input {
+    color: black;
+    background: #f4f5f7;
+    border-radius: 50px;
+    width: 271px;
+    height: 51px;
+    padding: 20px;
+    outline: none;
+    border: none;
+  }
+}
+.payment-page-table {
+  flex: 1;
+  display: flex;
+  background: #fff;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+
+  tr {
+    border: none;
+  }
+  button {
+    border: 0;
+    background: transparent;
+  }
+  button:hover {
+    cursor: pointer;
+  }
+}

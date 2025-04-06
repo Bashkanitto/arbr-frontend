@@ -9,6 +9,7 @@ import { AuthProtect } from './AuthProtect'
 import BrandPage from '@pages/BrandPage/BrandPage'
 import BannerPage from '@pages/BannerPage/BannerPage'
 import LogsPage from '@pages/logsPage/LogsPage'
+import PaymentRequestPage from '@pages/PaymentRequestPage/PaymentRequestPage'
 
 // Lazy load components
 const ApplicationPage = lazy(() => import('@pages/ApplicationPage/ApplicationPage'))
@@ -19,7 +20,7 @@ const NotFoundPage = lazy(() => import('@pages/NotFoundPage/NotFoundPage'))
 const ProductPage = lazy(() => import('@pages/ProductPage/ProductPage'))
 const SearchPage = lazy(() => import('@pages/SearchPage/SearchPage'))
 const SecurityPage = lazy(() => import('@pages/SecurityPage/SecurityPage'))
-const SuppliesPage = lazy(() => import('@pages/SuppliesPage/SuppliesPage'))
+const SuppliesPage = lazy(() => import('@pages/PaymentRequestPage/PaymentRequestPage'))
 const VendorPage = lazy(() => import('@pages/VendorPage/VendorPage'))
 const WithdrawsPage = lazy(() => import('@pages/WithdrawsPage/WithdrawsPage'))
 
@@ -73,6 +74,13 @@ export const AppRouter = () => {
               </Route>
               <Route path={RoutePathList.brand} element={<AuthProtect allowedRoles={['admin']} />}>
                 <Route path="" element={<BrandPage />} />
+              </Route>
+
+              <Route
+                path={RoutePathList.paymentRequest}
+                element={<AuthProtect allowedRoles={['admin']} />}
+              >
+                <Route path="" element={<PaymentRequestPage />} />
               </Route>
 
               <Route path={RoutePathList.logs} element={<AuthProtect allowedRoles={['admin']} />}>
