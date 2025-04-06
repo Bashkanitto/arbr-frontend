@@ -1,25 +1,25 @@
-import { ContentLayout } from "@components/layouts/ContentLayout";
-import { ContentTopBar } from "@components/layouts/ContentTopBar";
-import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
-import { WithdrawsPageTable } from "../WithdrawsPage/WithdrawsPageTable/WithdrawsPageTable";
-import styles from "./SuppliesPage.module.scss";
+import { ContentLayout } from '@components/layouts/ContentLayout'
+import { ContentTopBar } from '@components/layouts/ContentTopBar'
+import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
+import { WithdrawsPageTable } from '../WithdrawsPage/WithdrawsPageTable/WithdrawsPageTable'
+import styles from './SuppliesPage.module.scss'
 
 const SuppliesPage = () => {
   return (
     <ContentLayout
-      className={styles["supplies-page"]}
+      className={styles['supplies-page']}
       header={
         <>
-          <ContentTopBar title="Мои поставки" />
+          <ContentTopBar title="Мои Заказы" />
           <ContentUserInfo />
         </>
       }
     >
-      <div className={styles[""]}>
+      <div className={styles['']}>
         <WithdrawsPageTable />
       </div>
     </ContentLayout>
-  );
-};
+  )
+}
 
-export default SuppliesPage;
+export default SuppliesPage

@@ -24,7 +24,7 @@ const ProductImageSection = ({ product, id, setProduct }: any) => {
   }
 
   const handleUploadImage = async () => {
-    if (setSelectedImage.length === 0) {
+    if (selectedImage.length === 0) {
       NotificationStore.addNotification('Ошибка', 'Выберите изображение', 'error')
       return
     }
@@ -38,17 +38,24 @@ const ProductImageSection = ({ product, id, setProduct }: any) => {
     }
 
     try {
-      if (product) {
-        await uploadMultipleImages(selectedImage, product.id)
+      const imageResponse = await uploadMultipleImages(selectedImage, product.id)
+      if (!imageResponse) {
+        NotificationStore.addNotification(
+          'Ошибка',
+          'файл слишком большой или проблемы с сервером',
+          'error'
+        )
       } else {
-        NotificationStore.addNotification('Ошибка', 'Ошибка при загрузке изображении', 'error')
+        NotificationStore.addNotification('Успех', 'Изображение загружено!', 'success')
       }
-      NotificationStore.addNotification('Успех', 'Изображение загружено!', 'success')
+
       const response: any = await fetchProductById(id)
       setProduct(response?.data)
       setIsModalOpen({ ...isModalOpen, image: false })
-    } catch (error) {
-      NotificationStore.addNotification('Ошибка', 'Не удалось загрузить изображение', 'error')
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setSelectedImage([])
     }
   }
 
@@ -56,8 +63,7 @@ const ProductImageSection = ({ product, id, setProduct }: any) => {
     try {
       await baseApi.delete(`/upload/${filename}`)
       NotificationStore.addNotification('Изображение', 'Изображение успешно удалено!', 'success')
-      wait(1000)
-      window.location.reload()
+      wait(1000).then(() => window.location.reload())
     } catch (err) {
       NotificationStore.addNotification(
         'Изображение',

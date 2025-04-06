@@ -1,23 +1,23 @@
-import { ContentLayout } from "@components/layouts/ContentLayout";
-import { ContentTopBar } from "@components/layouts/ContentTopBar";
-import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
-import styles from "./MyOrdersPage.module.scss";
-import { MyOrdersTable } from "./MyOrdersTable/MyOrdersTabble";
+import { ContentLayout } from '@components/layouts/ContentLayout'
+import { ContentTopBar } from '@components/layouts/ContentTopBar'
+import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
+import styles from './MyOrdersPage.module.scss'
+import { MyOrdersTable } from './MyOrdersTable/MyOrdersTabble'
 
 const MyOrdersPage = () => {
   return (
     <ContentLayout
-      className={styles["withdraws-page"]}
+      className={styles['withdraws-page']}
       header={
         <>
-          <ContentTopBar title="Заявки" />
+          <ContentTopBar title="Мои Заказы" />
           <ContentUserInfo />
         </>
       }
     >
       <div>{<MyOrdersTable />}</div>
     </ContentLayout>
-  );
-};
+  )
+}
 
-export default MyOrdersPage;
+export default MyOrdersPage

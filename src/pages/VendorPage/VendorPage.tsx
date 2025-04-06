@@ -69,12 +69,10 @@ const VendorPage = () => {
 
   return (
     <div className={styles['catalog-page']}>
-      {vendorData.length > 0 && (
-        <>
-          <Avatar w={100} h={100} />
-          <p>{vendorData[0]?.firstName}</p>
-        </>
-      )}
+      <>
+        <Avatar w={100} h={100} />
+        <p>{vendorData[0]?.firstName}</p>
+      </>
 
       <CatalogFilters
         isAdmin={false}
@@ -86,28 +84,30 @@ const VendorPage = () => {
 
       <div className={styles['catalog-tenders']}>
         {vendorData.length > 0 ? (
-          vendorData[0]?.vendorGroups?.map(vendor => (
-            <div
-              onClick={() => navigate(`/product/${vendor.product.id}`)}
-              className={styles.catalogItem}
-              key={vendor.id}
-            >
-              <img
-                src={
-                  vendor.product.images && vendor.product.images.length > 0 ? (
-                    vendor.product.images[0].url.replace(
-                      'http://3.76.32.115:3000',
-                      'https://api.arbr.kz'
+          vendorData[0]?.vendorGroups
+            ?.map(vendor => (
+              <div
+                onClick={() => navigate(`/product/${vendor.product.id}`)}
+                className={styles.catalogItem}
+                key={vendor.id}
+              >
+                <img
+                  src={
+                    vendor.product.images && vendor.product.images.length > 0 ? (
+                      vendor.product.images[0].url.replace(
+                        'http://3.76.32.115:3000',
+                        'https://api.arbr.kz'
+                      )
+                    ) : (
+                      <Skeleton width={200} height={200} radius={300} />
                     )
-                  ) : (
-                    <Skeleton width={200} height={200} radius={300} />
-                  )
-                }
-                alt={vendor.product.name || 'Product image'}
-              />
-              <p>{vendor.product.name}</p>
-            </div>
-          ))
+                  }
+                  alt={vendor.product.name || 'Product image'}
+                />
+                <p>{vendor.product.name}</p>
+              </div>
+            ))
+            .reverse()
         ) : (
           <p>Нет доступных товаров</p>
         )}

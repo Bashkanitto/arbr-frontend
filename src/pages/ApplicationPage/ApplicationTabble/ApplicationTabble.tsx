@@ -81,7 +81,7 @@ export const ApplicationTable = () => {
 
     return filteredData.map(item => (
       <Table.Tr key={item.id}>
-        <Table.Td>{item.product.id}</Table.Td>
+        <Table.Td>{item.id}</Table.Td>
         <Table.Td>{item.product.name}</Table.Td>
         <Table.Td>
           {format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
@@ -125,7 +125,7 @@ export const ApplicationTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>ID заказа</Table.Th>
+              <Table.Th>ID</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Дата</Table.Th>
               <Table.Th>Статус</Table.Th>

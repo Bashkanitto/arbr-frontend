@@ -41,7 +41,7 @@ const ProductPage = () => {
   const [infoVisibility, setInfoVisibility] = useState<number | null>()
   const [error, setError] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
-  const [formData, setFormData] = useState<FormData>({})
+  const [formData, setFormData] = useState<FormData>()
 
   const navigate = useNavigate()
 
@@ -63,9 +63,7 @@ const ProductPage = () => {
     try {
       await deleteProduct(productId)
       NotificationStore.addNotification('Продукт', 'Продукт успешно удален!', 'success')
-      wait(2000).then(() => {
-        window.location.reload()
-      })
+      і
     } catch (err) {
       NotificationStore.addNotification(
         'Продукт',
@@ -107,7 +105,7 @@ const ProductPage = () => {
             <p>
               {product.vendorGroups[0].features?.discount
                 ? product.price * (1 - product.vendorGroups[0].features?.discount / 100)
-                : product.price}
+                : new Intl.NumberFormat('en-KZ').format(product.price)}
               ₸
             </p>
           </div>

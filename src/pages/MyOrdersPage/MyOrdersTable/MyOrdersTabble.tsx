@@ -22,9 +22,11 @@ export const MyOrdersTable = () => {
       setLoading(true)
       setError(null)
       try {
-        const { records, meta }: any = await fetchMyOrders(page, pageSize)
-        setTotalPages(meta?.totalPages || Math.ceil(records.length / pageSize))
-        setProductData(records)
+        const response: any = await fetchMyOrders(page, pageSize)
+        setTotalPages(
+          response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
+        )
+        setProductData(response.data.records)
       } catch (err) {
         setError('Failed to load products')
         console.error(err)
@@ -39,27 +41,31 @@ export const MyOrdersTable = () => {
   if (loading) return <Skeleton />
   if (error) return <div>Error: {error}</div>
 
-  const getStatusColor = (status: string) => {
+  const getLocalizedStatus = (status: string): string => {
     switch (status) {
-      case 'active':
-        return 'success'
       case 'pending':
-        return 'warning'
+        return 'В ожидании'
+      case 'completed':
+        return 'Принят'
+      case 'completing':
+        return 'Завершение'
+      case 'published':
+        return 'Опубликовано'
+      case 'not_happened':
+        return 'Не завершен'
+      case 'not_won':
+        return 'Не выиграно'
       case 'cancelled':
-        return 'danger'
+        return 'Отменен'
       default:
-        return ''
+        return 'Неизвестно'
     }
   }
 
-  const getLocalizedStatus = (status: string): string => {
-    switch (status) {
-      case 'active':
-        return 'Активен'
-      case 'pending':
-        return 'В ожидании'
-      case 'cancelled':
-        return 'Отклонён'
+  const getLocalizedPurchase = (purchase: string): string => {
+    switch (purchase) {
+      case 'directPurchase':
+        return 'Прямой платеж'
       default:
         return 'Неизвестно'
     }
@@ -67,31 +73,28 @@ export const MyOrdersTable = () => {
 
   const renderRow = () => {
     const filteredData = statusFilter
-      ? productData.filter(item => item.product.status === statusFilter)
+      ? productData.filter(item => item.status === statusFilter)
       : productData
 
     if (!Array.isArray(filteredData)) return null
 
     return filteredData.map(item => (
       <Table.Tr key={item.id}>
-        <Table.Td>{item.id}</Table.Td>
+        <Table.Td>{item.announcementNumber}</Table.Td>
         <Table.Td>{item.user?.firstName ?? 'Неизвестно'}</Table.Td>
-        <Table.Td className={styles.statusRow}>
-          <p
-            className={`${styles.status} ${getStatusColor(
-              item.status
-            )} ${getStatusColor(item.status)}bg`}
-          >
-            {getLocalizedStatus(item.status)}
-          </p>
-        </Table.Td>
+        <Table.Td className={styles.statusRow}>{getLocalizedStatus(item.status)}</Table.Td>
         <Table.Td>
-          <a href={`/product/${item.cartItems[0].product.id}`}>смотреть</a>
+          {item.cartItems[0].product ? (
+            <a href={`/product/${item.cartItems[0].product?.id}`}>смотреть</a>
+          ) : (
+            'нет продукта'
+          )}
         </Table.Td>
+        <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
+        <Table.Td>{item.deliveryAdress}</Table.Td>
+        <Table.Td>{item.deliveryPrice}₸</Table.Td>
         <Table.Td style={{ textAlign: 'end' }}>
-          {format(new Date(item.createdAt), 'dd MMMM, yyyy', {
-            locale: ru,
-          })}
+          {new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸
         </Table.Td>
       </Table.Tr>
     ))
@@ -124,11 +127,14 @@ export const MyOrdersTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>ID заказа</Table.Th>
+              <Table.Th>Номер заказа</Table.Th>
               <Table.Th>Покупатель</Table.Th>
               <Table.Th>Статус</Table.Th>
               <Table.Th>Продукт</Table.Th>
-              <Table.Th style={{ textAlign: 'end' }}>Дата</Table.Th>
+              <Table.Th>Оплата</Table.Th>
+              <Table.Th>Доставка</Table.Th>
+              <Table.Th>Цена доставки</Table.Th>
+              <Table.Th style={{ textAlign: 'end' }}>Цена</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{renderRow()}</Table.Tbody>

@@ -75,12 +75,16 @@ export const uploadMultipleImages = async (files: any[], productId: number) => {
     formData.append('product', JSON.stringify(productId))
     files.forEach(file => formData.append('files', file))
 
-    await baseApi.post('/upload/multiple', formData, {
+    const response = await baseApi.post('/upload/multiple', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
     })
+    if (!response) {
+      return false
+    }
+    return response
   } catch (error) {
-    console.error('Ошибка при отправке файлов:', error)
+    throw new Error('Ошибка с сервером')
   }
 }
 

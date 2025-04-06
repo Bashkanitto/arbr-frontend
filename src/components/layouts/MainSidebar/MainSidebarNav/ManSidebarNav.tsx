@@ -42,7 +42,7 @@ const navItems = [
   },
   {
     icon: <StatusIcon />,
-    title: 'Мои Поставки',
+    title: 'Мои Заказы',
     route: RouteNavList.order(),
   },
   {
@@ -89,7 +89,7 @@ export const MainSidebarNav = () => {
       ].includes(item.title)
     }
     if (userProfile.role === 'vendor') {
-      return ['Каталог', 'Мои Поставки', 'История', 'Заявки'].includes(item.title)
+      return ['Каталог', 'Мои Заказы', 'История', 'Заявки'].includes(item.title)
     }
     return false
   })

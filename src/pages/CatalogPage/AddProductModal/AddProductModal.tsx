@@ -24,11 +24,11 @@ interface FormData {
   description: string
   quantity: number
   price: number
-  KZTIN: number
-  GTIN: number
-  ENSTRU: number
-  brandId: string
-  subcategoryId: number
+  KZTIN: string | null
+  GTIN: string | null
+  ENSTRU: string | null
+  brandId: string | null
+  subcategoryId: string | null
   isBonus: boolean
   isFreeDelivery: boolean
   isDiscount: boolean
@@ -66,11 +66,11 @@ const AddProductModal = ({
     description: '',
     quantity: 1,
     price: 0,
-    brandId: '',
-    KZTIN: 0,
-    GTIN: 0,
-    ENSTRU: 0,
-    subcategoryId: 0,
+    brandId: null,
+    KZTIN: null,
+    GTIN: null,
+    ENSTRU: null,
+    subcategoryId: null,
     isBonus: false,
     isFreeDelivery: false,
     isDiscount: false,
@@ -218,8 +218,8 @@ const AddProductModal = ({
         rating: 0,
       })
 
-      console.log(productResponse)
-      const productId = productResponse.data.id
+      if (!productResponse) return 'erore'
+      const productId = productResponse?.data?.id
 
       await uploadMultipleImages(selectedFiles, productId)
 
@@ -281,9 +281,9 @@ const AddProductModal = ({
         searchValue={subcategorySearch}
         onSearchChange={setSubcategorySearch}
         placeholder="Введите категорию..."
-        value={formData.subcategoryId.toString()}
+        value={formData.subcategoryId}
         onChange={value => {
-          setFormData(prev => ({ ...prev, subcategoryId: Number(value) }))
+          setFormData(prev => ({ ...prev, subcategoryId: value }))
         }}
       />
       <label htmlFor="mdEditor">Описание</label>
@@ -339,17 +339,22 @@ const AddProductModal = ({
       <TextInput
         label="KZTIN"
         placeholder="Введите KZTIN"
-        onChange={value => handleInputChange('KZTIN', value ?? 0)}
+        value={formData.KZTIN ?? ''}
+        onChange={e => handleInputChange('KZTIN', e.currentTarget.value)}
       />
+
       <TextInput
         label="ЕНС ТРУ"
         placeholder="Введите ЕНС ТРУ"
-        onChange={value => handleInputChange('ENSTRU', value ?? 0)}
+        value={formData.ENSTRU ?? ''}
+        onChange={e => handleInputChange('ENSTRU', e.currentTarget.value)}
       />
+
       <TextInput
         label="GTIN"
         placeholder="Введите GTIN"
-        onChange={value => handleInputChange('GTIN', value ?? 0)}
+        value={formData.GTIN ?? ''}
+        onChange={e => handleInputChange('GTIN', e.currentTarget.value)}
       />
 
       {error && <p className="danger">{error}</p>}
