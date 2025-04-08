@@ -54,10 +54,7 @@ const ProductEditModal: React.FC<Props> = ({
     }
   }
 
-  const handleInputChange = async (
-    field: keyof FormData | keyof NonNullable<FormData['vendorGroups'][0]['features']>,
-    value: any
-  ) => {
+  const handleInputChange = async (field: keyof FormData, value: any) => {
     setFormData((prev: FormData) => {
       return {
         ...prev,

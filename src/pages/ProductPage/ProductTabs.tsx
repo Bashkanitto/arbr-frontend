@@ -1,4 +1,12 @@
-import { useEffect, useState } from 'react'
+import {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useEffect,
+  useState,
+} from 'react'
 import styles from './ProductPage.module.scss'
 import MDEditor from '@uiw/react-md-editor'
 import { DownloadIcon } from '@assets/icons/DownloadIcon'
@@ -166,14 +174,14 @@ const ProductTabs = ({ product }: any) => {
 
       {activeTab === 'Группы' && (
         <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {productGroups.map(group => (
+          {productGroups.map((group: { id: number; title: any; groupItems: any }) => (
             <div
               style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
               key={group.id}
             >
               {group.title}:
               <div style={{ display: 'flex', gap: '10px' }}>
-                {group.groupItems.map(subGroup => (
+                {group.groupItems.map((subGroup: { id: number; value: any }) => (
                   <button
                     className={styles.group}
                     key={subGroup.id}

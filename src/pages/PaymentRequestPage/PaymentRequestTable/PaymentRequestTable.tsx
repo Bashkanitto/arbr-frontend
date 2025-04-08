@@ -47,7 +47,7 @@ export const PaymentRequestTable = () => {
   const handSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target
     if (checked) {
-      setSelectRows(paymentRequest?.map((_, index) => index))
+      setSelectRows(paymentRequest?.map((_: any, index: any) => index))
     } else {
       setSelectRows([])
     }
@@ -73,10 +73,10 @@ export const PaymentRequestTable = () => {
 
   const renderRow = () => {
     const filteredData = statusFilter
-      ? paymentRequest.filter(item => item.status === statusFilter)
+      ? paymentRequest.filter((item: { status: string }) => item.status === statusFilter)
       : paymentRequest
 
-    return filteredData.map((item, index) => (
+    return filteredData.map((item: any, index: any) => (
       <Table.Tr key={index}>
         <Table.Td>
           <Checkbox
