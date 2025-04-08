@@ -29,11 +29,6 @@ interface FormData {
   ENSTRU: string | null
   brandId: string | null
   subcategoryId: string | null
-  isBonus: boolean
-  isFreeDelivery: boolean
-  isDiscount: boolean
-  bonus: null | number
-  discount: null | number
 }
 
 const AddProductModal = ({
@@ -49,13 +44,14 @@ const AddProductModal = ({
 }) => {
   const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
   const [brandSearch, setBrandSearch] = useState<string>('')
+  const [newBonus, setNewBonus] = useState<string | number | null>('')
+  const [newDiscount, setNewDiscount] = useState<string | number>('')
   const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
   const [subcategorySearch, setSubcategorySearch] = useState<string>('')
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
   const [filteredCategories, setFilteredCategories] = useState<{ value: string; label: string }[]>(
     []
   )
-
   const [accounts, setAccounts] = useState<BrandOption[]>([])
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -71,11 +67,6 @@ const AddProductModal = ({
     GTIN: null,
     ENSTRU: null,
     subcategoryId: null,
-    isBonus: false,
-    isFreeDelivery: false,
-    isDiscount: false,
-    bonus: null,
-    discount: null,
   })
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,16 +147,9 @@ const AddProductModal = ({
   const handleInputChange = (field: keyof FormData, value: any) => {
     // Преобразуем значение в число и ограничиваем его максимумом 100, если это бонус или скидка
     let newValue = value
-
-    if (field === 'bonus' || field === 'discount') {
-      newValue = Math.min(100, Math.max(0, value))
-    }
-
     setFormData(prev => ({
       ...prev,
       [field]: newValue,
-      isBonus: field === 'bonus' ? newValue > 0 : prev.isBonus,
-      isDiscount: field === 'discount' ? newValue > 0 : prev.isDiscount,
     }))
   }
 
@@ -203,17 +187,6 @@ const AddProductModal = ({
         ENCTRU: formData.ENSTRU,
         brandId: formData.brandId,
         subcategoryId: formData.subcategoryId || 1,
-        vendorGroups: [
-          {
-            features: {
-              isBonus: formData.isBonus,
-              isFreeDelivery: formData.isFreeDelivery,
-              isDiscount: formData.isDiscount,
-              bonus: formData.bonus || null,
-              discount: formData.discount || null,
-            },
-          },
-        ],
         amountPrice: 0,
         rating: 0,
       })
@@ -227,6 +200,12 @@ const AddProductModal = ({
         productId: productId,
         vendorId: parseInt(formData.accountId, 10),
         price: formData.price.toString(),
+        features: {
+          isBonus: newBonus != 0,
+          isDiscount: newBonus != 0,
+          bonus: newBonus,
+          discount: newDiscount,
+        },
       })
 
       NotificationStore.addNotification(
@@ -327,14 +306,14 @@ const AddProductModal = ({
         max={100}
         min={0}
         placeholder="Введите бонус (0 - 100)"
-        onChange={value => handleInputChange('bonus', value ?? 0)}
+        onChange={value => setNewBonus(value)}
       />
       <NumberInput
         label="Скидка %"
         max={100}
         min={0}
         placeholder="Введите бонус (0 - 100)"
-        onChange={value => handleInputChange('discount', value ?? 0)}
+        onChange={value => setNewDiscount(value)}
       />
       <TextInput
         label="KZTIN"

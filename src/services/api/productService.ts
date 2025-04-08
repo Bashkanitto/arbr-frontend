@@ -39,7 +39,7 @@ export const fetchProductById = async (productId: any) => {
 // –––––––––––––––––- Получение группы –––––––––––––
 export const fetchGroup = async () => {
   try {
-    const response = await baseApi.get('/group')
+    const response = await baseApi.get('/group?relations=groupItems')
     return response
   } catch (error) {
     console.error('Error fetching product:', error)
@@ -61,16 +61,25 @@ export const addVendorGroup = async ({
   productId,
   vendorId,
   price,
+  features,
 }: {
   productId: number
   vendorId: number
   price: string
+  features: {
+    isBonus: boolean
+    isDiscount: boolean
+    isFreeDelivery?: boolean
+    discount: number | string | null
+    bonus: number | string | null
+  }
 }) => {
   try {
     const response = await baseApi.post('/vendor-group/add', {
       productId,
       vendorId,
       price,
+      features,
     })
     return response
   } catch (error) {

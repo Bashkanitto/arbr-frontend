@@ -32,7 +32,7 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
           'success'
         )
       } catch (error) {
-        console.error('Error updating bonus:', error)
+        console.error('Error updating discount:', error)
         NotificationStore.addNotification('Изменение скидки', 'Что то пошло не так', 'error')
       }
     } else {

@@ -2,7 +2,7 @@
 import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteProduct, fetchGroup, fetchProductById } from '@services/api/productService'
+import { deleteProduct, fetchProductById } from '@services/api/productService'
 import styles from './ProductPage.module.scss'
 import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
@@ -23,17 +23,6 @@ export interface FormData {
   ENSTRU?: number
   subcategoryId?: number
   isFreeDelivery?: boolean
-  vendorGroups: [
-    {
-      features?: {
-        isBonus?: boolean
-        isFreeDelivery?: boolean
-        isDiscount?: boolean
-        bonus?: string | number | null
-        discount?: string | number | null
-      }
-    },
-  ]
 }
 
 const ProductPage = () => {
@@ -46,6 +35,7 @@ const ProductPage = () => {
 
   const navigate = useNavigate()
   const user = authStore.userProfile
+  // TODO admin
   const canEditProduct =
     user?.role === 'admin' || (user?.role === 'vendor' && user.id === product?.id)
 
@@ -53,8 +43,6 @@ const ProductPage = () => {
     const loadProduct = async () => {
       try {
         const productResponse: any = await fetchProductById(id)
-        const groupResponse: any = await fetchGroup()
-        console.log(groupResponse)
         setFormData(productResponse.data)
         setProduct(productResponse.data)
       } catch (err: any) {
@@ -99,20 +87,28 @@ const ProductPage = () => {
             в наличии
           </p>
           <div className={styles['product-price']}>
-            {product.vendorGroups[0].features?.isDiscount ? (
-              <span>
-                <s>{product.price}₸ </s>
-              </span>
-            ) : (
-              <span>Цена за товар</span>
-            )}
+            <div>
+              {product?.vendorGroups[0].features?.isDiscount ? (
+                <span>
+                  <s>{product.price}₸ </s>
+                </span>
+              ) : (
+                <span>Цена за товар</span>
+              )}
+              {product?.vendorGroups[0].features?.isBonus && (
+                <span style={{ background: 'green', marginLeft: '10px' }}>
+                  {(product.price * Number(product.vendorGroups[0].features.bonus)) / 100}Б
+                </span>
+              )}
+            </div>
             <p>
-              {product.vendorGroups[0].features?.discount
-                ? product.price * (1 - product.vendorGroups[0].features?.discount / 100)
+              {product?.vendorGroups[0].features?.discount
+                ? product.price * (1 - product?.vendorGroups[0].features?.discount / 100)
                 : new Intl.NumberFormat('en-KZ').format(product.price)}
               ₸
             </p>
           </div>
+
           {canEditProduct && (
             <button onClick={() => setIsEditModalOpen(true)}>ИЗМЕНИТЬ ПРОДУКТ</button>
           )}

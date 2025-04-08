@@ -98,7 +98,7 @@ export const fetchFeatures = async (page: number = 1, pageSize: number = 10) => 
   }
 }
 
-export const createFeature = async (brandId: number, page: number = 1, pageSize: number = 10) => {
+export const createBanner = async (brandId: number, page: number = 1, pageSize: number = 10) => {
   try {
     const response = await baseApi.post(
       `/main-feature?relations=brand&pagnation[pageSize]=${pageSize}&pagination[page]=${page}&sort[id]=desc`,
@@ -119,7 +119,7 @@ export const createFeature = async (brandId: number, page: number = 1, pageSize:
   }
 }
 
-export const deleteFeature = async (featureId: string) => {
+export const deleteBanner = async (featureId: string) => {
   try {
     const response = await baseApi.delete(`/main-feature/${featureId}`)
     return response

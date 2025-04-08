@@ -8,8 +8,8 @@ export const fetchLogger = async () => {
     })
     return response
   } catch (error) {
-    console.error('Error updating bonus:', error)
-    throw new Error('Error updating bonus')
+    console.error('Error updating logger:', error)
+    throw new Error('Error updating logger')
   }
 }
 
@@ -18,17 +18,17 @@ export const fetchPaymentRequest = async () => {
     const response: any = await baseApi.get(`/balance-log/waits`)
     return response
   } catch (error) {
-    console.error('Error updating bonus:', error)
-    throw new Error('Error updating bonus')
+    console.error('Error updating payment:', error)
+    throw new Error('Error updating payment')
   }
 }
 
-export const patchPaymentRequest = async (id: number, status: string) => {
+export const patchPaymentRequest = async (paymentId: number) => {
   try {
-    const response: any = await baseApi.patch(`/balance-log/waits/:`, status)
+    const response: any = await baseApi.get(`/balance-log/approve/${paymentId}`)
     return response
   } catch (error) {
-    console.error('Error updating bonus:', error)
-    throw new Error('Error updating bonus')
+    console.error('Error updating payment:', error)
+    throw new Error('Error updating payment')
   }
 }

@@ -5,6 +5,7 @@ import NotificationStore from '@store/NotificationStore'
 import MDEditor from '@uiw/react-md-editor'
 import { useState } from 'react'
 import { FormData } from './ProductPage'
+import { updateBonus, updateDiscount } from '@services/api/procentService'
 
 type Props = {
   isOpen: boolean
@@ -21,13 +22,22 @@ const ProductEditModal: React.FC<Props> = ({
   formData,
   setFormData,
 }) => {
+  const [newBonus, setNewBonus] = useState<string | number>(
+    product?.vendorGroups[0].features?.bonus
+  )
+  const [newDiscount, setNewDiscount] = useState<string | number>(
+    product.vendorGroups[0].feature?.discount
+  )
   const [brandSearch, setBrandSearch] = useState<string>('')
   const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
 
   const handleEditProduct = async () => {
     try {
-      console.log(formData)
       const response = await editProduct(product?.id, formData)
+      // TODO
+      await updateBonus(product.vendorGroups[0]?.id, newBonus)
+      // TODO
+      await updateDiscount(product.vendorGroups[0]?.id, newDiscount)
       NotificationStore.addNotification('Товар', 'Товар успешно отредактирован!', 'success')
       setIsEditModalOpen(false)
 
@@ -44,40 +54,14 @@ const ProductEditModal: React.FC<Props> = ({
     }
   }
 
-  const handleInputChange = (
+  const handleInputChange = async (
     field: keyof FormData | keyof NonNullable<FormData['vendorGroups'][0]['features']>,
     value: any
   ) => {
-    let newValue = value
-    if (field === 'bonus' || field === 'discount') {
-      newValue = Math.min(100, Math.max(0, value))
-    }
-
     setFormData((prev: FormData) => {
-      // Если поле принадлежит `vendorGroups[0].features`
-      if (field in (prev.vendorGroups[0].features || {})) {
-        return {
-          ...prev,
-          vendorGroups: prev.vendorGroups.map((group, index) =>
-            index === 0
-              ? {
-                  ...group,
-                  features: {
-                    ...group.features,
-                    [field]: newValue,
-                    isBonus: field === 'bonus' ? newValue > 0 : group.features?.isBonus,
-                    isDiscount: field === 'discount' ? newValue > 0 : group.features?.isDiscount,
-                  },
-                }
-              : group
-          ),
-        }
-      }
-
-      // Если поле принадлежит `FormData`
       return {
         ...prev,
-        [field]: newValue,
+        [field]: value,
       }
     })
   }
@@ -126,7 +110,7 @@ const ProductEditModal: React.FC<Props> = ({
         value={formData.vendorGroups[0].features?.bonus}
         min={0}
         placeholder="Введите бонус (0 - 100)"
-        onChange={value => handleInputChange('bonus', value ?? 0)}
+        onChange={value => setNewBonus(value)}
       />
       <NumberInput
         label="Скидка %"
@@ -134,7 +118,7 @@ const ProductEditModal: React.FC<Props> = ({
         value={formData.vendorGroups[0].features?.discount}
         min={0}
         placeholder="Введите бонус (0 - 100)"
-        onChange={value => handleInputChange('discount', value ?? 0)}
+        onChange={value => setNewDiscount(value)}
       />
       <NumberInput
         label="ЕНС ТРУ"

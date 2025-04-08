@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './ProductPage.module.scss'
 import MDEditor from '@uiw/react-md-editor'
 import { DownloadIcon } from '@assets/icons/DownloadIcon'
@@ -7,9 +7,10 @@ import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
 import baseApi from '@services/api/base'
 import { Modal, TextInput } from '@mantine/core'
-import { uploadProductDocument } from '@services/api/productService'
+import { fetchGroup, uploadProductDocument } from '@services/api/productService'
 
 const ProductTabs = ({ product }: any) => {
+  const [productGroups, setProductGroups] = useState<any>([])
   const [activeTab, setActiveTab] = useState<string>('описание')
   const [errorText, setErrorText] = useState<string | null>(null)
   const [selectedDocument, setSelectedDocument] = useState<File[]>([])
@@ -17,6 +18,20 @@ const ProductTabs = ({ product }: any) => {
     image: false,
     document: false,
   })
+
+  useEffect(() => {
+    const loadGroups = async () => {
+      try {
+        const groupResponse: any = await fetchGroup()
+        console.log('groupresponse', groupResponse)
+        setProductGroups(groupResponse.data.records)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    loadGroups()
+  }, [])
 
   const handleDeleteDocument = async (filename: string) => {
     try {
@@ -148,7 +163,30 @@ const ProductTabs = ({ product }: any) => {
           </BaseButton>
         </div>
       )}
-      {activeTab === 'Группы' && <div>groups</div>}
+
+      {activeTab === 'Группы' && (
+        <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {productGroups.map(group => (
+            <div
+              style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
+              key={group.id}
+            >
+              {group.title}:
+              <div style={{ display: 'flex', gap: '10px' }}>
+                {group.groupItems.map(subGroup => (
+                  <button
+                    className={styles.group}
+                    key={subGroup.id}
+                    onClick={() => console.log(group)}
+                  >
+                    {subGroup.value}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Modal
         opened={isModalOpen.document}

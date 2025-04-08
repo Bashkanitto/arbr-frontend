@@ -15,7 +15,7 @@ interface EditProcentModalProps {
 
 const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
   const [sliderValue, setSliderValue] = useState<number>(0)
-  const [bonus, setBonus] = useState<number>(0)
+  const [bonus, setBonus] = useState<number | null>(null)
   const [userPrice, setUserPrice] = useState<number>(0)
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
   const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false)

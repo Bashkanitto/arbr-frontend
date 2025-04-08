@@ -46,7 +46,7 @@ export const ApplicationTableAdmin = () => {
     try {
       setProductData(prevData =>
         prevData.map(item =>
-          item.product.id === productId
+          item.product?.id === productId
             ? { ...item, product: { ...item.product, status: newStatus } }
             : item
         )
@@ -62,7 +62,7 @@ export const ApplicationTableAdmin = () => {
       console.error(error)
 
       const revertedData = productData.map(item =>
-        item.product.id === productId
+        item.product?.id === productId
           ? { ...item, product: { ...item.product, status: 'active' } } // Assuming "active" is the previous status
           : item
       )
@@ -82,7 +82,9 @@ export const ApplicationTableAdmin = () => {
   if (error) return <div>Ошибка: {error}</div>
 
   // Логика фильтрации данных по запросу поиска
-  const filteredData = productData.filter(item => {
+  const validData = productData.filter(item => item.product !== null)
+
+  const filteredData = validData.filter(item => {
     const productName = item.product?.name.toLowerCase() || ''
     return productName.includes(searchQuery.toLowerCase())
   })
@@ -96,16 +98,16 @@ export const ApplicationTableAdmin = () => {
     return filteredByStatus.map(item => {
       return (
         <Table.Tr key={item.id}>
-          <Table.Td>{item.product.id}</Table.Td>
+          <Table.Td>{item.product?.id}</Table.Td>
           <Table.Td>
-            <a href={`/product/${item.product.id}`}>{item.product?.name}</a>
+            <a href={`/product/${item.product?.id}`}>{item.product?.name}</a>
           </Table.Td>
           <Table.Td>{item.vendor.firstName}</Table.Td>
           <Table.Td>
-            <Status>{item.product.status}</Status>
+            <Status>{item.product?.status}</Status>
           </Table.Td>
           <Table.Td>
-            {format(new Date(item.product.createdAt), 'dd MMMM, yyyy', {
+            {format(new Date(item.createdAt), 'dd MMMM, yyyy', {
               locale: ru,
             })}
           </Table.Td>
@@ -119,13 +121,13 @@ export const ApplicationTableAdmin = () => {
           >
             <button
               className={styles.statusNotBtn}
-              onClick={() => handleStatusChange(item.product.id, 'inactive')}
+              onClick={() => handleStatusChange(item.product?.id, 'inactive')}
             >
               <img src="/images/diskLike_photo.svg" alt="" />
             </button>
             <button
               className={styles.statusYesBtn}
-              onClick={() => handleStatusChange(item.product.id, 'active')}
+              onClick={() => handleStatusChange(item.product?.id, 'active')}
             >
               <img src="/images/like_photo.svg" alt="" />
             </button>

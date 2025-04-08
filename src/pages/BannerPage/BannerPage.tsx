@@ -2,7 +2,7 @@
 import { Skeleton, Table, Button, Modal, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import styles from './BannerPage.module.scss'
-import { createFeature, fetchFeatures, deleteFeature } from '@services/api/brandService'
+import { fetchFeatures, deleteBanner, createBanner } from '@services/api/brandService'
 import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
 import { Pagination } from '@components/molecules/Pagination/Pagination'
@@ -51,7 +51,7 @@ const BannerPage = () => {
       }
       setIsCreating(true)
 
-      await createFeature(numericBrandId, page, pageSize)
+      await createBanner(numericBrandId, page, pageSize)
 
       setIsCreateModalOpen(false)
       setBrandId('')
@@ -69,7 +69,7 @@ const BannerPage = () => {
 
   const handleDeleteBanner = async (id: string) => {
     try {
-      const response: any = await deleteFeature(id)
+      const response: any = await deleteBanner(id)
       if (response.data.createdAt) {
         setBannerData(bannerData.filter(banner => banner.id !== id))
       } else {

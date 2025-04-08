@@ -19,7 +19,6 @@ export const PaymentRequestTable = () => {
       try {
         const response = await fetchPaymentRequest()
         setPaymentRequest(response.data.records)
-        console.log(response)
       } catch (err) {
         console.error(err)
       }
@@ -30,14 +29,7 @@ export const PaymentRequestTable = () => {
 
   const handleStatusChange = async (requestId: number, newStatus: 'active' | 'inactive') => {
     try {
-      paymentRequest(prevData =>
-        prevData.map(item =>
-          item.id === requestId
-            ? { ...item, product: { ...item.product, status: newStatus } }
-            : item
-        )
-      )
-      await patchPaymentRequest(requestId, newStatus)
+      await patchPaymentRequest(requestId)
       NotificationStore.addNotification(
         'Запрос на вывод',
         `Запрос на вывод ${requestId} успешно изменен`,
@@ -111,12 +103,6 @@ export const PaymentRequestTable = () => {
             justifyContent: 'flex-end',
           }}
         >
-          <button
-            className={styles.statusNotBtn}
-            onClick={() => handleStatusChange(item.id, 'inactive')}
-          >
-            <img src="/images/diskLike_photo.svg" alt="" />
-          </button>
           <button
             className={styles.statusYesBtn}
             onClick={() => handleStatusChange(item.id, 'active')}
