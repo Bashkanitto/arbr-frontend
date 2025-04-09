@@ -58,19 +58,23 @@ export const deleteImage = async (filename: string) => {
   }
 }
 
-export const editBrand = async (brand: any, name: string, file: any, brandFilename: string) => {
+export const editBrand = async (
+  brandId: any,
+  newBrandName: string,
+  file: any,
+  brandFilename: string
+) => {
   try {
-    const brandResponse: any = await baseApi.patch(`/brand/${brand.id}?relations=image`, {
-      name,
+    const brandResponse: any = await baseApi.patch(`/brand/${brandId}?relations=image`, {
+      name: newBrandName,
     })
-    if (file) {
-      if (brand.image.length !== 0) {
-        await deleteImage(brandFilename)
-        await uploadBrandImage(file, brand.id)
+    if (file)
+      if (brandFilename === '') {
+        await uploadBrandImage(file, brandId)
       } else {
-        await uploadBrandImage(file, brand.id)
+        await deleteImage(brandFilename)
+        await uploadBrandImage(file, brandId)
       }
-    }
 
     return brandResponse
   } catch (error) {

@@ -79,18 +79,24 @@ const BrandPage = () => {
     setEditModalOpen(true)
     setErrorText(null)
 
-    try {
-      if (!newBrandName) {
-        setErrorText('Заполните поля')
-      } else {
-        const response = await editBrand(brand, newBrandName, newBrandImage, brandFilename)
+    if (!newBrandName) {
+      setErrorText('Заполните поля')
+    } else {
+      try {
+        const response = await editBrand(brand.id, newBrandName, newBrandImage, brandFilename)
+
+        console.log(brand)
         setBrandData(prev => prev.map(item => (item.id === brand.id ? response.data : item)))
         setEditModalOpen(false)
         NotificationStore.addNotification('Изменение бренда', 'Бренд успешно изменен', 'success')
+      } catch (err: any) {
+        setError(`Не удалось создать бренд: ${err.message}`)
+        NotificationStore.addNotification(
+          'Изменение бренда',
+          'Ошибка при изменении бренда',
+          'error'
+        )
       }
-    } catch (err: any) {
-      setError(`Не удалось создать бренд: ${err.message}`)
-      NotificationStore.addNotification('Изменение бренда', 'Ошибка при изменении бренда', 'error')
     }
   }
 
@@ -126,7 +132,7 @@ const BrandPage = () => {
         <Table.Td>
           {item.image && item.image[0]?.url ? (
             <img
-              src={item.image[0].url.replace('http://3.76.32.115:3000', 'https://api.arbr.kz')}
+              src={item.image[0]?.url.replace('http://3.76.32.115:3000', 'https://api.arbr.kz')}
               width={80}
             />
           ) : (
@@ -140,7 +146,7 @@ const BrandPage = () => {
           <EditIcon
             onClick={() => {
               setEditModalOpen(true)
-              setBrandFilename((item.image && item.image[0].filename) || '')
+              setBrandFilename(item.image.length > 0 ? item.image[0].filename : '')
               setBrand(item)
             }}
           />
