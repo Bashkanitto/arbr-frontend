@@ -17,15 +17,15 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
   const [sliderValue, setSliderValue] = useState<number>(0)
   const [bonus, setBonus] = useState<number | null>(null)
   const [userPrice, setUserPrice] = useState<number>(0)
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
+  const [vendorGroupId, setVendorGroupId] = useState<number | null>(null)
   const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false)
 
   const handleSave = async () => {
     try {
-      await updateBonus(selectedProductId, sliderValue)
+      await updateBonus(vendorGroupId, sliderValue)
       NotificationStore.addNotification(
         'Изменение бонуса',
-        `Бонус для продукта c номером ${selectedProductId} успешно изменен`,
+        `Бонус для продукта c номером ${vendorGroupId} успешно изменен`,
         'success'
       )
       onClose()
@@ -44,13 +44,13 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
     const productId = Number(value)
 
     try {
-      const response: any = await fetchProductById(productId)
+      const productResponse: any = await fetchProductById(productId)
 
-      const bonusValue = response.data.vendorGroups[0].features?.bonus || 0
-      setSelectedProductId(productId)
+      const bonusValue = productResponse.data.vendorGroups[0].features?.bonus || 0
+      setVendorGroupId(productResponse.data.vendorGroups[0].id)
       setSliderValue(bonusValue)
-      setUserPrice(response.data.price)
-      setBonus(response.data.price * (bonusValue / 100))
+      setUserPrice(productResponse.data.price)
+      setBonus(productResponse.data.price * (bonusValue / 100))
     } catch (err) {
       console.log(err)
     }
@@ -75,7 +75,7 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
         Применить ко всем товарам
       </div>
       <Slider color="blue" value={sliderValue} onChange={handleSliderChange} min={0} max={100} />
-      <p className={styles.bonus}>Процент {bonus}₸ </p>
+      <p className={styles.bonus}>Бонус: {bonus}₸ </p>
       <BaseButton
         onClick={handleSave}
         className={styles['editProcent-button']}

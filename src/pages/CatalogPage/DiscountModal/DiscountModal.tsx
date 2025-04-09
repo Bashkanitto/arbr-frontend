@@ -18,17 +18,17 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
   const [userPrice, setUserPrice] = useState<number>(0)
   const [discount, setDiscount] = useState<number>(0)
   const [error, setError] = useState<string>('')
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
+  const [vendorGroupId, setVendorGroupId] = useState<number | null>(null)
   const [isApplyToAll, setIsApplyToAll] = useState<boolean>(false)
 
   const handleSave = async () => {
-    if (selectedProductId !== null) {
+    if (vendorGroupId !== null) {
       try {
-        await updateDiscount(selectedProductId, sliderValue)
+        await updateDiscount(vendorGroupId, sliderValue)
         onClose()
         NotificationStore.addNotification(
           'Изменение скидки',
-          `Скидка для продукта c номером ${selectedProductId}  успешно изменен`,
+          `Скидка для продукта c номером ${vendorGroupId}  успешно изменен`,
           'success'
         )
       } catch (error) {
@@ -53,7 +53,7 @@ const DiscountModal = ({ isOpen, onClose, user }: DiscountModalProps) => {
       const response: any = await fetchProductById(productId)
 
       const discountValue = response.data.vendorGroups[0].features?.discount || 0
-      setSelectedProductId(productId)
+      setVendorGroupId(response.data.vendorGroups[0].id)
       setSliderValue(discountValue)
       setUserPrice(response.data.price)
       setDiscount(response.data.price * (discountValue / 100))
