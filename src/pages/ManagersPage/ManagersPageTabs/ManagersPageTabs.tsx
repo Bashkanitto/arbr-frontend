@@ -34,7 +34,7 @@ export const ManagersPageTabs = () => {
       lastConfirmedAccounts.forEach((item, index) => {
         doc.text(
           `${index + 1}. ${item.firstName} - ${item.role} - ${format(
-            new Date(item.createdAt),
+            new Date(item.loginAt),
             'dd.MM.yy - HH:mm'
           )}`,
           10,

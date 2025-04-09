@@ -37,7 +37,8 @@ const ProductPage = () => {
   const user = authStore.userProfile
   // TODO admin
   const canEditProduct =
-    user?.role === 'admin' || (user?.role === 'vendor' && user.id === product?.id)
+    user?.role === 'admin' ||
+    (user?.role === 'vendor' && product?.vendorGroups?.some(group => group.vendor.id === user.id))
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -77,7 +78,7 @@ const ProductPage = () => {
       <div className={styles['product-info']}>
         <div className={styles['container']}>
           <p className={styles['product-breadcrumbs']}>
-            Товар <span>{product.subcategory?.name}</span>
+            <span>{product.subcategory?.name}</span> <span>{product.brand?.name}</span>
           </p>
           <h4>{product.name}</h4>
           <p className={styles['product-count']}>

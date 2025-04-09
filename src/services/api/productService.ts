@@ -28,7 +28,7 @@ export const fetchVendorById = async (id: any) => {
 export const fetchProductById = async (productId: any) => {
   try {
     const response = await baseApi.get(
-      `/product/${productId}?relations=images,features,vendorGroups,vendorGroups.features,vendorGroups.productDocuments`
+      `/product/${productId}?relations=images,features,subcategory,brand,vendorGroups,vendorGroups.vendor,vendorGroups.features,vendorGroups.productDocuments`
     )
     return response
   } catch (error) {
@@ -234,6 +234,15 @@ export const editProduct = async (
 ) => {
   try {
     const response: any = await baseApi.patch(`/product/${productId}`, data)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const editGroup = async (groupId: number, data: any) => {
+  try {
+    const response: any = await baseApi.patch(`/group/${groupId}`, data)
     return response
   } catch (error) {
     console.log(error)

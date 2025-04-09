@@ -3,9 +3,10 @@ import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { editProduct } from '@services/api/productService'
 import NotificationStore from '@store/NotificationStore'
 import MDEditor from '@uiw/react-md-editor'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormData } from './ProductPage'
 import { updateBonus, updateDiscount } from '@services/api/procentService'
+import { fetchBrands } from '@services/api/brandService'
 
 type Props = {
   isOpen: boolean
@@ -22,6 +23,7 @@ const ProductEditModal: React.FC<Props> = ({
   formData,
   setFormData,
 }) => {
+  const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
   const [newBonus, setNewBonus] = useState<string | number>(
     product?.vendorGroups[0].features?.bonus
   )
@@ -63,6 +65,28 @@ const ProductEditModal: React.FC<Props> = ({
     })
   }
 
+  useEffect(() => {
+    const loadData = async () => {
+      const brandsResponse: any = await fetchBrands()
+      const brandOptions = brandsResponse.data.records.map((brand: any) => ({
+        value: brand.id.toString(),
+        label: brand.name,
+      }))
+      setBrands(brandOptions)
+      setFilteredBrands(brandOptions)
+    }
+
+    loadData()
+  }, [])
+
+  useEffect(() => {
+    const filtered =
+      brandSearch.trim() === ''
+        ? brands
+        : brands.filter(brand => brand.label.toLowerCase().includes(brandSearch.toLowerCase()))
+    setFilteredBrands(filtered)
+  }, [brandSearch, brands])
+
   return (
     <Modal opened={isOpen} withCloseButton={false} onClose={() => setIsEditModalOpen(false)}>
       <TextInput
@@ -94,11 +118,7 @@ const ProductEditModal: React.FC<Props> = ({
         searchable
         searchValue={brandSearch}
         onSearchChange={setBrandSearch}
-        value={formData.brand}
-        onChange={value => {
-          const selectedBrand = filteredBrands.find(b => b.value === value) || null
-          setFormData((prev: FormData) => ({ ...prev, brand: selectedBrand }))
-        }}
+        defaultValue={formData.brand}
         placeholder="Выберите бренд..."
       />
       <NumberInput

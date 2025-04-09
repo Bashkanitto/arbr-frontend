@@ -6,6 +6,7 @@ export interface AccountType {
   id: number
   createdAt: string
   firstName: string
+  loginAt: Date
   role: string
 }
 

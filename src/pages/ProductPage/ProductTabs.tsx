@@ -1,21 +1,13 @@
-import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-  useEffect,
-  useState,
-} from 'react'
+import { useEffect, useState } from 'react'
 import styles from './ProductPage.module.scss'
 import MDEditor from '@uiw/react-md-editor'
 import { DownloadIcon } from '@assets/icons/DownloadIcon'
-import { DeleteIcon } from '@assets/icons'
+import { DeleteIcon, EditIcon } from '@assets/icons'
 import { BaseButton } from '@components/atoms/Button/BaseButton'
 import NotificationStore from '@store/NotificationStore'
 import baseApi from '@services/api/base'
 import { Modal, TextInput } from '@mantine/core'
-import { fetchGroup, uploadProductDocument } from '@services/api/productService'
+import { editGroup, fetchGroup, uploadProductDocument } from '@services/api/productService'
 
 const ProductTabs = ({ product }: any) => {
   const [productGroups, setProductGroups] = useState<any>([])
@@ -89,6 +81,14 @@ const ProductTabs = ({ product }: any) => {
         'error'
       )
       setIsModalOpen({ ...isModalOpen, document: false })
+    }
+  }
+
+  const handleEditGroup = async (groupId: number) => {
+    try {
+      const groupResponse = await editGroup(groupId, data)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -191,6 +191,7 @@ const ProductTabs = ({ product }: any) => {
                   </button>
                 ))}
               </div>
+              <EditIcon onClick={() => handleEditGroup(group.id)} />
             </div>
           ))}
         </div>

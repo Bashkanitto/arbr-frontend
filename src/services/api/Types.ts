@@ -93,6 +93,7 @@ export interface VendorGroups {
   id: number
   price: number
   createdAt: number
+  vendor: any
   features?: {
     isBonus: boolean
     isFreeDelivery: boolean
