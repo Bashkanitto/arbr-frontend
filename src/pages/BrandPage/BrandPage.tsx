@@ -59,21 +59,30 @@ const BrandPage = () => {
 
   // Создание бренда
   const handleCreateBrand = async () => {
-    try {
-      setIsCreating(true)
-      await createBrand(newBrandName, newBrandImage)
-      setIsCreateModalOpen(false)
-      setNewBrandName('')
-      setNewBrandImage(null)
-      NotificationStore.addNotification('Добавление бренда', 'Бренд успешно добавлен', 'success')
-    } catch (err: any) {
-      setError(`Не удалось создать бренд: ${err.message}`)
-      NotificationStore.addNotification('Добавление бренда', 'Ошибка при создании бренда', 'error')
-    } finally {
-      setIsCreating(false)
+    setErrorText(null)
+
+    if (!newBrandName) {
+      setErrorText('Заполните поля')
+    } else {
+      try {
+        setIsCreating(true)
+        await createBrand(newBrandName, newBrandImage)
+        setIsCreateModalOpen(false)
+        setNewBrandName('')
+        setNewBrandImage(null)
+        NotificationStore.addNotification('Добавление бренда', 'Бренд успешно добавлен', 'success')
+      } catch (err: any) {
+        setError(`Не удалось создать бренд: ${err.message}`)
+        NotificationStore.addNotification(
+          'Добавление бренда',
+          'Ошибка при создании бренда',
+          'error'
+        )
+      } finally {
+        setIsCreating(false)
+      }
     }
   }
-
   // изменение брендов
   const handleEditBrand = async () => {
     setEditModalOpen(true)
