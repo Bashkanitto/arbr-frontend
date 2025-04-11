@@ -115,7 +115,7 @@ const GroupTab = ({ productId }) => {
                 setItems(group.groupItems)
                 setFormData({
                   title: group.title,
-                  items: { value: group.groupItems.values, productId: productId },
+                  items: group.groupItems,
                 })
               }}
             />
