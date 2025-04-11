@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom'
-import { cn } from '../../../helpers'
 
 import { observer } from 'mobx-react-lite'
 import { Notification } from '../../atoms/Notification/Notification'
@@ -11,7 +10,7 @@ import { helpDeskStore } from '@store/HelpDeskStore'
 
 export const MainLayout = observer(() => {
   return (
-    <div className={cn(styles['main-layout'])}>
+    <div className={styles['main-layout']}>
       <MainSidebar />
       <Outlet />
       <NotificationMenu />

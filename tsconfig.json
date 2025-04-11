@@ -5,6 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": "./dist",
+    "noImplicitAny": false,
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -18,7 +19,7 @@
       "@pages/*": ["pages/*"],
       "@store/*": ["store/*"],
       "@services/*": ["services/*"],
-      "@assets/*": ["assets/*"],
+      "@assets/*": ["assets/*"]
     }
   },
   "include": ["src"],

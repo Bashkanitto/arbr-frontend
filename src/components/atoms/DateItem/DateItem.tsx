@@ -1,32 +1,27 @@
 import { ComponentPropsWithoutRef } from 'react'
-import { cn } from '../../../helpers'
 import styles from './DateItem.module.scss'
 
 type DateItemVariantColor =
-	| 'primary'
-	| 'secondary'
-	| 'success'
-	| 'danger'
-	| 'warning'
-	| 'gray'
-	| 'secondary-text'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'gray'
+  | 'secondary-text'
 type DateItemProps = ComponentPropsWithoutRef<'div'> & {
-	variantColor?: DateItemVariantColor
+  variantColor?: DateItemVariantColor
 }
 
 export const DateItem = ({
-	children,
-	className,
-	variantColor = 'primary',
-	...props
+  children,
+  className,
+  variantColor = 'primary',
+  ...props
 }: DateItemProps) => {
-	return (
-		<div
-			className={cn(styles['date-item'], className)}
-			data-color={variantColor}
-			{...props}
-		>
-			{children}
-		</div>
-	)
+  return (
+    <div className={styles['date-item']} data-color={variantColor} {...props}>
+      {children}
+    </div>
+  )
 }

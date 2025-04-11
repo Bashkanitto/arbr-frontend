@@ -120,7 +120,7 @@ export const ApplicationTableAdmin = () => {
             }}
           >
             <button
-              className={styles.statusNotBtn}
+              className={styles.statusNotBt}
               onClick={() => handleStatusChange(item.product?.id, 'inactive')}
             >
               <img src="/images/diskLike_photo.svg" alt="" />

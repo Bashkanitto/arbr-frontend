@@ -117,14 +117,17 @@ export const uploadProductDocument = async (files: File[], vendorGroupId: null |
       formData.append('files', file)
     })
 
-    await baseApi.post('/upload/multiple', formData, {
+    const response = await baseApi.post('/upload/multiple', formData, {
       headers: {
         'Content-Type': 'multipart/form-data;>',
       },
       timeout: 10000,
     })
+    if (!response) {
+      throw new Error()
+    }
   } catch (error) {
-    console.error('Ошибка при отправке файлов:', error)
+    throw error
   }
 }
 
@@ -240,11 +243,29 @@ export const editProduct = async (
   }
 }
 
-export const editGroup = async (groupId: number, data: any) => {
+export const editGroup = async (groupId: string, data: any) => {
   try {
     const response: any = await baseApi.patch(`/group/${groupId}`, data)
     return response
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const deleteGroup = async (groupId: string) => {
+  try {
+    const response: any = await baseApi.delete(`/group/${groupId}`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const addGroup = async formData => {
+  try {
+    const response: any = await baseApi.post(`/group`, formData)
+    return response
+  } catch (error) {
+    throw error
   }
 }
