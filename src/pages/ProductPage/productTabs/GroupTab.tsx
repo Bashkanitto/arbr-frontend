@@ -8,15 +8,27 @@ import { BaseButton } from '@components/atoms/Button/BaseButton'
 import { wait } from '../../../helpers'
 import baseApi from '@services/api/base'
 
+interface GroupItem {
+  id?: number
+  value: string
+  productId: string | number
+}
+
+interface Group {
+  id: number
+  title: string
+  groupItems: GroupItem[]
+}
+
 const GroupTab = ({ productId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [productGroups, setProductGroups] = useState([])
-  const [items, setItems] = useState([])
+  const [group, setGroup] = useState<Group | undefined>()
+  const [productGroups, setProductGroups] = useState<Group[]>([])
   const [errorText, setErrorText] = useState('')
-  const [group, setGroup] = useState()
-  const [formData, setFormData] = useState({
+  const [items, setItems] = useState<GroupItem[]>([])
+  const [formData, setFormData] = useState<{ title: string; items: GroupItem[] }>({
     title: '',
-    items: [{ value: '', productId: 0 }],
+    items: [{ value: '', productId: productId }],
   })
 
   useEffect(() => {
@@ -38,7 +50,7 @@ const GroupTab = ({ productId }) => {
     }
 
     try {
-      const response = await editGroup(String(group.id), {
+      const response = await editGroup(String(group?.id), {
         title: formData.title,
         items: items,
       })
@@ -103,13 +115,13 @@ const GroupTab = ({ productId }) => {
                 setItems(group.groupItems)
                 setFormData({
                   title: group.title,
-                  items: { value: group.groupItems.value, productId: productId },
+                  items: { value: group.groupItems.values, productId: productId },
                 })
               }}
             />
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            {group.groupItems.map((subGroup: { id: number; value: any }) => (
+            {group.groupItems.map((subGroup: any) => (
               <button className={styles.group} key={subGroup.id} onClick={() => console.log(group)}>
                 {subGroup.value}
               </button>
