@@ -77,7 +77,8 @@ const GroupTab = ({ productId }) => {
     try {
       await deleteGroup(groupId)
       NotificationStore.addNotification('Группы', 'Группа удачно удалена', 'success')
-      wait(1000).then(() => window.location.reload())
+      const groupResponse: any = await fetchGroup()
+      setProductGroups(groupResponse.data.records)
     } catch (err) {
       console.log(err)
       NotificationStore.addNotification('Группы', 'Произошла ошибка при удалении группы', 'error')
@@ -91,11 +92,18 @@ const GroupTab = ({ productId }) => {
         items: [{ value: 'Значение', productId: productId }],
       })
       NotificationStore.addNotification('Группы', 'Группа удачно создана', 'success')
-      // wait(1000).then(() => window.location.reload())
+
+      const groupResponse: any = await fetchGroup()
+      setProductGroups(groupResponse.data.records)
     } catch (err) {
       console.log(err)
       NotificationStore.addNotification('Группы', 'Произошла ошибка при создании группы', 'error')
     }
+  }
+
+  function handleDeleteItem(itemId: number | undefined) {
+    if (itemId === undefined) return
+    setItems(prev => prev.filter(item => item.id !== itemId))
   }
 
   return (
@@ -137,6 +145,7 @@ const GroupTab = ({ productId }) => {
           title="Название"
           placeholder="Название"
           value={formData.title}
+          style={{ marginBottom: '10px' }}
           onChange={e => setFormData({ ...formData, title: e.target.value })}
         />
 
@@ -148,17 +157,19 @@ const GroupTab = ({ productId }) => {
               placeholder="Значение"
             />
             <TextInput
+              defaultValue={productId}
               value={item.productId}
               onChange={e => handleItemChange(index, 'productId', e.target.value)}
-              placeholder="Product ID"
+              placeholder="ID продукта"
             />
+            <DeleteIcon onClick={() => handleDeleteItem(item.id)} />
           </div>
         ))}
         <button
           style={{ color: 'gray', width: '100%' }}
           onClick={() => setItems([...items, { value: '', productId: '' }])}
         >
-          Добавить
+          Добавить Группу
         </button>
         {errorText && <p style={{ color: 'red' }}>{errorText}</p>}
         <BaseButton style={{ width: '100%' }} variantColor="primary" onClick={handleEditGroup}>

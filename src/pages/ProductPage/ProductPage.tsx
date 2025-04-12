@@ -140,7 +140,7 @@ const ProductPage = () => {
               handleDeleteProduct(product.id)
               wait(1000).then(() => navigate(-1))
             }}
-            className={styles['deleteProduct']}
+            style={{ width: '95%', margin: '10px' }}
           >
             Удалить продукт
           </BaseButton>
