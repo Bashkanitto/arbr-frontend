@@ -39,7 +39,7 @@ export const fetchProductById = async (productId: any) => {
 // –––––––––––––––––- Получение группы –––––––––––––
 export const fetchGroup = async () => {
   try {
-    const response = await baseApi.get('/group?relations=groupItems')
+    const response = await baseApi.get('/group?relations=groupItems,groupItems.product')
     return response
   } catch (error) {
     console.error('Error fetching product:', error)

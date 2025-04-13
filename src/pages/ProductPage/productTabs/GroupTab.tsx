@@ -5,13 +5,14 @@ import { DeleteIcon, EditIcon } from '@assets/icons'
 import NotificationStore from '@store/NotificationStore'
 import { Modal, TextInput } from '@mantine/core'
 import { BaseButton } from '@components/atoms/Button/BaseButton'
-import { wait } from '../../../helpers'
 import baseApi from '@services/api/base'
+import { wait } from '../../../helpers'
 
 interface GroupItem {
   id?: number
   value: string
   productId: string | number
+  product?: { id: number }
 }
 
 interface Group {
@@ -25,7 +26,6 @@ const GroupTab = ({ productId }) => {
   const [group, setGroup] = useState<Group | undefined>()
   const [productGroups, setProductGroups] = useState<Group[]>([])
   const [errorText, setErrorText] = useState('')
-  const [items, setItems] = useState<GroupItem[]>([])
   const [formData, setFormData] = useState<{ title: string; items: GroupItem[] }>({
     title: '',
     items: [{ value: '', productId: productId }],
@@ -44,33 +44,29 @@ const GroupTab = ({ productId }) => {
   }, [])
 
   async function handleEditGroup() {
-    if (!formData.title.trim() || items.some(item => !item.value.trim() || !item.productId)) {
+    if (
+      !formData.title.trim() ||
+      formData.items.some(item => !item.value.trim() || !item.productId?.toString().trim())
+    ) {
       setErrorText('Заполните все поля')
       return
     }
 
     try {
-      const response = await editGroup(String(group?.id), {
+      await editGroup(String(group?.id), {
         title: formData.title,
-        items: items,
+        items: formData.items,
       })
 
       NotificationStore.addNotification('Группа', 'Группа успешно обновлена:', 'success')
       setIsModalOpen(false)
+      setFormData({ title: '', items: [{ value: '', productId: productId }] })
+      wait(1000).then(() => window.location.reload())
     } catch (err) {
       console.error(err)
       setErrorText('Ошибка при сохранении')
       NotificationStore.addNotification('Группа', 'Произошла ошибка:', 'error')
-    } finally {
-      setItems([{ value: '', productId: '' }])
-      setErrorText('')
     }
-  }
-  const handleItemChange = (index: number, key: 'value' | 'productId', value: string) => {
-    const updatedItems: any = [...items]
-    updatedItems[index][key] = value
-    console.log(updatedItems[index][key])
-    setItems(updatedItems)
   }
 
   const handleDeleteGroup = async groupId => {
@@ -101,9 +97,16 @@ const GroupTab = ({ productId }) => {
     }
   }
 
-  function handleDeleteItem(itemId: number | undefined) {
-    if (itemId === undefined) return
-    setItems(prev => prev.filter(item => item.id !== itemId))
+  const handleItemChange = (index: number, key: 'value' | 'productId', value: string) => {
+    const updatedItems = [...formData.items]
+    updatedItems[index][key] = value
+    setFormData({ ...formData, items: updatedItems })
+  }
+
+  const handleDeleteItem = (index: number) => {
+    const updatedItems = [...formData.items]
+    updatedItems.splice(index, 1)
+    setFormData({ ...formData, items: updatedItems })
   }
 
   return (
@@ -120,10 +123,12 @@ const GroupTab = ({ productId }) => {
               onClick={() => {
                 setIsModalOpen(true)
                 setGroup(group)
-                setItems(group.groupItems)
                 setFormData({
                   title: group.title,
-                  items: group.groupItems,
+                  items: group.groupItems.map(item => ({
+                    ...item,
+                    productId: item.product?.id ?? '',
+                  })),
                 })
               }}
             />
@@ -149,7 +154,7 @@ const GroupTab = ({ productId }) => {
           onChange={e => setFormData({ ...formData, title: e.target.value })}
         />
 
-        {items.map((item, index) => (
+        {formData.items.map((item, index) => (
           <div key={index} style={{ display: 'flex', marginBottom: '10px' }}>
             <TextInput
               value={item.value}
@@ -157,17 +162,21 @@ const GroupTab = ({ productId }) => {
               placeholder="Значение"
             />
             <TextInput
-              defaultValue={productId}
               value={item.productId}
               onChange={e => handleItemChange(index, 'productId', e.target.value)}
               placeholder="ID продукта"
             />
-            <DeleteIcon onClick={() => handleDeleteItem(item.id)} />
+            <DeleteIcon onClick={() => handleDeleteItem(index)} />
           </div>
         ))}
         <button
           style={{ color: 'gray', width: '100%' }}
-          onClick={() => setItems([...items, { value: '', productId: '' }])}
+          onClick={() =>
+            setFormData(prev => ({
+              ...prev,
+              items: [...prev.items, { value: '', productId: '' }],
+            }))
+          }
         >
           Добавить Группу
         </button>
