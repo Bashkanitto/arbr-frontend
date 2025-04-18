@@ -7,6 +7,7 @@ import { fetchMyOrders } from '@services/api/productService'
 import { Table } from '@components/atoms/Table'
 import styles from './MyOrdersTable.module.scss'
 import { Pagination } from '@components/molecules/Pagination/Pagination'
+import baseApi from '@services/api/base'
 
 export const MyOrdersTable = () => {
   const [productData, setProductData] = useState<any[]>([])
@@ -37,6 +38,15 @@ export const MyOrdersTable = () => {
     }
     loadProducts()
   }, [page, pageSize])
+
+  async function handleStatusChange(id: number, status: string) {
+    try {
+      const response = await baseApi.patch(`/order/${id}`, { status })
+      console.log(response)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   if (loading) return <Skeleton />
   if (error) return <div>Error: {error}</div>
@@ -92,9 +102,22 @@ export const MyOrdersTable = () => {
         </Table.Td>
         <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
         <Table.Td>{item.deliveryAdress}</Table.Td>
-        <Table.Td>{item.deliveryPrice}₸</Table.Td>
         <Table.Td style={{ textAlign: 'end' }}>
           {new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸
+        </Table.Td>
+        <Table.Td>
+          <button
+            className={styles.statusNotBt}
+            onClick={() => handleStatusChange(item.id, 'cancelled')}
+          >
+            <img src="/images/diskLike_photo.svg" alt="" />
+          </button>
+          <button
+            className={styles.statusYesBtn}
+            onClick={() => handleStatusChange(item.id, 'completed')}
+          >
+            <img src="/images/like_photo.svg" alt="" />
+          </button>
         </Table.Td>
       </Table.Tr>
     ))
@@ -133,8 +156,8 @@ export const MyOrdersTable = () => {
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>
-              <Table.Th>Цена доставки</Table.Th>
               <Table.Th style={{ textAlign: 'end' }}>Цена</Table.Th>
+              <Table.Th>Действие</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{renderRow()}</Table.Tbody>
