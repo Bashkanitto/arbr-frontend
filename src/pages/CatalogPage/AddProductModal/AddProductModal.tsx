@@ -338,7 +338,10 @@ const AddProductModal = ({
 
       {error && <p className="danger">{error}</p>}
       <BaseButton
-        className={styles['AddCatalog-button']}
+        style={{
+          width: '100%',
+          marginTop: '10px',
+        }}
         variantColor="primary"
         onClick={handleAddProduct}
         disabled={loading}
