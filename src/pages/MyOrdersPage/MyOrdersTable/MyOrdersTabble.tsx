@@ -52,6 +52,8 @@ export const MyOrdersTable = () => {
   const getLocalizedStatus = (status: string): string => {
     switch (status) {
       case 'waiting_for_approve':
+        return 'Ждет подтверждения'
+      case 'pending':
         return 'В ожидании'
       case 'completed':
         return 'Принят'
