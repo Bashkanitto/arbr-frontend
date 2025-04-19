@@ -134,7 +134,7 @@ export const deleteBanner = async (featureId: string) => {
 
 export const fetchAllSubCategory = async () => {
   try {
-    const response = await baseApi.get('/subcategory?pagination[pageSize]=1000')
+    const response = await baseApi.get('/subcategory?pagination[pageSize]=10000')
     return response
   } catch (error) {
     console.error('Error fetching subcategory:', error)

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
-import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import { fetchMyOrders } from '@services/api/productService'
 import { Table } from '@components/atoms/Table'
