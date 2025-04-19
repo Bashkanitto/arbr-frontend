@@ -51,7 +51,7 @@ export const MyOrdersTable = () => {
 
   const getLocalizedStatus = (status: string): string => {
     switch (status) {
-      case 'pending':
+      case 'waiting_for_approve':
         return 'В ожидании'
       case 'completed':
         return 'Принят'
@@ -74,6 +74,8 @@ export const MyOrdersTable = () => {
     switch (purchase) {
       case 'directPurchase':
         return 'Прямой платеж'
+      case 'tender':
+        return 'Тендер'
       default:
         return 'Неизвестно'
     }
@@ -88,22 +90,32 @@ export const MyOrdersTable = () => {
 
     return filteredData.map(item => (
       <Table.Tr key={item.id}>
-        <Table.Td>{item.announcementNumber}</Table.Td>
+        <Table.Td>
+          <a
+            href={
+              item.announcementNumber
+                ? `https://goszakup.gov.kz/ru/announce/index/${item.announcementNumber}?tab=lots`
+                : `https://fms.ecc.kz/ru/announce/index/${item.announcementNumberEcc}?tab=lots`
+            }
+          >
+            {item.announcementNumber ? item.announcementNumber : item.announcementNumberEcc}
+          </a>
+        </Table.Td>
         <Table.Td>{item.user?.firstName ?? 'Неизвестно'}</Table.Td>
         <Table.Td className={styles.statusRow}>{getLocalizedStatus(item.status)}</Table.Td>
         <Table.Td>
           {item.cartItems[0].product ? (
-            <a href={`/product/${item.cartItems[0].product?.id}`}>смотреть</a>
+            <a className="underline" href={`/product/${item.cartItems[0].product?.id}`}>
+              смотреть
+            </a>
           ) : (
             'нет продукта'
           )}
         </Table.Td>
         <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
         <Table.Td>{item.deliveryAdress}</Table.Td>
-        <Table.Td style={{ textAlign: 'end' }}>
-          {new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸
-        </Table.Td>
-        <Table.Td>
+        <Table.Td>{new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸</Table.Td>
+        <Table.Td className="flex gap-4">
           <button
             className={styles.statusNotBt}
             onClick={() => handleStatusChange(item.id, 'cancelled')}
@@ -154,7 +166,7 @@ export const MyOrdersTable = () => {
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>
-              <Table.Th style={{ textAlign: 'end' }}>Цена</Table.Th>
+              <Table.Th>Цена</Table.Th>
               <Table.Th>Действие</Table.Th>
             </Table.Tr>
           </Table.Thead>

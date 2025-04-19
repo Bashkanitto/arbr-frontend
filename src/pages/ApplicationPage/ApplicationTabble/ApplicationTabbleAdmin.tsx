@@ -169,7 +169,7 @@ export const ApplicationTableAdmin = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>ID заказа</Table.Th>
+              <Table.Th>ID продукта</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Продавец</Table.Th>
               <Table.Th style={{ textAlign: 'center' }}>Статус</Table.Th>

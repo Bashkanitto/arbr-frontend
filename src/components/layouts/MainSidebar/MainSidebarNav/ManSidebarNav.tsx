@@ -62,7 +62,7 @@ const navItems = [
   },
   {
     icon: <CalendarIcon />,
-    title: 'Заявки',
+    title: 'Заявки на продукт',
     route: RouteNavList.applications(),
   },
   {
@@ -90,12 +90,12 @@ export const MainSidebarNav = () => {
         'Запрос на вывод',
         'Безопасность',
         // 'История',
-        'Заявки',
+        'Заявки на продукт',
         'Логи',
       ].includes(item.title)
     }
     if (userProfile.role === 'vendor') {
-      return ['Каталог', 'Мои Заказы', 'История', 'Заявки'].includes(item.title)
+      return ['Каталог', 'Мои Заказы', 'История', 'Заявки на продукт'].includes(item.title)
     }
     return false
   })
