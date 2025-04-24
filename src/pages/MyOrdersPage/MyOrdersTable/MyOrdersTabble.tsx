@@ -6,6 +6,7 @@ import { Table } from '@components/atoms/Table'
 import styles from './MyOrdersTable.module.scss'
 import { Pagination } from '@components/molecules/Pagination/Pagination'
 import baseApi from '@services/api/base'
+import NotificationStore from '@store/NotificationStore'
 
 export const MyOrdersTable = () => {
   const [productData, setProductData] = useState<any[]>([])
@@ -40,9 +41,14 @@ export const MyOrdersTable = () => {
   async function handleStatusChange(id: number, status: string) {
     try {
       const response = await baseApi.patch(`/order/${id}`, { status })
+      const orderResponse: any = await fetchMyOrders(page, pageSize)
+      setProductData(orderResponse.data.records)
+
       console.log(response)
+      NotificationStore.addNotification('Заказ', 'Изменение статуса заказа успешна', 'success')
     } catch (err) {
       console.log(err)
+      NotificationStore.addNotification('Заказ', 'Произошла ошибка при изменении заказа', 'error')
     }
   }
 
@@ -126,7 +132,7 @@ export const MyOrdersTable = () => {
           </button>
           <button
             className={styles.statusYesBtn}
-            onClick={() => handleStatusChange(item.id, 'completed')}
+            onClick={() => handleStatusChange(item.id, 'pending')}
           >
             <img src="/images/like_photo.svg" alt="" />
           </button>
