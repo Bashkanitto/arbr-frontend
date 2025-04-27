@@ -130,7 +130,7 @@ export const OrdersTable = () => {
           </button>
           <button
             className={styles.statusYesBtn}
-            onClick={() => handleStatusChange(item.id, 'completed')}
+            onClick={() => handleStatusChange(item.id, 'pending')}
           >
             <img src="/images/like_photo.svg" alt="" />
           </button>
