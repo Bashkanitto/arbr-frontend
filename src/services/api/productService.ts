@@ -3,57 +3,37 @@ import baseApi from './base'
 
 // –––––––––––––––––- Получение всех тендеров –––––––––––––
 export const fetchAllVendors = async (page: number = 1, pageSize: number = 10) => {
-  try {
     const response: any = await baseApi.get(
       `/account/vendors?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching vendors:', error)
-  }
 }
 
 // –––––––––––––––––- Получение один вендор –––––––––––––
 
 export const fetchVendorById = async (id: any) => {
-  try {
     const response: any = await baseApi.get(`/account/vendors/${id}`)
     return response
-  } catch (error) {
-    console.error('Error fetching vendors:', error)
-  }
 }
 
 // –––––––––––––––––- Получение конкретного продукта –––––––––––––
 export const fetchProductById = async (productId: any) => {
-  try {
     const response = await baseApi.get(
       `/product/${productId}?relations=images,features,subcategory,brand,vendorGroups,vendorGroups.vendor,vendorGroups.features,vendorGroups.productDocuments`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching product:', error)
-  }
 }
 
 // –––––––––––––––––- Получение группы –––––––––––––
 export const fetchGroup = async () => {
-  try {
     const response = await baseApi.get('/group?relations=groupItems,groupItems.product')
     return response
-  } catch (error) {
-    console.error('Error fetching product:', error)
-  }
 }
 
 // –––––––––––––––––- Добавление продукта –––––––––––––
 export const addProduct = async (productData: any) => {
-  try {
     const response = await baseApi.post('/product', productData)
     return response
-  } catch (error) {
-    console.error('Error adding product:', error)
-  }
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
@@ -74,7 +54,6 @@ export const addVendorGroup = async ({
     bonus: number | string | null
   }
 }) => {
-  try {
     const response = await baseApi.post('/vendor-group/add', {
       productId,
       vendorId,
@@ -82,14 +61,10 @@ export const addVendorGroup = async ({
       features,
     })
     return response
-  } catch (error) {
-    console.error('Error adding to vendor group:', error)
-  }
 }
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadMultipleImages = async (files: any[], productId: number) => {
-  try {
     const formData = new FormData()
     formData.append('product', JSON.stringify(productId))
     files.forEach(file => formData.append('files', file))
@@ -102,14 +77,10 @@ export const uploadMultipleImages = async (files: any[], productId: number) => {
       return false
     }
     return response
-  } catch (error) {
-    throw new Error('Ошибка с сервером')
-  }
 }
 
 // –––––––––––––––––- Загрузка изображения –––––––––––––
 export const uploadProductDocument = async (files: File[], vendorGroupId: null | number) => {
-  try {
     const formData = new FormData()
     formData.append('vendorGroup', JSON.stringify(vendorGroupId))
 
@@ -126,14 +97,10 @@ export const uploadProductDocument = async (files: File[], vendorGroupId: null |
     if (!response) {
       throw new Error()
     }
-  } catch (error) {
-    throw error
-  }
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const fetchMyProducts = async (vendorId: number | string) => {
-  try {
     const response: any = await baseApi.get(`/vendor-group`, {
       params: {
         'search[vendor][id]': vendorId,
@@ -142,61 +109,41 @@ export const fetchMyProducts = async (vendorId: number | string) => {
       },
     })
     return response
-  } catch (error) {
-    console.error('Error fetching products:', error)
-  }
 }
 
 // –––––––––––––––––- Привязка продукта поставщику –––––––––––––
 export const patchStatus = async (productId: number, status: string) => {
-  try {
     const response: any = await baseApi.patch(`/product/${productId}`, {
       status,
     })
     return response
-  } catch (error) {
-    console.error('Error patching product status:', error)
-  }
 }
 
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchVendorGroupById = async (productId: any) => {
-  try {
     const response = await baseApi.get(
       `/vendor-group/${productId}?relations=product,features,product.images,productDocuments`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching product:', error)
-  }
 }
 
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchUserById = async (userId: any) => {
-  try {
     const response = await baseApi.get(
       `/vendor-group/?relations=product,features&search[vendor][id]=${userId}`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching /vendor-group/:', error)
-  }
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchVendorGroups = async (page: number = 1, pageSize: number = 10) => {
-  try {
     const response = await baseApi.get(
       `/vendor-group?relations=vendor,product,productDocuments&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=desc`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching vendor-groups:', error)
-  }
 }
 
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const sendCatalogList = async (file: File): Promise<any> => {
-  try {
     const formData = new FormData()
     formData.append('file', file)
 
@@ -206,66 +153,46 @@ export const sendCatalogList = async (file: File): Promise<any> => {
       },
     })
     return response
-  } catch (error) {
-    console.error('Error fetching vendor-groups:', error)
-  }
 }
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
-export const fetchMyOrders = async (page: number = 1, pageSize: number = 10) => {
-  try {
+export const fetchOrders = async (page: number = 1, pageSize: number = 10) => {
     const response: any = await baseApi.get(
       `/order/admin?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
     )
     return response
-  } catch (error) {
-    console.error('Error fetching order:', error)
-  }
+}
+
+export const fetchMyOrders = async (page: number = 1, pageSize: number = 10, email:string) => {
+  const response: any = await baseApi.get(
+    `/order?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}&search[cartItems][vendorGroup][vendor][email]=${email}`
+  )
+  return response
 }
 
 export const deleteProduct = async (productId: number) => {
-  try {
     const response: any = await baseApi.delete(`/product/${productId}`)
     return response
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 export const editProduct = async (
   productId: number | undefined,
   data: { description: string | null | undefined }
 ) => {
-  try {
     const response: any = await baseApi.patch(`/product/${productId}`, data)
     return response
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 export const editGroup = async (groupId: string, data: any) => {
-  try {
     const response: any = await baseApi.patch(`/group/${groupId}`, data)
     return response
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 export const deleteGroup = async (groupId: string) => {
-  try {
     const response: any = await baseApi.delete(`/group/${groupId}`)
     return response
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 export const addGroup = async formData => {
-  try {
     const response: any = await baseApi.post(`/group`, formData)
     return response
-  } catch (error) {
-    throw error
-  }
 }

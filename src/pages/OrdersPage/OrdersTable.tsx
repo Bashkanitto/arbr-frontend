@@ -1,34 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
+import { fetchOrders } from '@services/api/productService'
 import { Table } from '@components/atoms/Table'
 import styles from './MyOrdersTable.module.scss'
 import { Pagination } from '@components/molecules/Pagination/Pagination'
 import baseApi from '@services/api/base'
 import NotificationStore from '@store/NotificationStore'
-import { fetchMyOrders, fetchOrders } from '@services/api/productService'
-import { fetchProfile } from '@services/api/authService'
 
-export const MyOrdersTable = () => {
+export const OrdersTable = () => {
   const [productData, setProductData] = useState<any[]>([])
   const [statusFilter, setStatusFilter] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [profile, setProfile] = useState<any>()
-  const [userEmail, setUserEmail] = useState<any>()
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState<number>(1)
   const [pageSize] = useState<number>(7)
   const [totalPages, setTotalPages] = useState<number>(1)
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadOrders = async () => {
       setLoading(true)
       setError(null)
       try {
-        const profileResponse: any = await fetchProfile()
-        setUserEmail(profileResponse.email)
-        setProfile(profileResponse)
-        const response: any = await fetchMyOrders(page, pageSize, profileResponse.email)
+        const response: any = await fetchOrders(page, pageSize)
         setTotalPages(
           response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
         )
@@ -41,19 +35,17 @@ export const MyOrdersTable = () => {
         setLoading(false)
       }
     }
-    loadProducts()
+    loadOrders()
   }, [page, pageSize])
 
   async function handleStatusChange(id: number, status: string) {
     try {
-      const response = await baseApi.patch(`/order/${id}`, { status })
+      await baseApi.patch(`/order/${id}`, { status })
       const orderResponse: any = await fetchOrders(page, pageSize)
       setProductData(orderResponse.data.records)
-
-      console.log(response)
       NotificationStore.addNotification('Заказ', 'Изменение статуса заказа успешна', 'success')
     } catch (err) {
-      console.log(err)
+      console.error(err)
       NotificationStore.addNotification('Заказ', 'Произошла ошибка при изменении заказа', 'error')
     }
   }
@@ -97,7 +89,7 @@ export const MyOrdersTable = () => {
 
   const renderRow = () => {
     const filteredData = statusFilter
-      ? productData.filter(item => item.status === statusFilter && item.user.id == profile?.id)
+      ? productData.filter(item => item.status === statusFilter)
       : productData
 
     if (!Array.isArray(filteredData)) return null
@@ -138,7 +130,7 @@ export const MyOrdersTable = () => {
           </button>
           <button
             className={styles.statusYesBtn}
-            onClick={() => handleStatusChange(item.id, 'pending')}
+            onClick={() => handleStatusChange(item.id, 'completed')}
           >
             <img src="/images/like_photo.svg" alt="" />
           </button>

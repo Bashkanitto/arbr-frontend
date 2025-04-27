@@ -10,6 +10,7 @@ import BrandPage from '@pages/BrandPage/BrandPage'
 import BannerPage from '@pages/BannerPage/BannerPage'
 import LogsPage from '@pages/logsPage/LogsPage'
 import PaymentRequestPage from '@pages/PaymentRequestPage/PaymentRequestPage'
+import OrdersPage from '@pages/OrdersPage/OrdersPage'
 
 // Lazy load components
 const ApplicationPage = lazy(() => import('@pages/ApplicationPage/ApplicationPage'))
@@ -113,6 +114,10 @@ export const AppRouter = () => {
                 <Route path="" element={<SearchPage />} />
               </Route>
 
+              <Route path={RoutePathList.orders} element={<AuthProtect allowedRoles={['admin']} />}>
+                <Route path="" element={<OrdersPage />} />
+              </Route>
+
               <Route
                 path={RoutePathList.vendor}
                 element={<AuthProtect allowedRoles={['admin', 'vendor']} />}
@@ -134,11 +139,8 @@ export const AppRouter = () => {
                 <Route path="" element={<ProductPage />} />
               </Route>
 
-              <Route
-                path={RoutePathList.security}
-                element={<AuthProtect allowedRoles={['admin']} />}
-              >
-                <Route path={RoutePathList.security} element={<SecurityPage />} />
+              <Route path={RoutePathList.users} element={<AuthProtect allowedRoles={['admin']} />}>
+                <Route path={RoutePathList.users} element={<SecurityPage />} />
               </Route>
               <Route path={RoutePathList.notfound} element={<NotFoundPage />} />
             </Route>

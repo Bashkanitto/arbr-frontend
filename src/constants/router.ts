@@ -10,11 +10,12 @@ export const RouteNavList = {
   supplies: () => '/supplies',
   history: () => '/history',
   order: () => '/order',
+  orders: () => '/orders',
   list: () => '/list',
   notfound: () => '/notfound',
   catalog: () => '/catalog',
   vendor: () => '/vendor/:id',
-  security: () => '/security',
+  users: () => '/users',
 }
 
 export const RoutePathList = {
@@ -29,11 +30,12 @@ export const RoutePathList = {
   logs: '/logs',
   auth: '/auth',
   order: '/order',
+  orders: '/orders',
   notfound: '/notfound',
   product: '/product/:id',
   list: '/list',
   withdraws: '/withdraws',
-  security: '/security',
+  users: '/users',
   catalog: '/catalog',
   vendor: '/vendor/:id',
 }
