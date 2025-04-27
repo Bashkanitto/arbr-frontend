@@ -1,16 +1,16 @@
-import { ContentLayout } from "@components/layouts/ContentLayout";
-import { ContentTopBar } from "@components/layouts/ContentTopBar";
-import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
-import styles from "./SecurityPage.module.scss";
-import { SecurityPageTable } from "./SecurityPage/SecurityPageTable";
+import { ContentLayout } from '@components/layouts/ContentLayout'
+import { ContentTopBar } from '@components/layouts/ContentTopBar'
+import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
+import styles from './SecurityPage.module.scss'
+import { SecurityPageTable } from './SecurityPage/SecurityPageTable'
 
 const SecurityPage = () => {
   return (
     <ContentLayout
-      className={styles["withdraws-page"]}
+      className={styles['withdraws-page']}
       header={
         <>
-          <ContentTopBar title="Безопасность" />
+          <ContentTopBar title="Пользователи" />
           <ContentUserInfo />
         </>
       }
@@ -19,7 +19,7 @@ const SecurityPage = () => {
         <SecurityPageTable />
       </div>
     </ContentLayout>
-  );
-};
+  )
+}
 
-export default SecurityPage;
+export default SecurityPage

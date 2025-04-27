@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { CoinsIcon, LockIcon, SearchIcon, StatusIcon } from '../../../../assets/icons'
+import { CoinsIcon, SearchIcon, StatusIcon } from '../../../../assets/icons'
 import { CalendarIcon } from '../../../../assets/icons/CalendarIcon'
 import { CatalogIcon } from '../../../../assets/icons/CatalogIcon'
 import { HistoryIcon } from '../../../../assets/icons/HistoryIcon'
@@ -8,6 +8,7 @@ import { RouteNavList } from '../../../../constants/router'
 import authStore from '../../../../store/AuthStore'
 import styles from './MainSidebarNav.module.scss'
 import { BrandIcon } from '../../../../assets/icons/BrandIcon'
+import { Logs, Megaphone, ShoppingBag, Users } from 'lucide-react'
 
 const navItems = [
   {
@@ -36,7 +37,7 @@ const navItems = [
     route: RouteNavList.brand(),
   },
   {
-    icon: <BrandIcon />,
+    icon: <Megaphone />,
     title: 'Баннеры',
     route: RouteNavList.banner(),
   },
@@ -56,9 +57,14 @@ const navItems = [
     route: RouteNavList.paymentRequest(),
   },
   {
-    icon: <LockIcon />,
-    title: 'Безопасность',
-    route: RouteNavList.security(),
+    icon: <Users />,
+    title: 'Пользователи',
+    route: RouteNavList.users(),
+  },
+  {
+    icon: <ShoppingBag />,
+    title: 'Заказы',
+    route: RouteNavList.orders(),
   },
   {
     icon: <CalendarIcon />,
@@ -66,7 +72,7 @@ const navItems = [
     route: RouteNavList.applications(),
   },
   {
-    icon: <CalendarIcon />,
+    icon: <Logs />,
     title: 'Логи',
     route: RouteNavList.logs(),
   },
@@ -88,9 +94,10 @@ export const MainSidebarNav = () => {
         'Бренды',
         'Баннеры',
         'Запрос на вывод',
-        'Безопасность',
+        'Пользователи',
         // 'История',
         'Заявки на продукт',
+        'Заказы',
         'Логи',
       ].includes(item.title)
     }

@@ -3,6 +3,10 @@
   align-items: center;
   gap: 10px;
 
+  .content{
+    width: 100px;
+  }
+
   .content > .title {
     font-size: 18px;
     font-weight: 400;
