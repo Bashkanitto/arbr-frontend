@@ -174,7 +174,7 @@ export const MyOrdersTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Номер заказа</Table.Th>
+              <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
               <Table.Th>Статус</Table.Th>
               <Table.Th>Продукт</Table.Th>

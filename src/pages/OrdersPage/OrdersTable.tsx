@@ -76,6 +76,17 @@ export const OrdersTable = () => {
     }
   }
 
+  const statusOptions = [
+    { value: 'waiting_for_approve', label: 'Ждет подтверждения' },
+    { value: 'pending', label: 'В ожидании' },
+    { value: 'completed', label: 'Принят' },
+    { value: 'completing', label: 'Завершение' },
+    { value: 'published', label: 'Опубликовано' },
+    { value: 'not_happened', label: 'Не завершен' },
+    { value: 'not_won', label: 'Не выиграно' },
+    { value: 'cancelled', label: 'Отменен' },
+  ]
+
   const getLocalizedPurchase = (purchase: string): string => {
     switch (purchase) {
       case 'directPurchase':
@@ -121,19 +132,13 @@ export const OrdersTable = () => {
         <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
         <Table.Td>{item.deliveryAdress}</Table.Td>
         <Table.Td>{new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸</Table.Td>
-        <Table.Td className="flex gap-4">
-          <button
-            className={styles.statusNotBt}
-            onClick={() => handleStatusChange(item.id, 'cancelled')}
-          >
-            <img src="/images/diskLike_photo.svg" alt="" />
-          </button>
-          <button
-            className={styles.statusYesBtn}
-            onClick={() => handleStatusChange(item.id, 'pending')}
-          >
-            <img src="/images/like_photo.svg" alt="" />
-          </button>
+        <Table.Td>
+          <Select
+            value={item.status}
+            data={statusOptions}
+            onChange={value => value && handleStatusChange(item.id, value)}
+            size="sm"
+          />
         </Table.Td>
       </Table.Tr>
     ))
@@ -166,7 +171,7 @@ export const OrdersTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Номер заказа</Table.Th>
+              <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
               <Table.Th>Статус</Table.Th>
               <Table.Th>Продукт</Table.Th>
