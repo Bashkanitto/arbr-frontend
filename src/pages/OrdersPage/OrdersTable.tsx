@@ -119,7 +119,6 @@ export const OrdersTable = () => {
           </a>
         </Table.Td>
         <Table.Td>{item.user?.firstName ?? 'Неизвестно'}</Table.Td>
-        <Table.Td className={styles.statusRow}>{getLocalizedStatus(item.status)}</Table.Td>
         <Table.Td>
           {item.cartItems[0].product ? (
             <a className="underline" href={`/product/${item.cartItems[0].product?.id}`}>
@@ -173,7 +172,6 @@ export const OrdersTable = () => {
             <Table.Tr>
               <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
-              <Table.Th>Статус</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>

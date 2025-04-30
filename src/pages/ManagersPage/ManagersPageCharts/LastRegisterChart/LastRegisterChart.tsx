@@ -35,14 +35,12 @@ const LastRegisterChart = () => {
   return (
     <div className={styles.container}>
       <h3 style={{ fontSize: '18px' }}>Последние регистрации</h3>
-      {loading ? (
-        <Skeleton width="100%" height={300} radius={15} />
-      ) : (
+      {
         <Table stickyHeader className={styles.table}>
           <Table.Tbody>
             {lastConfirmedAccounts.map(item => (
               <Table.Tr key={item.id}>
-                <Table.Td style={{ width: '50px' }}>
+                <Table.Td>
                   <Avatar />
                 </Table.Td>
                 <Table.Td className={styles.nameRole}>
@@ -65,7 +63,7 @@ const LastRegisterChart = () => {
             ))}
           </Table.Tbody>
         </Table>
-      )}
+      }
     </div>
   )
 }
