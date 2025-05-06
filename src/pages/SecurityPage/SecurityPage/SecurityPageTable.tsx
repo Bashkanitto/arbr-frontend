@@ -5,12 +5,12 @@ import { ru } from 'date-fns/locale'
 import jsPDF from 'jspdf'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { changeAccount, deleteAccount, fetchAllAccounts } from '@services/api/AccountsService'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
-import { Table } from '@components/atoms/Table'
-import { Pagination } from '@components/molecules/Pagination/Pagination'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import { Table } from '@shared/ui/Table'
 import styles from './SecurityPageTable.module.scss'
-import { DeleteIcon } from '@assets/icons'
-import NotificationStore from '@store/NotificationStore'
+import { DeleteIcon } from '@shared/icons'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { Pagination } from '@shared/ui/Pagination/Pagination'
 
 interface User {
   firstName: string

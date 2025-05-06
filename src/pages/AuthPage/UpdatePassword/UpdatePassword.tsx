@@ -1,15 +1,15 @@
-import { Input } from "@mantine/core";
-import { observer } from "mobx-react-lite";
-import { FormEvent } from "react";
-import { BaseButton } from "@components/atoms/Button/BaseButton";
-import styles from "./UpdatePassword.module.scss";
+import { Input } from '@mantine/core'
+import { observer } from 'mobx-react-lite'
+import { FormEvent } from 'react'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import styles from './UpdatePassword.module.scss'
 
 const UpdatePassword = observer(() => {
   const handleReset = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
     // Логика сброса пароля
-    console.log("Сброс пароля");
-  };
+    console.log('Сброс пароля')
+  }
 
   return (
     <form className={styles.updateForm} onSubmit={handleReset}>
@@ -28,7 +28,7 @@ const UpdatePassword = observer(() => {
         </BaseButton>
       </div>
     </form>
-  );
-});
+  )
+})
 
-export default UpdatePassword;
+export default UpdatePassword

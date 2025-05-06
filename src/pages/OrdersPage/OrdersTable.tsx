@@ -2,11 +2,11 @@
 import { Select, Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { fetchOrders } from '@services/api/productService'
-import { Table } from '@components/atoms/Table'
+import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
-import { Pagination } from '@components/molecules/Pagination/Pagination'
 import baseApi from '@services/api/base'
-import NotificationStore from '@store/NotificationStore'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { Pagination } from '@shared/ui/Pagination/Pagination'
 
 export const OrdersTable = () => {
   const [productData, setProductData] = useState<any[]>([])

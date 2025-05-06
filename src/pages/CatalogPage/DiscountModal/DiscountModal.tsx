@@ -2,8 +2,8 @@
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
 import { updateDiscount } from '@services/api/procentService'
-import NotificationStore from '@store/NotificationStore'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './DiscountModal.module.scss'
 import { fetchProductById } from '@services/api/productService'
 

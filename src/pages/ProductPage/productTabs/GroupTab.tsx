@@ -1,12 +1,12 @@
 import { deleteGroup, editGroup, fetchGroup } from '@services/api/productService'
 import { useEffect, useState } from 'react'
 import styles from '../ProductPage.module.scss'
-import { DeleteIcon, EditIcon } from '@assets/icons'
-import NotificationStore from '@store/NotificationStore'
+import { DeleteIcon, EditIcon } from '@shared/icons'
+import NotificationStore from '@features/notification/model/NotificationStore'
 import { Modal, TextInput } from '@mantine/core'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
 import baseApi from '@services/api/base'
-import { wait } from '../../../helpers'
+import { wait } from '@shared/utils/wait'
 
 interface GroupItem {
   id?: number

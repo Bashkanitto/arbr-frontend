@@ -3,11 +3,10 @@ import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DeleteIcon, EditIcon, EyeIcon } from '@assets/icons'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
-import { DateItem } from '@components/atoms/DateItem'
-import { Table } from '@components/atoms/Table'
-import { ModalWindow } from '@components/molecules'
+import { DeleteIcon, EditIcon, EyeIcon } from '@shared/icons'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import { DateItem } from '@shared/ui/DateItem'
+import { Table } from '@shared/ui/Table'
 import styles from './WithdrawsPageTable.module.scss'
 
 const initialElements = [
@@ -185,14 +184,6 @@ export const WithdrawsPageTable = () => {
           {renderRow()}
         </Table>
       </div>
-      {isEditModalOpen && selectedItem && (
-        <ModalWindow
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          item={selectedItem}
-          onSave={handleEditSave}
-        />
-      )}
     </>
   )
 }

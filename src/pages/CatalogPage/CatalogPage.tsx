@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { fetchProfile } from '@services/api/authService'
 import { fetchAllVendors } from '@services/api/productService'
-import Tender from '@components/molecules/Tender/Tender'
+import Tender from '@entities/product/ui/Tender'
 import AddCatalogModal from './AddCatalogModal/AddCatalogModal'
 import AddProductModal from './AddProductModal/AddProductModal'
 import CatalogFilters from './CatalogFilter/CatalogFilters'

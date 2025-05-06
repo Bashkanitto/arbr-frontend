@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Skeleton, Table, Button, Modal, TextInput, Input } from '@mantine/core'
-import { Pagination } from '@components/molecules/Pagination/Pagination'
 import { useEffect, useState } from 'react'
 import styles from './BrandPage.module.scss'
 import { createBrand, deleteBrand, editBrand, fetchBrandsPage } from '@services/api/brandService'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
-import NotificationStore from '@store/NotificationStore'
-import { DeleteIcon, EditIcon } from '@assets/icons'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { DeleteIcon, EditIcon } from '@shared/icons'
 import { ContentLayout } from '@components/layouts/ContentLayout'
 import { ContentTopBar } from '@components/layouts/ContentTopBar'
 import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
+import { Pagination } from '@shared/ui/Pagination/Pagination'
 
 interface Brand {
   id: string
@@ -150,7 +150,7 @@ const BrandPage = () => {
         </Table.Td>
         <Table.Td>{item.name}</Table.Td>
         <Table.Td>{item.rating}</Table.Td>
-        <Table.Td style={{ width: '50px', padding: '0' }}>
+        <Table.Td className="flex p-0">
           <DeleteIcon onClick={() => openConfirmModal(item.id)} />
           <EditIcon
             onClick={() => {

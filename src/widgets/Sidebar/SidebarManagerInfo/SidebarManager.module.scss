@@ -1,0 +1,18 @@
+.sidebar-manager-info {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	border-radius: 20px;
+	padding: 18px 10px;
+	background: #f4f5f7;
+
+	.phone {
+		display: flex;
+		align-items: center;
+		gap: 30px;
+		padding: 0 10px;
+		font-size: 20px;
+		font-weight: 400;
+		color: #000;
+	}
+}

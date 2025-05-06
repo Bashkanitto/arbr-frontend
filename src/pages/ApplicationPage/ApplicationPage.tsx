@@ -1,17 +1,17 @@
-import authStore from "@store/AuthStore";
-import { ContentLayout } from "@components/layouts/ContentLayout";
-import { ContentTopBar } from "@components/layouts/ContentTopBar";
-import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
-import styles from "./ApplicationPage.module.scss";
-import { ApplicationTable } from "./ApplicationTabble/ApplicationTabble";
-import { ApplicationTableAdmin } from "./ApplicationTabble/ApplicationTabbleAdmin";
+import authStore from '@app/AuthStore'
+import { ContentLayout } from '@components/layouts/ContentLayout'
+import { ContentTopBar } from '@components/layouts/ContentTopBar'
+import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
+import styles from './ApplicationPage.module.scss'
+import { ApplicationTable } from './ApplicationTabble/ApplicationTabble'
+import { ApplicationTableAdmin } from './ApplicationTabble/ApplicationTabbleAdmin'
 
 const ApplicationPage = () => {
-  const { isAdmin } = authStore;
+  const { isAdmin } = authStore
 
   return (
     <ContentLayout
-      className={styles["withdraws-page"]}
+      className={styles['withdraws-page']}
       header={
         <>
           <ContentTopBar title="Заявки" />
@@ -21,7 +21,7 @@ const ApplicationPage = () => {
     >
       <div>{isAdmin ? <ApplicationTableAdmin /> : <ApplicationTable />}</div>
     </ContentLayout>
-  );
-};
+  )
+}
 
-export default ApplicationPage;
+export default ApplicationPage

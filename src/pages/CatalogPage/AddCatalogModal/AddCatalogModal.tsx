@@ -2,9 +2,9 @@
 import { Modal, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { sendCatalogList } from '@services/api/productService'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './AddCatalogModal.module.scss'
-import NotificationStore from '@store/NotificationStore'
+import NotificationStore from '@features/notification/model/NotificationStore'
 
 const AddCatalogModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [file, setFile] = useState<File | null>(null)

@@ -4,11 +4,11 @@ import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import { fetchMyProducts, patchStatus } from '@services/api/productService'
-import authStore from '@store/AuthStore'
-import { Table } from '@components/atoms/Table'
+import authStore from '@app/AuthStore'
+import { Table } from '@shared/ui/Table'
 import styles from './ApplicationTabble.module.scss'
-import NotificationStore from '@store/NotificationStore'
-import Status from '../../../helpers/status'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import Status from '../../../shared/utils/status'
 
 export const ApplicationTable = () => {
   const [productData, setProductData] = useState<any[]>([])

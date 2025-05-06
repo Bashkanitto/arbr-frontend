@@ -1,2 +1,1 @@
-export * from './Modal/Modal'
-export * from './UserInfo/UserInfo'
+export * from '../../entities/vendor/UserInfo/UserInfo'

@@ -19,7 +19,12 @@
       "@pages/*": ["pages/*"],
       "@store/*": ["store/*"],
       "@services/*": ["services/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@app/*": ["app/*"],
+      "@shared/*": ["shared/*"],
+      "@features/*": ["features/*"],
+      "@entities/*": ["entities/*"],
+      "@widgets/*": ["widgets/*"]
     }
   },
   "include": ["src"],

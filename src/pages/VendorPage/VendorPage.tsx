@@ -14,7 +14,7 @@ const VendorPage = () => {
   // Local state for vendors, loading, and errors
   const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
   const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
-  const [profileData, setProfileData] = useState(0)
+  const [profileData, setProfileData] = useState<any>(null)
   const [vendorData, setVendorData] = useState<UserType[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -22,31 +22,42 @@ const VendorPage = () => {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
 
+  // Fetch profile data only once on component mount
   useEffect(() => {
-    const loadVendors = async () => {
+    const loadProfile = async () => {
+      try {
+        const profile = await fetchProfile()
+        setProfileData(profile)
+      } catch (err) {
+        setError(`Failed to load profile: ${err instanceof Error ? err.message : 'Unknown error'}`)
+      }
+    }
+    loadProfile()
+  }, [])
+
+  // Fetch vendor data when profile data or id changes
+  useEffect(() => {
+    const loadVendorData = async () => {
+      if (!profileData) return // Don't fetch if profile data isn't loaded yet
+
       try {
         setLoading(true)
-
-        const profileData: any = await fetchProfile()
-        setProfileData(profileData)
-        const vendorId = profileData.id
-        let response
+        let vendorId = profileData.id
 
         // Если роль не admin, показываем только свои данные
         if (profileData.role !== 'admin') {
-          response = await fetchVendorById(vendorId)
+          const response = await fetchVendorById(vendorId)
+          setVendorData(response.data.records)
         } else {
           // Для админов — если в URL есть id и это число, используем его
           if (id && !isNaN(Number(id))) {
-            response = await fetchVendorById(id)
+            const response = await fetchVendorById(id)
+            setVendorData(response.data.records)
           } else {
-            // Иначе используем vendorId из профиля
-            response = await fetchVendorById(vendorId)
+            const response = await fetchVendorById(vendorId)
+            setVendorData(response.data.records)
           }
         }
-
-        // Устанавливаем данные о вендоре
-        setVendorData(response.data.records)
       } catch (err: unknown) {
         setError(
           `Failed to load vendor data: ${err instanceof Error ? err.message : 'Unknown error'}`
@@ -56,8 +67,8 @@ const VendorPage = () => {
       }
     }
 
-    loadVendors()
-  }, [id])
+    loadVendorData()
+  }, [profileData, id])
 
   // Функции для управления модальными окнами
   const addCatalog = () => setIsAddCatalogOpen(true)

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { env } from '../../configs/env.config'
-import authStore from '../../store/AuthStore'
+import { env } from '@shared/utils/env.config'
+import authStore from '@app/AuthStore'
 import { logout } from './authService'
 
 export const baseApi = axios.create({

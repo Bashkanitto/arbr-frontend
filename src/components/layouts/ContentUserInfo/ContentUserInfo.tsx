@@ -1,20 +1,19 @@
 import { useWindowScroll } from '@mantine/hooks'
 import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
-import { NotificationIcon } from '../../../assets/icons/NotificationIcon'
-import { SignOut } from '../../../assets/icons/SignOut'
-import authStore from '../../../store/AuthStore'
-import { default as notificationStore } from '../../../store/NotificationStore'
-import { Avatar } from '../../atoms/Avatar'
-import { IconButton } from '../../atoms/Button/IconButton'
-import { Skeleton } from '../../atoms/Skeleton'
+import { NotificationIcon } from '@shared/icons/NotificationIcon'
+import { SignOutIcon } from '@shared/icons/SignOutIcon'
+import authStore from '@app/AuthStore'
+import { default as notificationStore } from '@features/notification/model/NotificationStore'
+import { Avatar } from '@shared/ui/Avatar'
+import { IconButton } from '@shared/ui/Button/IconButton'
+import { Skeleton } from '@shared/ui/Skeleton'
 import { UserInfo } from '../../molecules'
 import styles from './ContentUserInfo.module.scss'
-import { HelpDeskIcon } from '../../../assets/icons/HelpDeskIcon'
-import { helpDeskStore } from '@store/HelpDeskStore'
+import { HelpDeskIcon } from '@shared/icons/HelpDeskIcon'
+import { helpDeskStore } from '@features/HelpDesk/model/HelpDeskStore'
 
 export const ContentUserInfo = observer(() => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks
   const [scroll] = useWindowScroll()
 
   const { userProfile } = authStore
@@ -60,7 +59,7 @@ export const ContentUserInfo = observer(() => {
                   <HelpDeskIcon />
                 </IconButton>
                 <IconButton onClick={logout} variantColor="danger">
-                  <SignOut />
+                  <SignOutIcon />
                 </IconButton>
               </div>
               <UserInfo

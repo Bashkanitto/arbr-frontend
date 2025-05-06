@@ -2,12 +2,12 @@ import { Checkbox, Select } from '@mantine/core'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
-import { DateItem } from '@components/atoms/DateItem'
-import { Table } from '@components/atoms/Table'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import { DateItem } from '@shared/ui/DateItem'
+import { Table } from '@shared/ui/Table'
 import styles from './PaymentRequestTable.module.scss'
 import { fetchPaymentRequest, patchPaymentRequest } from '@services/api/logService'
-import NotificationStore from '@store/NotificationStore'
+import NotificationStore from '@features/notification/model/NotificationStore'
 
 export const PaymentRequestTable = () => {
   const [selectRows, setSelectRows] = useState<number[]>([])

@@ -4,11 +4,11 @@ import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useEffect, useState } from 'react'
 import { fetchVendorGroups, patchStatus } from '@services/api/productService'
-import NotificationStore from '@store/NotificationStore'
-import { Table } from '@components/atoms/Table'
-import { Pagination } from '@components/molecules/Pagination/Pagination'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { Table } from '@shared/ui/Table'
 import styles from './ApplicationTabble.module.scss'
-import Status from '../../../helpers/status'
+import Status from '../../../shared/utils/status'
+import { Pagination } from '@shared/ui/Pagination/Pagination'
 
 export const ApplicationTableAdmin = () => {
   const [productData, setProductData] = useState<any[]>([])

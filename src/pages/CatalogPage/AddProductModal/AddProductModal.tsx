@@ -8,8 +8,8 @@ import {
   fetchAllVendors,
   uploadMultipleImages,
 } from '@services/api/productService'
-import NotificationStore from '@store/NotificationStore'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './AddProductModal.module.scss'
 import MDEditor from '@uiw/react-md-editor'
 

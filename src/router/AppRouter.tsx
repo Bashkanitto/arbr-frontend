@@ -2,18 +2,17 @@ import { Loader } from '@mantine/core'
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '@components/layouts/MainLayout'
-import ManagersPage from '@pages/ManagersPage/ManagersPage'
-import { RouteNavList, RoutePathList } from '../constants/router'
-import authStore from '../store/AuthStore'
+import { RouteNavList, RoutePathList } from '@shared/utils/router'
 import { AuthProtect } from './AuthProtect'
-import BrandPage from '@pages/BrandPage/BrandPage'
-import BannerPage from '@pages/BannerPage/BannerPage'
-import LogsPage from '@pages/logsPage/LogsPage'
-import PaymentRequestPage from '@pages/PaymentRequestPage/PaymentRequestPage'
-import OrdersPage from '@pages/OrdersPage/OrdersPage'
+import authStore from '@app/AuthStore'
 
 // Lazy load components
 const ApplicationPage = lazy(() => import('@pages/ApplicationPage/ApplicationPage'))
+const ManagersPage = lazy(() => import('@pages/ManagersPage/ManagersPage'))
+const BrandPage = lazy(() => import('@pages/BrandPage/BrandPage'))
+const LogsPage = lazy(() => import('@pages/logsPage/LogsPage'))
+const BannerPage = lazy(() => import('@pages/BannerPage/BannerPage'))
+const OrdersPage = lazy(() => import('@pages/OrdersPage/OrdersPage'))
 const AuthPage = lazy(() => import('@pages/AuthPage/AuthPage'))
 const CatalogPage = lazy(() => import('@pages/CatalogPage/CatalogPage'))
 const MyOrdersPage = lazy(() => import('@pages/MyOrdersPage/MyOrdersPage'))
@@ -21,7 +20,7 @@ const NotFoundPage = lazy(() => import('@pages/NotFoundPage/NotFoundPage'))
 const ProductPage = lazy(() => import('@pages/ProductPage/ProductPage'))
 const SearchPage = lazy(() => import('@pages/SearchPage/SearchPage'))
 const SecurityPage = lazy(() => import('@pages/SecurityPage/SecurityPage'))
-const SuppliesPage = lazy(() => import('@pages/PaymentRequestPage/PaymentRequestPage'))
+const PaymentRequestPage = lazy(() => import('@pages/PaymentRequestPage/PaymentRequestPage'))
 const VendorPage = lazy(() => import('@pages/VendorPage/VendorPage'))
 const WithdrawsPage = lazy(() => import('@pages/WithdrawsPage/WithdrawsPage'))
 
@@ -47,10 +46,12 @@ export const AppRouter = () => {
           <Route
             path="/"
             element={
-              userProfile?.role == 'admin' ? (
+              !userProfile ? (
+                <Navigate to={RoutePathList.auth} />
+              ) : userProfile.role === 'admin' ? (
                 <Navigate to={RouteNavList.managers()} />
               ) : (
-                <Navigate to={RouteNavList.vendor()} />
+                <Navigate to={`/vendor/${userProfile.id}`} />
               )
             }
           />
@@ -124,14 +125,6 @@ export const AppRouter = () => {
               >
                 <Route path="" element={<VendorPage />} />
               </Route>
-
-              <Route
-                path={RoutePathList.supplies}
-                element={<AuthProtect allowedRoles={['vendor']} />}
-              >
-                <Route path="" element={<SuppliesPage />} />
-              </Route>
-
               <Route
                 path={RoutePathList.product}
                 element={<AuthProtect allowedRoles={['admin', 'vendor']} />}

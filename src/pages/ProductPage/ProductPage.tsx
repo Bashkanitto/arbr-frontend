@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { deleteProduct, fetchProductById } from '@services/api/productService'
 import styles from './ProductPage.module.scss'
-import { BaseButton } from '@components/atoms/Button/BaseButton'
-import NotificationStore from '@store/NotificationStore'
-import { wait } from '../../helpers'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import NotificationStore from '@features/notification/model/NotificationStore'
+import { wait } from '@shared/utils/wait'
 import { ProductType } from '@services/api/Types'
 import ProductImageSection from './ProductImageSection'
 import ProductEditModal from './ProductEditModal'
-import authStore from '@store/AuthStore'
+import authStore from '@app/AuthStore'
 
 export interface FormData {
   name?: string

@@ -1,6 +1,6 @@
-import { Avatar } from '@components/atoms/Avatar'
-import { DateItem } from '@components/atoms/DateItem'
-import { Table } from '@components/atoms/Table'
+import { Avatar } from '@shared/ui/Avatar'
+import { DateItem } from '@shared/ui/DateItem'
+import { Table } from '@shared/ui/Table'
 import styles from './ConfirmatedUsersChart.module.scss'
 
 const elements = [

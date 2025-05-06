@@ -1,41 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Input } from "@mantine/core";
-import { observer } from "mobx-react-lite";
-import { FormEvent, useState } from "react";
-import { sendOtpResetPassword } from "@services/api/authService.js";
-import { BaseButton } from "@components/atoms/Button/BaseButton";
-import styles from "./PasswordReset.module.scss";
+import { Input } from '@mantine/core'
+import { observer } from 'mobx-react-lite'
+import { FormEvent, useState } from 'react'
+import { sendOtpResetPassword } from '@services/api/authService.js'
+import { BaseButton } from '@shared/ui/Button/BaseButton'
+import styles from './PasswordReset.module.scss'
 
 interface PasswordResetProps {
-  onNext: () => void;
-  onBack: () => void;
+  onNext: () => void
+  onBack: () => void
 }
 
 const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
-  const [email, setEmail] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleReset = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-    setLoading(true);
+    event.preventDefault()
+    setError(null)
+    setLoading(true)
 
     try {
-      await sendOtpResetPassword(email);
-      onNext();
+      await sendOtpResetPassword(email)
+      onNext()
     } catch (err) {
-      setError("Не удалось отправить код. Проверьте адрес почты.");
+      setError('Не удалось отправить код. Проверьте адрес почты.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <form className={styles.resetForm} onSubmit={handleReset}>
       <div>
         <h4>
-          Сброс пароля{" "}
+          Сброс пароля{' '}
           <button type="button" onClick={onBack}>
             Назад
           </button>
@@ -49,22 +49,18 @@ const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
       {error && <p className={styles.error}>{error}</p>}
       <div>
         <Input
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           value={email}
           name="email"
           placeholder="Ваша почта"
           required
         />
-        <BaseButton
-          disabled={loading || !email}
-          type="submit"
-          variantColor="primary"
-        >
-          {loading ? "Отправка..." : "Отправить код"}
+        <BaseButton disabled={loading || !email} type="submit" variantColor="primary">
+          {loading ? 'Отправка...' : 'Отправить код'}
         </BaseButton>
       </div>
     </form>
-  );
-});
+  )
+})
 
-export default PasswordReset;
+export default PasswordReset
