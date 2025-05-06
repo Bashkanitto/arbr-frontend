@@ -1,50 +1,110 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img width="1455" alt="image" src="https://github.com/user-attachments/assets/b521a43d-f706-4e5f-b76c-cb3167763bdd" />
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧰 Frontend-документация проекта [arbr.kz]
 
-## Expanding the ESLint configuration
+**Тип проекта:** админ-панель для управления тендерами  
+**Целевая аудитория:** менеджеры и поставщики  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 1. 🚀 Установка и запуск
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+git clone https://github.com/Bashkanitto/Phase-admin-client.git
+cd Phase-admin-client
+npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+#### Сборка
+```bash
+npm run build
 ```
+
+---
+
+### 2. 📂 Структура проекта
+
+```
+/src
+  /app               # Корневой файл 
+  /assets            # Изображения, иконки
+  /components        # Переиспользуемые UI-компоненты
+    /atoms           # Атомы
+    /layouts         # Слои
+    /organism        # Организмы
+  /helpers           # Вспомогательные компоненты
+  /pages             # Страницы с маршрутами
+  /store             # MobX-хранилища
+  /services          # Api сервисы
+  /router            # Настройка роутинга 
+  /configs           # Настройки (theme, env)
+  /constants         # Константы (router, colors)
+  main.tsx           # Точка входа
+```
+
+---
+
+### 3. 🤖 Технологии
+
+| Технология         | Назначение                         |
+|--------------------|------------------------------------|
+| React + Vite       | UI и сборка                        |
+| TypeScript         | Типизация                          |
+| MobX               | Состояние приложения               |
+| Mantine UI         | UI-библиотека                      |
+| SCSS Modules       | Стили с инкапсуляцией              |
+| Axios              | Запросы к API                      |
+| Framer Motion      | Анимации                           |
+| React Markdown     | Рендер Markdown                    |
+| Lucide-react       | Иконки                             |
+| Tailwindcss        | Быстрая стилизация                 |
+
+---
+
+### 4. 🎨 Стили
+
+- SCSS Modules: `Component.module.scss`
+- Глобальные стили и переменные: `src/styles/`
+- Mantine Theme + кастомные конфиги
+- Tailwindcss: `Быстрая стилизация`
+
+---
+
+### 6. 📦 MobX Store
+
+- Все хранилища в `/store`
+- Основное: `makeAutoObservable`
+- Оборачиваем компоненты в `observer()`
+
+---
+
+### 7. 🔄 API (axios)
+
+- Базовая настройка: `src/config/axios.ts`
+- Разделено по фичам: `productServices.ts`
+
+---
+
+### 8. 🛤️ Роутинга
+
+- `react-router-dom v6`
+- Маршруты в `src/router/routes.ts`
+- Приватные маршруты (по роли, авторизации)
+
+---
+
+### 9. 📚 Гайды
+
+- **Новая страница**: `/pages`, + роут в `routes.ts`
+- **Обзор MobX**: `observer`, `makeAutoObservable`, context
+- **Анимации**: `framer-motion` wrappers
+
+---
+
+### 10. 🛠️ Роли и права
+
+**Роли:**
+- **Поставщик** — создает товар
+- **Менеджер** — делает заказ(только в мобильном приложении)
+- **Админ** — управляет данными
