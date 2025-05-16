@@ -69,7 +69,7 @@ const AuthPage = observer(() => {
             <a onClick={() => setStep(2)} className={styles.forgetPassword}>
               Забыли пароль?
             </a>
-            <BaseButton type="submit" variantColor="primary">
+            <BaseButton type="submit" name="login" variantColor="primary">
               {authStore.loading ? 'Вход...' : 'Войти'}
             </BaseButton>
           </form>
