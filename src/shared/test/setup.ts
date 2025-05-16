@@ -9,7 +9,7 @@ beforeAll(() => {
         matches: false,
         media: '',
         onchange: null,
-        addListener: () => {}, // deprecated
+        addListener: () => {},
         removeListener: () => {}, // deprecated
         addEventListener: () => {},
         removeEventListener: () => {},
