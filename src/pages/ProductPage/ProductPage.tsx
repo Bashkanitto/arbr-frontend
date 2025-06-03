@@ -91,21 +91,25 @@ const ProductPage = () => {
             <div>
               {product?.vendorGroups[0].features?.isDiscount ? (
                 <span>
-                  <s>{product.price}₸ </s>
+                  <s>{product.vendorGroups[0].price}₸ </s>
                 </span>
               ) : (
                 <span>Цена за товар</span>
               )}
               {product?.vendorGroups[0].features?.isBonus && (
                 <span style={{ background: 'green', marginLeft: '10px' }}>
-                  {(product.price * Number(product.vendorGroups[0].features.bonus)) / 100}Б
+                  {(product.vendorGroups[0].price *
+                    Number(product.vendorGroups[0].features.bonus)) /
+                    100}
+                  Б
                 </span>
               )}
             </div>
             <p>
               {product?.vendorGroups[0].features?.discount
-                ? product.price * (1 - product?.vendorGroups[0].features?.discount / 100)
-                : new Intl.NumberFormat('en-KZ').format(product.price)}
+                ? product.vendorGroups[0].price *
+                  (1 - product?.vendorGroups[0].features?.discount / 100)
+                : new Intl.NumberFormat('en-KZ').format(product.vendorGroups[0].price)}
               ₸
             </p>
           </div>
