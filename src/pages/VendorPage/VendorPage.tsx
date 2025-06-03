@@ -11,7 +11,6 @@ import CatalogFilters from '../CatalogPage/CatalogFilter/CatalogFilters'
 import styles from './VendorPage.module.scss'
 
 const VendorPage = () => {
-  // Local state for vendors, loading, and errors
   const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
   const [isAddProductOpen, setIsAddProductOpen] = useState<boolean>(false)
   const [profileData, setProfileData] = useState<any>(null)
