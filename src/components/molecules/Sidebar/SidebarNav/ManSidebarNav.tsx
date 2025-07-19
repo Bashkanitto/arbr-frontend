@@ -106,7 +106,12 @@ export const MainSidebarNav = () => {
       ].includes(item.title)
     }
     if (userProfile.role === 'vendor') {
-      return ['Каталог', 'Мои Заказы', 'История', 'Заявки на продукт'].includes(item.title)
+      return [
+        'Каталог',
+        'Мои Заказы',
+        // 'История',
+        'Заявки на продукт',
+      ].includes(item.title)
     }
     return false
   })

@@ -286,7 +286,7 @@ const AddProductModal = ({
         <label htmlFor="fileInput" className={styles.uploadButton}>
           Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)
         </label>
-        <input required type="file" id="fileInput" multiple onChange={handleFileChange} />
+        <input type="file" id="fileInput" multiple onChange={handleFileChange} />
         <span className={styles.fileInfo}>
           {selectedFiles.length > 0
             ? `${selectedFiles.length} файл(ов) выбрано`

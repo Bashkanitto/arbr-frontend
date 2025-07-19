@@ -12,5 +12,3 @@ export const fetchOperations = async () => {
     )
   }
 }
-
-return <div>{users.name}</div>
