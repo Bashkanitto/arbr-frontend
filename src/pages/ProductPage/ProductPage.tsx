@@ -11,6 +11,7 @@ import { ProductType } from '@services/api/Types'
 import ProductImageSection from './ProductImageSection'
 import ProductEditModal from './ProductEditModal'
 import authStore from '@app/AuthStore'
+import { Box } from '@shared/ui/Box'
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -60,7 +61,7 @@ const ProductPage = () => {
     <div className={styles['product-page']}>
       <ProductImageSection product={product} id={id} setProduct={setProduct} />
 
-      <div className={styles['product-info']}>
+      <Box className={styles['product-info']}>
         <div className={styles['container']}>
           <p className={styles['product-breadcrumbs']}>
             <span>{product.subcategory?.name}</span> <span>{product.brand?.name}</span>
@@ -138,7 +139,7 @@ const ProductPage = () => {
             Продукт активно используется
           </p>
         )}
-      </div>
+      </Box>
 
       <ProductEditModal
         isOpen={isEditModalOpen}

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { UserType } from '@services/api/Types'
 import { fetchAllVendors } from '@services/api/productService'
 import Tender from '@entities/product/ui/Tender'
-import CatalogSwitch from '../CatalogPage/CatalogSwitch/CatalogSwitch'
 import SearchFilters from './SearchFilters/SearchFilters'
 import styles from './SearchPage.module.scss'
 
@@ -51,7 +50,6 @@ const SearchPage = () => {
 
   return (
     <div className={styles['search-page']}>
-      <CatalogSwitch />
       <p className={styles['search-title']}>Поиск</p>
       <p className={styles['search-description']}>{customerLength} специалистов</p>
       <SearchFilters setSearchTerm={setSearchQuery} />

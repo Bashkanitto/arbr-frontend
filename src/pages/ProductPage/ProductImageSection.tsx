@@ -8,6 +8,7 @@ import ProductTabs from './productTabs/index'
 import { wait } from '@shared/utils/wait'
 import { Modal, TextInput } from '@mantine/core'
 import { fetchProductById, uploadMultipleImages } from '@services/api/productService'
+import { Box } from '@shared/ui/Box'
 
 const ProductImageSection = ({ product, id, setProduct }: any) => {
   const [selectedImage, setSelectedImage] = useState<File[]>([])
@@ -74,7 +75,7 @@ const ProductImageSection = ({ product, id, setProduct }: any) => {
   }
 
   return (
-    <div className={styles['product-image']}>
+    <Box className={styles['product-image']}>
       {product.images?.map((image: any) => (
         <div key={image.id} style={{ position: 'relative' }}>
           <img
@@ -125,7 +126,7 @@ const ProductImageSection = ({ product, id, setProduct }: any) => {
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
       />
-    </div>
+    </Box>
   )
 }
 
