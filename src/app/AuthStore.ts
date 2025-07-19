@@ -17,18 +17,24 @@ class AuthStore {
 
   constructor() {
     makeAutoObservable(this)
+    // Загружаем профиль из cookies сразу
+    this.loadUserProfileFromCookies()
     this.initialize()
   }
 
   private async initialize() {
-    if (this.accessToken && !this.userProfile) {
-      try {
-        await this.getProfile()
-      } catch (error) {
-        console.error('Failed to initialize profile:', error)
-        this.logout()
+    if (this.accessToken) {
+      // Если нет профиля в cookies, загружаем с сервера
+      if (!this.userProfile) {
+        try {
+          await this.getProfile()
+        } catch (error) {
+          console.error('Failed to initialize profile:', error)
+          this.logout()
+        }
       }
     }
+
     runInAction(() => {
       this.initialized = true
     })
@@ -44,6 +50,16 @@ class AuthStore {
         Cookies.remove('userProfile')
       }
     }
+  }
+
+  // Новый геттер для роутинга
+  get isAuthenticated() {
+    return Boolean(this.accessToken)
+  }
+
+  // Геттер для проверки готовности
+  get isReady() {
+    return this.initialized
   }
 
   async login(identifier: string, password: string) {

@@ -12,26 +12,12 @@ import ProductImageSection from './ProductImageSection'
 import ProductEditModal from './ProductEditModal'
 import authStore from '@app/AuthStore'
 
-export interface FormData {
-  name?: string
-  description?: string
-  quantity?: number
-  price?: number
-  brand?: any
-  KZTIN?: number
-  GTIN?: number
-  ENSTRU?: number
-  subcategoryId?: number
-  isFreeDelivery?: boolean
-}
-
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>()
   const [product, setProduct] = useState<ProductType>()
   const [infoVisibility, setInfoVisibility] = useState<number | null>()
   const [error, setError] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
-  const [formData, setFormData] = useState<FormData>()
 
   const navigate = useNavigate()
   const user = authStore.userProfile
@@ -44,7 +30,6 @@ const ProductPage = () => {
     const loadProduct = async () => {
       try {
         const productResponse: any = await fetchProductById(id)
-        setFormData(productResponse.data)
         setProduct(productResponse.data)
       } catch (err: any) {
         setError(err.message || 'An unknown error occurred')
@@ -159,8 +144,7 @@ const ProductPage = () => {
         isOpen={isEditModalOpen}
         setIsEditModalOpen={setIsEditModalOpen}
         product={product as ProductType}
-        formData={formData}
-        setFormData={setFormData}
+        setProduct={setProduct}
       />
     </div>
   )

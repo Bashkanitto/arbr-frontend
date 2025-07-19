@@ -98,7 +98,7 @@ export interface VendorGroups {
     isBonus: boolean
     isFreeDelivery: boolean
     isDiscount: boolean
-    bonus: string
+    bonus: number
     discount: number
   }
   deletedAt: number | null

@@ -1,49 +1,48 @@
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
-import { editProduct } from '@services/api/productService'
+import { changeVendorGroupPrice, editProduct } from '@services/api/productService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import MDEditor from '@uiw/react-md-editor'
-import { useEffect, useState } from 'react'
-import { FormData } from './ProductPage'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { updateBonus, updateDiscount } from '@services/api/procentService'
 import { fetchBrands } from '@services/api/brandService'
+import { ProductType } from '@services/api/Types'
 
 type Props = {
   isOpen: boolean
   setIsEditModalOpen: (open: boolean) => void
-  product: any
-  formData: any
-  setFormData: any
+  product: ProductType
+  setProduct: Dispatch<SetStateAction<ProductType | undefined>>
 }
 
-const ProductEditModal: React.FC<Props> = ({
-  isOpen,
-  setIsEditModalOpen,
-  product,
-  formData,
-  setFormData,
-}) => {
+const ProductEditModal: React.FC<Props> = ({ isOpen, setIsEditModalOpen, product, setProduct }) => {
   const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
   const [newBonus, setNewBonus] = useState<string | number>(
-    product?.vendorGroups[0].features?.bonus
+    product.vendorGroups[0].features?.bonus || 0
   )
   const [newDiscount, setNewDiscount] = useState<string | number>(
-    product.vendorGroups[0].feature?.discount
+    product.vendorGroups[0].features?.discount || 0
   )
   const [brandSearch, setBrandSearch] = useState<string>('')
+  const [vendorGroupPrice, setVendorGroupPrice] = useState<string | number | undefined | null>(null)
   const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
 
   const handleEditProduct = async () => {
     try {
-      const response = await editProduct(product?.id, formData)
-      // TODO
+      const productResponse = await editProduct(product?.id, product)
+      const vendorGroupPriceResponse = await changeVendorGroupPrice(
+        product.vendorGroups[0].id,
+        vendorGroupPrice || product.vendorGroups[0].price
+      )
       await updateBonus(product.vendorGroups[0]?.id, newBonus)
-      // TODO
       await updateDiscount(product.vendorGroups[0]?.id, newDiscount)
+
+      setVendorGroupPrice(vendorGroupPriceResponse.data.price)
+
       NotificationStore.addNotification('Товар', 'Товар успешно отредактирован!', 'success')
       setIsEditModalOpen(false)
 
-      if (response.status !== 200) {
+      if (productResponse.status !== 200) {
         throw new Error('Произошла ошибка при редактировании товара!')
       }
     } catch (err) {
@@ -56,8 +55,8 @@ const ProductEditModal: React.FC<Props> = ({
     }
   }
 
-  const handleInputChange = async (field: keyof FormData, value: any) => {
-    setFormData((prev: FormData) => {
+  const handleInputChange = async (field: keyof ProductType, value: any) => {
+    setProduct((prev: any) => {
       return {
         ...prev,
         [field]: value,
@@ -92,25 +91,25 @@ const ProductEditModal: React.FC<Props> = ({
       <TextInput
         required
         label="Название товара"
-        value={formData.name}
+        value={product.name}
         onChange={e => handleInputChange('name', e.currentTarget.value)}
       />
       <label htmlFor="mdEditor">Описание</label>
       <MDEditor
         id="mdEditor"
-        value={formData.description}
+        value={product.description}
         onChange={value => handleInputChange('description', value)}
         height={400}
       />
       <NumberInput
         label="Количество"
-        value={formData.quantity}
+        value={product.quantity}
         onChange={value => handleInputChange('quantity', value ?? 0)}
       />
       <NumberInput
         label="Цена"
-        value={formData.price}
-        onChange={value => handleInputChange('price', value ?? 0)}
+        value={vendorGroupPrice || product.vendorGroups[0]?.price || 0}
+        onChange={value => setVendorGroupPrice(value ?? 0)}
       />
       <Select
         label="Бренд"
@@ -118,13 +117,13 @@ const ProductEditModal: React.FC<Props> = ({
         searchable
         searchValue={brandSearch}
         onSearchChange={setBrandSearch}
-        defaultValue={formData.brand}
+        defaultValue={product.brand?.name}
         placeholder="Выберите бренд..."
       />
       <NumberInput
         label="Бонус %"
         max={100}
-        value={formData.vendorGroups[0].features?.bonus}
+        value={product.vendorGroups[0].features?.bonus}
         min={0}
         placeholder="Введите бонус (0 - 100)"
         onChange={value => setNewBonus(value)}
@@ -132,7 +131,7 @@ const ProductEditModal: React.FC<Props> = ({
       <NumberInput
         label="Скидка %"
         max={100}
-        value={formData.vendorGroups[0].features?.discount}
+        value={product.vendorGroups[0].features?.discount}
         min={0}
         placeholder="Введите бонус (0 - 100)"
         onChange={value => setNewDiscount(value)}
@@ -140,19 +139,19 @@ const ProductEditModal: React.FC<Props> = ({
       <NumberInput
         label="ЕНС ТРУ"
         placeholder="Введите ЕНС ТРУ"
-        value={formData.ENSTRU}
+        value={product.ENSTRU?.toString()}
         onChange={value => handleInputChange('ENSTRU', value ?? 0)}
       />
       <NumberInput
         label="GTIN"
-        value={formData.GTIN}
+        value={product.GTIN?.toString()}
         placeholder="Введите GTIN"
         onChange={value => handleInputChange('GTIN', value ?? 0)}
       />
       <NumberInput
         label="KZTIN"
         placeholder="Введите KZTIN"
-        value={formData.KZTIN}
+        value={product.KZTIN?.toString()}
         onChange={value => handleInputChange('KZTIN', value ?? 0)}
       />
       <BaseButton variantColor="primary" onClick={handleEditProduct}>

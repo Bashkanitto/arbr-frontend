@@ -142,6 +142,14 @@ export const fetchVendorGroups = async (page: number = 1, pageSize: number = 10)
     return response
 }
 
+// –––––––––––––––––- Изменение цены продукта  –––––––––––––
+export const changeVendorGroupPrice = async (id:number, price:number | string) =>  {
+    const response = await baseApi.patch(
+      `/vendor-group/${id}?relations=vendor,product,productDocuments`, {price}
+    )
+    return response
+}
+
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const sendCatalogList = async (file: File): Promise<any> => {
     const formData = new FormData()
@@ -176,7 +184,7 @@ export const deleteProduct = async (productId: number) => {
 
 export const editProduct = async (
   productId: number | undefined,
-  data: { description: string | null | undefined }
+  data: any
 ) => {
     const response: any = await baseApi.patch(`/product/${productId}`, data)
     return response
