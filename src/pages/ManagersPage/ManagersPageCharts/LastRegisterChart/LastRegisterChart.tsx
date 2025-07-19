@@ -34,7 +34,7 @@ const LastRegisterChart = () => {
 
   return (
     <div className={styles.container}>
-      <h3 style={{ fontSize: '18px' }}>Последние регистрации</h3>
+      <h3 style={{ fontSize: '18px', }} className='ml-4'>Последние регистрации</h3>
       {
         <Table stickyHeader className={styles.table}>
           <Table.Tbody>

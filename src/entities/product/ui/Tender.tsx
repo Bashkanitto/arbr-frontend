@@ -8,6 +8,7 @@ import { Avatar } from '../../../shared/ui/Avatar'
 import DiscountModal from '@pages/CatalogPage/DiscountModal/DiscountModal'
 import EditProcentModal from '@pages/CatalogPage/EditProcentModal/EditProcentModal'
 import styles from './Tender.module.scss'
+import { Skeleton } from '@shared/ui/Skeleton'
 
 const Tender = ({ user }: { user: any }) => {
   const navigate = useNavigate()
@@ -31,8 +32,8 @@ const Tender = ({ user }: { user: any }) => {
       <div className={styles['tender-user']}>
         <div className={styles['tender-user-info']}>
           <a href={`vendor/${user.id}`}>
-            <Avatar />
-            <div>
+            <Avatar w={60} h={60} className="rounded-full" />
+            <div className="flex flex-col justify-center">
               <p className={styles['tender-user-name']}>{user.firstName}</p>
               <p className={styles['tender-user-role']}>
                 {user.role == 'admin' ? 'Админ' : 'Поставщик'}
@@ -56,9 +57,9 @@ const Tender = ({ user }: { user: any }) => {
         </div>
 
         <div className={styles['tender-user-statistics']}>
-          <p>
+          {/* <p>
             Количество товаров: <span>{user.vendorGroups.length}</span>
-          </p>
+          </p> */}
           <div className={styles.brandWrapper}>
             {uniqueBrands.map((brandName, index) => (
               <div key={index} className={styles.brand}>
@@ -71,12 +72,12 @@ const Tender = ({ user }: { user: any }) => {
 
       <div className={styles['tender-items']}>
         {user.vendorGroups
-          .filter((item: any) => item.product?.status === 'active') // Filter only active products
+          .filter((item: any) => item.product?.status === 'active')
           .map((item: any) => (
             <button
               onClick={() => navigate(`/product/${item.product.id}`)}
               key={item.id}
-              className={styles['tender-item']}
+              className={`${styles['tender-item']} border border-gray-200`}
             >
               <img
                 src={item.product?.images[0]?.url.replace(

@@ -2,7 +2,6 @@ import { ContentLayout } from "@components/layouts/ContentLayout";
 import { ContentTopBar } from "@components/layouts/ContentTopBar";
 import { ContentUserInfo } from "@components/layouts/ContentUserInfo";
 import { ManagersPageCharts } from "./ManagersPageCharts";
-import { ManagersPageTabs } from "./ManagersPageTabs";
 
 const ManagersPage = () => {
   return (
@@ -14,7 +13,7 @@ const ManagersPage = () => {
         </>
       }
     >
-      <ManagersPageTabs />
+      {/* <ManagersPageTabs /> */}
       <ManagersPageCharts />
     </ContentLayout>
   );

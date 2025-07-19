@@ -1,3 +1,4 @@
+import { Box } from "@shared/ui/Box";
 import BigRequestChart from "./BigRequestsChart/BigRequestsChart";
 import { default as ConfirmatedUsersChart } from "./ConfirmatedUsersCart/ConfirmatedUsersChart";
 import LastRegisterChart from "./LastRegisterChart/LastRegisterChart";
@@ -7,9 +8,9 @@ import TopProductsChart from "./TopProductsChart/TopProductsChart";
 export const ManagersPageCharts = () => {
   return (
     <div className={styles["managers-page-charts"]}>
-      <div className={styles["chart"]}>
+      <Box className={styles["chart"]}>
         <LastRegisterChart />
-      </div>
+      </Box>
       <div className={styles["chart"]}>
         <ConfirmatedUsersChart />
       </div>

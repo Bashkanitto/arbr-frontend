@@ -19,6 +19,13 @@
   --font-size-base: 16px;
   --font-family: 'Arial', sans-serif;
 }
+div,img,button, input,table {
+  transition: 0.2s ease;
+}
+
+p,h1,h2,h3,h4,h5,span{
+  transition: 0;
+}
 
 html,
 body,
@@ -38,7 +45,7 @@ label {
 }
 body {
   margin: 0;
-  background: #f4f5f7;
+  background: #f3f3f3;
 }
 .active {
   color: #3e9970;

@@ -31,7 +31,7 @@ export const ContentUserInfo = observer(() => {
         <Skeleton width={isScroll ? 85 : 447} height="100%" radius={30} />
       ) : (
         <motion.div
-          className={styles['content-user-info']}
+          className={`${styles['content-user-info']} border border-gray-200`}
           style={{
             width: isScroll ? 85 : 447,
             padding: isScroll ? '5px' : '10px 10px 10px 18px',

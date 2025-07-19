@@ -5,10 +5,10 @@ import { MainLayout } from '@components/layouts/MainLayout'
 import { RouteNavList, RoutePathList } from '@shared/utils/router'
 import { AuthProtect } from './AuthProtect'
 import authStore from '@app/AuthStore'
+import ManagersPage from '@pages/ManagersPage/ManagersPage'
 
 // Lazy load components
 const ApplicationPage = lazy(() => import('@pages/ApplicationPage/ApplicationPage'))
-const ManagersPage = lazy(() => import('@pages/ManagersPage/ManagersPage'))
 const BrandPage = lazy(() => import('@pages/BrandPage/BrandPage'))
 const LogsPage = lazy(() => import('@pages/logsPage/LogsPage'))
 const BannerPage = lazy(() => import('@pages/BannerPage/BannerPage'))
