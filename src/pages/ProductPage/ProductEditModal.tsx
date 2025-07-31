@@ -4,7 +4,7 @@ import { changeVendorGroupPrice, editProduct } from '@services/api/productServic
 import NotificationStore from '@features/notification/model/NotificationStore'
 import MDEditor from '@uiw/react-md-editor'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { updateBonus, updateDiscount } from '@services/api/procentService'
+import { updateBonus, updateDiscount } from '@services/api/bonusService'
 import { fetchBrands } from '@services/api/brandService'
 import { ProductType } from '@services/api/Types'
 

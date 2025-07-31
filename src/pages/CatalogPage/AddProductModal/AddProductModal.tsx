@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { fetchAllSubCategory, fetchBrands } from '@services/api/brandService'
 import {
   addProduct,
@@ -44,20 +44,16 @@ const AddProductModal = ({
 }) => {
   const [brands, setBrands] = useState<{ value: string; label: string }[]>([])
   const [brandSearch, setBrandSearch] = useState<string>('')
-  const [newBonus, setNewBonus] = useState<string | number | null>('')
+  const [newBonus, setNewBonus] = useState<string | number | undefined>('')
   const [newDiscount, setNewDiscount] = useState<string | number>('')
-  const [filteredBrands, setFilteredBrands] = useState<{ value: string; label: string }[]>([])
   const [subcategorySearch, setSubcategorySearch] = useState<string>('')
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
-  const [filteredCategories, setFilteredCategories] = useState<{ value: string; label: string }[]>(
-    []
-  )
   const [accounts, setAccounts] = useState<BrandOption[]>([])
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [formData, setFormData] = useState<FormData>({
-    accountId: isAdmin ? '' : profileData.id.toString(),
+    accountId: isAdmin ? '' : profileData?.id?.toString() || '',
     name: '',
     description: '',
     quantity: 1,
@@ -69,21 +65,79 @@ const AddProductModal = ({
     subcategoryId: null,
   })
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const files = Array.from(event.target.files)
-      const oversizedFiles = files.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024)
+  const MAX_FILE_SIZE_MB = 5
 
-      if (oversizedFiles.length > 0) {
-        setError(`Файл(ы) превышают ${MAX_FILE_SIZE_MB}MB`)
-        return
+  // Мемоизированная фильтрация брендов
+  const filteredBrands = useMemo(() => {
+    if (brandSearch.trim() === '') return brands
+    const searchLower = brandSearch.toLowerCase()
+    return brands.filter(brand => brand.label.toLowerCase().includes(searchLower))
+  }, [brandSearch, brands])
+
+  // Мемоизированная фильтрация категорий
+  const filteredCategories = useMemo(() => {
+    if (subcategorySearch.trim() === '') return categories
+    const searchLower = subcategorySearch.toLowerCase()
+    return categories.filter(category => category.label.toLowerCase().includes(searchLower))
+  }, [subcategorySearch, categories])
+
+  // Мемоизированные опции аккаунтов
+  const accountOptions = useMemo(() => {
+    return isAdmin
+      ? accounts
+      : [
+          {
+            value: profileData?.id?.toString() || '',
+            label: profileData?.firstName || '',
+          },
+        ]
+  }, [isAdmin, accounts, profileData])
+
+  // Оптимизированный обработчик изменения файлов
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files) {
+        const files = Array.from(event.target.files)
+        const oversizedFiles = files.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024)
+
+        if (oversizedFiles.length > 0) {
+          setError(`Файл(ы) превышают ${MAX_FILE_SIZE_MB}MB`)
+          return
+        }
+
+        setSelectedFiles(files)
+        setError('')
       }
+    },
+    [MAX_FILE_SIZE_MB]
+  )
 
-      setSelectedFiles(files)
-      setError('')
-    }
-  }
+  // Оптимизированный обработчик изменения формы
+  const handleInputChange = useCallback((field: keyof FormData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }))
+  }, [])
 
+  // Обработчики для поисковых полей
+  const handleBrandSearchChange = useCallback((value: string) => {
+    setBrandSearch(value)
+  }, [])
+
+  const handleSubcategorySearchChange = useCallback((value: string) => {
+    setSubcategorySearch(value)
+  }, [])
+
+  const handleSubcategoryChange = useCallback((value: string | null) => {
+    setFormData(prev => ({ ...prev, subcategoryId: value }))
+  }, [])
+
+  const handleBrandChange = useCallback((value: string | null) => {
+    setFormData(prev => ({ ...prev, brandId: value }))
+  }, [])
+
+  // Загрузка данных при открытии модалки
   useEffect(() => {
     if (isOpen) {
       const loadData = async () => {
@@ -100,7 +154,6 @@ const AddProductModal = ({
             label: category.name,
           }))
           setCategories(categoryOptions)
-          setFilteredCategories(categoryOptions)
 
           // Бренды
           const brandOptions = brandsResponse.data.records.map((brand: any) => ({
@@ -108,7 +161,6 @@ const AddProductModal = ({
             label: brand.name,
           }))
           setBrands(brandOptions)
-          setFilteredBrands(brandOptions)
 
           // Поставщики
           const vendorOptions = vendorResponse.data.records.map((vendor: any) => ({
@@ -117,45 +169,14 @@ const AddProductModal = ({
           }))
           setAccounts(vendorOptions)
         } catch (error) {
-          console.error('Ошибка загрузки поставщиков:', error)
+          console.error('Ошибка загрузки данных:', error)
         }
       }
       loadData()
     }
   }, [isOpen])
 
-  useEffect(() => {
-    if (subcategorySearch.trim() === '') {
-      setFilteredCategories(categories)
-    } else {
-      setFilteredCategories(
-        categories.filter(category =>
-          category.label.toLowerCase().includes(subcategorySearch.toLowerCase())
-        )
-      )
-    }
-  }, [subcategorySearch, categories])
-
-  useEffect(() => {
-    setFilteredBrands(
-      brandSearch.trim() === ''
-        ? brands
-        : brands.filter(brand => brand.label.toLowerCase().includes(brandSearch.toLowerCase()))
-    )
-  }, [brandSearch, brands])
-
-  const handleInputChange = (field: keyof FormData, value: any) => {
-    // Преобразуем значение в число и ограничиваем его максимумом 100, если это бонус или скидка
-    let newValue = value
-    setFormData(prev => ({
-      ...prev,
-      [field]: newValue,
-    }))
-  }
-
-  const MAX_FILE_SIZE_MB = 5
-
-  const handleAddProduct = async () => {
+  const handleAddProduct = useCallback(async () => {
     setError('')
 
     if (!formData.accountId) {
@@ -191,7 +212,7 @@ const AddProductModal = ({
         rating: 0,
       })
 
-      if (!productResponse) return 'erore'
+      if (!productResponse) return 'error'
       const productId = productResponse?.data?.id
 
       await uploadMultipleImages(selectedFiles, productId)
@@ -202,7 +223,7 @@ const AddProductModal = ({
         price: formData.price.toString(),
         features: {
           isBonus: newBonus != 0,
-          isDiscount: newBonus != 0,
+          isDiscount: newDiscount != 0,
           bonus: newBonus,
           discount: newDiscount,
         },
@@ -220,7 +241,7 @@ const AddProductModal = ({
       setLoading(false)
       onClose()
     }
-  }
+  }, [formData, selectedFiles, newBonus, newDiscount, onClose])
 
   return (
     <Modal
@@ -233,55 +254,50 @@ const AddProductModal = ({
         label="Поставщик"
         required
         disabled={!isAdmin}
-        data={
-          isAdmin
-            ? accounts
-            : [
-                {
-                  value: profileData.id.toString(),
-                  label: profileData.firstName,
-                },
-              ]
-        }
+        data={accountOptions}
         value={formData.accountId}
         onChange={value => handleInputChange('accountId', value ?? '')}
         placeholder="Выберите имя поставщика"
       />
+
       <TextInput
         required
         label="Название товара"
         value={formData.name}
         onChange={e => handleInputChange('name', e.currentTarget.value)}
       />
+
       <Select
         label="Категории"
         data={filteredCategories}
         searchable
         searchValue={subcategorySearch}
-        onSearchChange={setSubcategorySearch}
+        onSearchChange={handleSubcategorySearchChange}
         placeholder="Введите категорию..."
         value={formData.subcategoryId}
-        onChange={value => {
-          setFormData(prev => ({ ...prev, subcategoryId: value }))
-        }}
+        onChange={handleSubcategoryChange}
       />
+
       <label htmlFor="mdEditor">Описание</label>
       <MDEditor
         id="mdEditor"
         value={formData.description}
-        onChange={value => handleInputChange('description', value)}
+        onChange={value => handleInputChange('description', value || '')}
         height={400}
       />
+
       <NumberInput
         label="Количество"
         value={formData.quantity}
         onChange={value => handleInputChange('quantity', value ?? 0)}
       />
+
       <NumberInput
         label="Цена"
         value={formData.price}
         onChange={value => handleInputChange('price', value ?? 0)}
       />
+
       <div className={styles.fileUpload}>
         <label htmlFor="fileInput" className={styles.uploadButton}>
           Загрузить файлы (Макс {MAX_FILE_SIZE_MB}MB)
@@ -293,28 +309,36 @@ const AddProductModal = ({
             : 'Файлы не выбраны'}
         </span>
       </div>
+
       <Select
         label="Бренд"
         data={filteredBrands}
         searchable
         searchValue={brandSearch}
-        onSearchChange={setBrandSearch}
+        onSearchChange={handleBrandSearchChange}
         placeholder="Введите бренд..."
+        value={formData.brandId}
+        onChange={handleBrandChange}
       />
+
       <NumberInput
         label="Бонус %"
         max={100}
         min={0}
         placeholder="Введите бонус (0 - 100)"
-        onChange={value => setNewBonus(value)}
+        value={newBonus}
+        onChange={setNewBonus}
       />
+
       <NumberInput
         label="Скидка %"
         max={100}
         min={0}
-        placeholder="Введите бонус (0 - 100)"
-        onChange={value => setNewDiscount(value)}
+        placeholder="Введите скидку (0 - 100)"
+        value={newDiscount}
+        onChange={setNewDiscount}
       />
+
       <TextInput
         label="KZTIN"
         placeholder="Введите KZTIN"
@@ -337,6 +361,7 @@ const AddProductModal = ({
       />
 
       {error && <p className="danger">{error}</p>}
+
       <BaseButton
         style={{
           width: '100%',

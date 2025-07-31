@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
-import { updateDiscount } from '@services/api/procentService'
+import { updateDiscount } from '@services/api/bonusService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './DiscountModal.module.scss'

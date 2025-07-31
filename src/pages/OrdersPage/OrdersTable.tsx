@@ -53,29 +53,6 @@ export const OrdersTable = () => {
   if (loading) return <Skeleton />
   if (error) return <div>Error: {error}</div>
 
-  const getLocalizedStatus = (status: string): string => {
-    switch (status) {
-      case 'waiting_for_approve':
-        return 'Ждет подтверждения'
-      case 'pending':
-        return 'В ожидании'
-      case 'completed':
-        return 'Принят'
-      case 'completing':
-        return 'Завершение'
-      case 'published':
-        return 'Опубликовано'
-      case 'not_happened':
-        return 'Не завершен'
-      case 'not_won':
-        return 'Не выиграно'
-      case 'cancelled':
-        return 'Отменен'
-      default:
-        return 'Неизвестно'
-    }
-  }
-
   const statusOptions = [
     { value: 'waiting_for_approve', label: 'Ждет подтверждения' },
     { value: 'pending', label: 'В ожидании' },
@@ -122,7 +99,7 @@ export const OrdersTable = () => {
         <Table.Td>
           {item.cartItems[0].product ? (
             <a className="underline" href={`/product/${item.cartItems[0].product?.id}`}>
-              смотреть
+              {item.cartItems[0].product?.name}
             </a>
           ) : (
             'нет продукта'

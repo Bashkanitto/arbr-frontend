@@ -51,7 +51,7 @@ export const addVendorGroup = async ({
     isDiscount: boolean
     isFreeDelivery?: boolean
     discount: number | string | null
-    bonus: number | string | null
+    bonus: number | string | undefined
   }
 }) => {
     const response = await baseApi.post('/vendor-group/add', {

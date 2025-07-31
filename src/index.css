@@ -23,6 +23,10 @@ div,img,button, input,table {
   transition: 0.2s ease;
 }
 
+select, option, .mantine-Popover-dropdown{
+  transition: 0s !important;
+}
+
 p,h1,h2,h3,h4,h5,span{
   transition: 0;
 }

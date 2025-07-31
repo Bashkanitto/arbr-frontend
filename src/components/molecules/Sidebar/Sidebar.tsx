@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 import { MainSidebarNav } from './SidebarNav'
 import { SidebarManager } from './SidebarManagerInfo/SidebarManager'

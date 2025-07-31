@@ -22,6 +22,30 @@ class AuthStore {
     this.initialize()
   }
 
+    // Автообновление токена
+  async refreshAccessToken(): Promise<boolean> {
+    if (!this.refreshToken) return false
+    
+    // Предотвращаем множественные запросы на обновление
+    if (this.refreshPromise) {
+      await this.refreshPromise
+      return Boolean(this.accessToken)
+    }
+
+    this.refreshPromise = this.performRefresh()
+    
+    try {
+      await this.refreshPromise
+      return Boolean(this.accessToken)
+    } catch (error) {
+      console.error('Token refresh failed:', error)
+      this.logout()
+      return false
+    } finally {
+      this.refreshPromise = null
+    }
+  }
+
   private async initialize() {
     if (this.accessToken) {
       // Если нет профиля в cookies, загружаем с сервера

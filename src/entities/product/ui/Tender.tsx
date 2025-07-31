@@ -6,13 +6,12 @@ import { DiscountIcon } from '../../../shared/icons/DiscountIcon'
 import authStore from '@app/AuthStore'
 import { Avatar } from '../../../shared/ui/Avatar'
 import DiscountModal from '@pages/CatalogPage/DiscountModal/DiscountModal'
-import EditProcentModal from '@pages/CatalogPage/EditProcentModal/EditProcentModal'
+import EditBonusModal from '@pages/CatalogPage/EditBonusModal/EditBonusModal'
 import styles from './Tender.module.scss'
-import { Skeleton } from '@shared/ui/Skeleton'
 
 const Tender = ({ user }: { user: any }) => {
   const navigate = useNavigate()
-  const [isProcentModalOpen, setIsProcentModalOpen] = useState(false)
+  const [isBonusModalOpen, setIsBonusModalOpen] = useState(false)
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false)
   const { isAdmin } = authStore
 
@@ -29,6 +28,7 @@ const Tender = ({ user }: { user: any }) => {
 
   return (
     <div className={styles['tender']}>
+      {/* Поставщик */}
       <div className={styles['tender-user']}>
         <div className={styles['tender-user-info']}>
           <a href={`vendor/${user.id}`}>
@@ -40,9 +40,11 @@ const Tender = ({ user }: { user: any }) => {
               </p>
             </div>
           </a>
+
+          {/* Только админ может давать скидки и бонусы модалкой всем продуктам */}
           {isAdmin && (
             <>
-              <button onClick={() => setIsProcentModalOpen(true)} className={styles['link']}>
+              <button onClick={() => setIsBonusModalOpen(true)} className={styles['link']}>
                 <ArrowUpRightIcon />
               </button>
               <button
@@ -56,10 +58,8 @@ const Tender = ({ user }: { user: any }) => {
           )}
         </div>
 
+        {/* бренды */}
         <div className={styles['tender-user-statistics']}>
-          {/* <p>
-            Количество товаров: <span>{user.vendorGroups.length}</span>
-          </p> */}
           <div className={styles.brandWrapper}>
             {uniqueBrands.map((brandName, index) => (
               <div key={index} className={styles.brand}>
@@ -70,6 +70,7 @@ const Tender = ({ user }: { user: any }) => {
         </div>
       </div>
 
+      {/* Товары */}
       <div className={styles['tender-items']}>
         {user.vendorGroups
           .filter((item: any) => item.product?.status === 'active')
@@ -91,14 +92,16 @@ const Tender = ({ user }: { user: any }) => {
           ))}
       </div>
 
-      {/* Modals */}
-      {isProcentModalOpen && (
-        <EditProcentModal
+      {/* Модалка бонусов */}
+      {isBonusModalOpen && (
+        <EditBonusModal
           user={user}
-          isOpen={isProcentModalOpen}
-          onClose={() => setIsProcentModalOpen(false)}
+          isOpen={isBonusModalOpen}
+          onClose={() => setIsBonusModalOpen(false)}
         />
       )}
+
+      {/* Модалка скидки */}
       {isDiscountModalOpen && (
         <DiscountModal
           user={user}

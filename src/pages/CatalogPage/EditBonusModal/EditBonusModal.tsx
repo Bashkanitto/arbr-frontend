@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
-import { updateBonus } from '@services/api/procentService'
+import { updateBonus } from '@services/api/bonusService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
-import styles from './EditProcentModal.module.scss'
+import styles from './EditBonusModal.module.scss'
 import { fetchProductById } from '@services/api/productService'
 
-interface EditProcentModalProps {
+interface EditBonusModalProps {
   isOpen: boolean
   onClose: () => void
   user: any
 }
 
-const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
+const EditBonusModal = ({ isOpen, onClose, user }: EditBonusModalProps) => {
   const [sliderValue, setSliderValue] = useState<number>(0)
   const [bonus, setBonus] = useState<number | null>(null)
   const [userPrice, setUserPrice] = useState<number>(0)
@@ -57,7 +57,7 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
   }
 
   return (
-    <Modal className={styles['EditProcent-modal']} opened={isOpen} onClose={onClose}>
+    <Modal className={styles['EditBonus-modal']} opened={isOpen} onClose={onClose}>
       <Select
         placeholder="Выберите товар"
         onChange={handleSelectChange}
@@ -78,7 +78,7 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
       <p className={styles.bonus}>Бонус: {bonus}₸ </p>
       <BaseButton
         onClick={handleSave}
-        className={styles['editProcent-button']}
+        className={styles['editBonus-button']}
         variantColor="primary"
       >
         Сохранить
@@ -87,4 +87,4 @@ const EditProcentModal = ({ isOpen, onClose, user }: EditProcentModalProps) => {
   )
 }
 
-export default EditProcentModal
+export default EditBonusModal
