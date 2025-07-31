@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import jsPDF from 'jspdf'
 import { useEffect, useState } from 'react'
-import { AccountType, fetchAllAccounts } from '@services/api/AccountsService'
+import { AccountType, fetchAllAccounts } from '@services/AccountsService'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import { Select } from '@shared/ui/Select'
 import { Tabs } from '@shared/ui/Tabs'

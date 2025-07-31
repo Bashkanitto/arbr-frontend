@@ -2,7 +2,7 @@
 import { Input } from '@mantine/core'
 import { observer } from 'mobx-react-lite'
 import { FormEvent, useState } from 'react'
-import { updatePassword } from '@services/api/authService'
+import { updatePassword } from '@services/authService'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from '../PasswordReset/PasswordReset.module.scss'
 

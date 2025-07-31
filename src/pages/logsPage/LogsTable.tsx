@@ -1,5 +1,5 @@
 import { Skeleton, Table } from '@mantine/core'
-import { fetchLogger } from '@services/api/logService'
+import { fetchLogger } from '@services/logService'
 import { useEffect, useState } from 'react'
 import styles from './LogsTable.module.scss'
 

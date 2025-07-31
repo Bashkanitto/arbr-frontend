@@ -2,7 +2,7 @@
 import { Skeleton } from '@mantine/core'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { AccountType, fetchAllAccounts } from '@services/api/AccountsService'
+import { AccountType, fetchAllAccounts } from '@services/AccountsService'
 import { Avatar } from '@shared/ui/Avatar'
 import { DateItem } from '@shared/ui/DateItem'
 import { Table } from '@shared/ui/Table'
@@ -34,7 +34,9 @@ const LastRegisterChart = () => {
 
   return (
     <div className={styles.container}>
-      <h3 style={{ fontSize: '18px', }} className='ml-4'>Последние регистрации</h3>
+      <h3 style={{ fontSize: '18px' }} className="ml-4">
+        Последние регистрации
+      </h3>
       {
         <Table stickyHeader className={styles.table}>
           <Table.Tbody>

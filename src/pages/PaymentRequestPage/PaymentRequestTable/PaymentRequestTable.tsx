@@ -6,7 +6,7 @@ import { BaseButton } from '@shared/ui/Button/BaseButton'
 import { DateItem } from '@shared/ui/DateItem'
 import { Table } from '@shared/ui/Table'
 import styles from './PaymentRequestTable.module.scss'
-import { fetchPaymentRequest, patchPaymentRequest } from '@services/api/logService'
+import { fetchPaymentRequest, patchPaymentRequest } from '@services/logService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 
 export const PaymentRequestTable = () => {

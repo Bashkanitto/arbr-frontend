@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, Modal, Select, Slider } from '@mantine/core'
 import { useState } from 'react'
-import { updateBonus } from '@services/api/bonusService'
+import { updateBonus } from '@services/bonusService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './EditBonusModal.module.scss'
-import { fetchProductById } from '@services/api/productService'
+import { fetchProductById } from '@services/productService'
 
 interface EditBonusModalProps {
   isOpen: boolean

@@ -1,4 +1,4 @@
-import { BrandType, VendorGroups } from "@services/api/Types"
+import { BrandType, VendorGroups } from "@shared/types/Types"
 
 export interface ProductType {
     id: number

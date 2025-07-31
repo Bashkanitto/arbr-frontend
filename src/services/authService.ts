@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Cookies from 'js-cookie'
 import { baseApi } from './base'
-import { UserType } from './Types'
+import { UserType } from '../shared/types/Types'
 
 interface LoginResponse {
+  accessToken: string
+  refreshToken: string
+}
+
+interface RefreshTokenResponse {
   accessToken: string
   refreshToken: string
 }
@@ -42,6 +47,23 @@ export const login = async (identifier: string, password: string): Promise<Login
   }
 }
 
+// –––––––––––––––––––––––––––––––Refresh Token–––––––––––––––––––––––––––––––
+export const refreshToken = async (refreshTokenValue: string): Promise<RefreshTokenResponse> => {
+  try {
+    const response: any = await baseApi.post('/auth/refresh', {
+      refreshToken: refreshTokenValue,
+    })
+    
+    const { accessToken, refreshToken: newRefreshToken } = response.data
+    setTokens(accessToken, newRefreshToken)
+    
+    return { accessToken, refreshToken: newRefreshToken }
+  } catch (error) {
+    console.error('Token refresh failed:', error)
+    throw new Error(`Token refresh failed: ${error}`)
+  }
+}
+
 // ––––––––––––––––––––––––––––––Log Out–––––––––––––––––––––––––––––––
 export const logout = () => {
   localStorage.removeItem('accessToken')
@@ -63,13 +85,14 @@ export const fetchProfile = async (): Promise<UserType> => {
     console.error('Unknown error type:', error)
 
     logout()
-    if (window.location.pathname != '/auth') {
-      window.location.href == '/auth'
+    if (window.location.pathname !== '/auth') {
+      window.location.href = '/auth'
     }
 
     throw new Error(`Failed to fetch profile: Unknown error - ${error}`)
   }
 }
+
 // ––––––––––––––––––––––––––––––––––отправка кода–––––––––––––––––––––––––––––––
 export const sendOtpResetPassword = async (identifier: string): Promise<void> => {
   try {
@@ -113,6 +136,7 @@ export const confirmOtpResetPassword = async (otpCode: string): Promise<void> =>
     throw new Error(error.response?.data?.message || 'Неправильный код OTP.')
   }
 }
+
 // ––––––––––––––––––––––––––––––––––Обновление пароля –––––––––––––––––––––––––––––––
 export const updatePassword = async (password: string): Promise<void> => {
   try {

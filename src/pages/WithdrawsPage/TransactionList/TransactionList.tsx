@@ -1,6 +1,6 @@
 import { Skeleton } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
-import { fetchOperations } from '@services/api/operationService'
+import { fetchOperations } from '@services/operationService'
 import styles from './TransactionList.module.scss'
 
 // Define the type for an operation

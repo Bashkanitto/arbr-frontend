@@ -1,12 +1,12 @@
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
-import { changeVendorGroupPrice, editProduct } from '@services/api/productService'
+import { changeVendorGroupPrice, editProduct } from '@services/productService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import MDEditor from '@uiw/react-md-editor'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { updateBonus, updateDiscount } from '@services/api/bonusService'
-import { fetchBrands } from '@services/api/brandService'
-import { ProductType } from '@services/api/Types'
+import { updateBonus, updateDiscount } from '@services/bonusService'
+import { fetchBrands } from '@services/brandService'
+import { ProductType } from '@shared/types/Types'
 
 type Props = {
   isOpen: boolean

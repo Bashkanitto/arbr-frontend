@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { fetchOrders } from '@services/api/productService'
+import { fetchOrders } from '@services/productService'
 import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
-import baseApi from '@services/api/base'
+import baseApi from '@services/base'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { Pagination } from '@shared/ui/Pagination/Pagination'
 

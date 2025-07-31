@@ -4,8 +4,9 @@ import {
   fetchProfile,
   login as loginApi,
   logout as logoutApi,
-} from '../services/api/authService.js'
-import { UserType } from '@services/api/Types.js'
+  refreshToken as refreshTokenApi,
+} from '../services/authService.js'
+import { UserType } from '@shared/types/Types.js'
 
 class AuthStore {
   accessToken = Cookies.get('accessToken') || null
@@ -14,26 +15,38 @@ class AuthStore {
   isAdmin: boolean = localStorage.getItem('isAdmin') === 'true' || false
   loading = false
   initialized = false
+  
+  // Приватное свойство для предотвращения множественных запросов обновления
+  private refreshPromise: Promise<void> | null = null
 
   constructor() {
+    // Упрощенная конфигурация без указания исключений
     makeAutoObservable(this)
+    
     // Загружаем профиль из cookies сразу
     this.loadUserProfileFromCookies()
     this.initialize()
   }
 
-    // Автообновление токена
+  // Автообновление токена
   async refreshAccessToken(): Promise<boolean> {
-    if (!this.refreshToken) return false
+    if (!this.refreshToken) {
+      console.warn('No refresh token available')
+      return false
+    }
     
     // Предотвращаем множественные запросы на обновление
     if (this.refreshPromise) {
-      await this.refreshPromise
-      return Boolean(this.accessToken)
+      try {
+        await this.refreshPromise
+        return Boolean(this.accessToken)
+      } catch (error) {
+        console.error('Refresh promise failed:', error)
+        return false
+      }
     }
 
     this.refreshPromise = this.performRefresh()
-    
     try {
       await this.refreshPromise
       return Boolean(this.accessToken)
@@ -46,29 +59,64 @@ class AuthStore {
     }
   }
 
-  private async initialize() {
-    if (this.accessToken) {
-      // Если нет профиля в cookies, загружаем с сервера
-      if (!this.userProfile) {
-        try {
-          await this.getProfile()
-        } catch (error) {
-          console.error('Failed to initialize profile:', error)
-          this.logout()
-        }
-      }
+  // Приватный метод для выполнения обновления токена
+  private async performRefresh(): Promise<void> {
+    if (!this.refreshToken) {
+      throw new Error('No refresh token available')
     }
 
-    runInAction(() => {
-      this.initialized = true
-    })
+    try {
+      console.log('Attempting to refresh token...')
+      const response = await refreshTokenApi(this.refreshToken)
+      
+      runInAction(() => {
+        this.accessToken = response.accessToken
+        this.refreshToken = response.refreshToken
+      })
+      
+      // Обновляем cookies
+      Cookies.set('accessToken', response.accessToken, { expires: 1 })
+      Cookies.set('refreshToken', response.refreshToken, { expires: 1 })
+      
+      console.log('Token refreshed successfully')
+    } catch (error) {
+      console.error('Failed to refresh token:', error)
+      throw error
+    }
   }
 
+  // Приватная инициализация
+  private async initialize() {
+    try {
+      if (this.accessToken) {
+        // Если нет профиля в cookies, загружаем с сервера
+        if (!this.userProfile) {
+          try {
+            await this.getProfile()
+          } catch (error) {
+            console.error('Failed to initialize profile:', error)
+            this.logout()
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Initialization failed:', error)
+    } finally {
+      runInAction(() => {
+        this.initialized = true
+      })
+    }
+  }
+
+  // Приватная загрузка профиля из cookies
   private loadUserProfileFromCookies() {
     const savedProfile = Cookies.get('userProfile')
     if (savedProfile) {
       try {
-        this.userProfile = JSON.parse(savedProfile)
+        const parsedProfile = JSON.parse(savedProfile)
+        runInAction(() => {
+          this.userProfile = parsedProfile
+        })
       } catch (error) {
         console.error('Failed to parse saved profile:', error)
         Cookies.remove('userProfile')
@@ -76,7 +124,7 @@ class AuthStore {
     }
   }
 
-  // Новый геттер для роутинга
+  // Геттеры для роутинга
   get isAuthenticated() {
     return Boolean(this.accessToken)
   }
@@ -86,19 +134,31 @@ class AuthStore {
     return this.initialized
   }
 
+  // Проверка полной авторизации
+  get isLoggedIn() {
+    return Boolean(this.accessToken && this.userProfile)
+  }
+
+  // Метод логина
   async login(identifier: string, password: string) {
-    this.loading = true
+    runInAction(() => {
+      this.loading = true
+    })
+    
     try {
       const response = await loginApi(identifier, password)
       const { accessToken, refreshToken } = response
-
+      
       runInAction(() => {
         this.accessToken = accessToken
         this.refreshToken = refreshToken
-        Cookies.set('accessToken', accessToken, { expires: 1 })
-        Cookies.set('refreshToken', refreshToken, { expires: 1 })
       })
+      
+      // Сохраняем токены в cookies
+      Cookies.set('accessToken', accessToken, { expires: 1 })
+      Cookies.set('refreshToken', refreshToken, { expires: 1 })
 
+      // Загружаем профиль пользователя
       await this.getProfile()
 
       // Проверка роли пользователя
@@ -123,35 +183,62 @@ class AuthStore {
     }
   }
 
+  // Получение профиля пользователя
   async getProfile() {
     try {
       const response = await fetchProfile()
       runInAction(() => {
         this.userProfile = response
-        Cookies.set('userProfile', JSON.stringify(response), { expires: 1 })
       })
+      // Сохраняем профиль в cookies
+      Cookies.set('userProfile', JSON.stringify(response), { expires: 1 })
     } catch (error: unknown) {
       console.error('Fetching profile failed:', error)
       throw error
     }
   }
 
+  // Выход из системы
   logout() {
     runInAction(() => {
       this.accessToken = null
       this.refreshToken = null
       this.userProfile = null
+      this.isAdmin = false
       this.initialized = false
     })
+    
+    // Очищаем все сохраненные данные
     Cookies.remove('accessToken')
-    localStorage.removeItem('isAdmin')
     Cookies.remove('refreshToken')
     Cookies.remove('userProfile')
-    logoutApi()
+    localStorage.removeItem('isAdmin')
+    
+    // Вызываем API для выхода
+    try {
+      logoutApi()
+    } catch (error) {
+      console.error('Logout API call failed:', error)
+    }
   }
 
-  get isLoggedIn() {
-    return Boolean(this.accessToken && this.userProfile)
+  // Метод для принудительного обновления профиля
+  async refreshProfile() {
+    if (!this.accessToken) {
+      throw new Error('Not authenticated')
+    }
+    
+    try {
+      await this.getProfile()
+    } catch (error) {
+      console.error('Failed to refresh profile:', error)
+      throw error
+    }
+  }
+
+  // Проверка валидности токена
+  get hasValidToken() {
+    return Boolean(this.accessToken && this.refreshToken)
   }
 }
 

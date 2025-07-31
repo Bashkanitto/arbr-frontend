@@ -2,7 +2,7 @@
 import { Skeleton, Table, Button, Modal, TextInput, Input } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import styles from './BrandPage.module.scss'
-import { createBrand, deleteBrand, editBrand, fetchBrandsPage } from '@services/api/brandService'
+import { createBrand, deleteBrand, editBrand, fetchBrandsPage } from '@services/brandService'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { DeleteIcon, EditIcon } from '@shared/icons'

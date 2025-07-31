@@ -2,11 +2,11 @@ import { DeleteIcon } from '@shared/icons'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import styles from '../ProductPage.module.scss'
-import baseApi from '@services/api/base'
+import baseApi from '@services/base'
 import { DownloadIcon } from '@shared/icons/DownloadIcon'
 import { Modal, TextInput } from '@mantine/core'
 import { useState } from 'react'
-import { uploadProductDocument } from '@services/api/productService'
+import { uploadProductDocument } from '@services/productService'
 
 const DocumentTab = ({ product }) => {
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState<boolean>(false)

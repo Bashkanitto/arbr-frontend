@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, NumberInput, Select, TextInput } from '@mantine/core'
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { fetchAllSubCategory, fetchBrands } from '@services/api/brandService'
+import { fetchAllSubCategory, fetchBrands } from '@services/brandService'
 import {
   addProduct,
   addVendorGroup,
   fetchAllVendors,
   uploadMultipleImages,
-} from '@services/api/productService'
+} from '@services/productService'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './AddProductModal.module.scss'

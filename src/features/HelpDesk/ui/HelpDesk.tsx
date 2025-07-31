@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import baseApi from '@services/api/base'
+import baseApi from '@services/base'
 import { Button, Modal } from '@mantine/core'
 import { wait } from '@shared/utils/wait'
 import NotificationStore from '@features/notification/model/NotificationStore'

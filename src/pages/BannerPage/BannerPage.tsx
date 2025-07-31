@@ -2,7 +2,7 @@
 import { Skeleton, Table, Button, Modal, TextInput } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import styles from './BannerPage.module.scss'
-import { fetchFeatures, deleteBanner, createBanner } from '@services/api/brandService'
+import { fetchFeatures, deleteBanner, createBanner } from '@services/brandService'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { DeleteIcon } from '../../shared/icons'

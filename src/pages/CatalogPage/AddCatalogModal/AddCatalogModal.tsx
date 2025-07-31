@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal, TextInput } from '@mantine/core'
 import { useState } from 'react'
-import { sendCatalogList } from '@services/api/productService'
+import { sendCatalogList } from '@services/productService'
 import { BaseButton } from '@shared/ui/Button/BaseButton'
 import styles from './AddCatalogModal.module.scss'
 import NotificationStore from '@features/notification/model/NotificationStore'

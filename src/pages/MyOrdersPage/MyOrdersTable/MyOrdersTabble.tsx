@@ -3,10 +3,10 @@ import { Select, Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
-import baseApi from '@services/api/base'
+import baseApi from '@services/base'
 import NotificationStore from '@features/notification/model/NotificationStore'
-import { fetchMyOrders, fetchOrders } from '@services/api/productService'
-import { fetchProfile } from '@services/api/authService'
+import { fetchMyOrders, fetchOrders } from '@services/productService'
+import { fetchProfile } from '@services/authService'
 import { Pagination } from '@shared/ui/Pagination/Pagination'
 
 export const MyOrdersTable = () => {
