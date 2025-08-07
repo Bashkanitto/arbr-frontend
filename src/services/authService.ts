@@ -101,13 +101,23 @@ export const sendOtpResetPassword = async (identifier: string): Promise<void> =>
     })
 
     const { verifyOtpToken } = response.data
+    localStorage.setItem('verifyOtpToken', verifyOtpToken)
+    
     if (!verifyOtpToken) {
       throw new Error('Сервер не вернул verifyOtpToken.')
     }
+    if(response.error.statusCode == 400){
+      throw new Error('Код восстановления уже отправлен на почту, пожалуйста подождите и попробуйте снова')
+    }
+    else{
+     throw new Error('Не удалось отправить код. Проверьте адрес почты.')
+    }
 
-    localStorage.setItem('verifyOtpToken', verifyOtpToken)
   } catch (error: any) {
     console.error('Ошибка отправки OTP:', error)
+    if(error.status == 400){
+      throw new Error('Код восстановления уже отправлен на почту, пожалуйста подождите и попробуйте снова')
+    }
     throw new Error(error.response?.message || 'Не удалось отправить код.')
   }
 }
