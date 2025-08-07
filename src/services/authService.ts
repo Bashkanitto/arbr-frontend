@@ -105,7 +105,7 @@ export const sendOtpResetPassword = async (identifier: string): Promise<void> =>
       throw new Error('Сервер не вернул verifyOtpToken.')
     }
 
-    localStorage.setItem('otpToken', verifyOtpToken)
+    localStorage.setItem('verifyOtpToken', verifyOtpToken)
   } catch (error: any) {
     console.error('Ошибка отправки OTP:', error)
     throw new Error(error.response?.message || 'Не удалось отправить код.')
@@ -115,22 +115,22 @@ export const sendOtpResetPassword = async (identifier: string): Promise<void> =>
 // ––––––––––––––––––––––––––––––––––Подтверждение кода –––––––––––––––––––––––––––––––
 export const confirmOtpResetPassword = async (otpCode: string): Promise<void> => {
   try {
-    const otpToken = localStorage.getItem('otpToken')
-    if (!otpToken) {
+    const verifyOtpToken = localStorage.getItem('verifyOtpToken')
+    if (!verifyOtpToken) {
       throw new Error('Сессия OTP отсутствует.')
     }
 
     const response: any = await baseApi.post<ConfirmOtpResponse>(
       '/otp/confirm-otp-reset-password',
       {
-        otp_session: otpToken,
+        otp_session: verifyOtpToken,
         otp: otpCode,
       }
     )
 
-    const { otpToken: nextOtpToken } = response
+    const { email, otpToken } = response.data
 
-    localStorage.setItem('otpToken', nextOtpToken)
+    localStorage.setItem('otpToken', otpToken)
   } catch (error: any) {
     console.error('Ошибка подтверждения OTP:', error)
     throw new Error(error.response?.data?.message || 'Неправильный код OTP.')
