@@ -49,7 +49,6 @@ export const OrdersTable = () => {
       setOrders(sorted)
     } catch {
       setError('Не удалось загрузить заказы')
-      setOrders([])
     } finally {
       setLoading(false)
     }

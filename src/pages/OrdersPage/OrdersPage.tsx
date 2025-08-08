@@ -15,7 +15,9 @@ const OrdersPage = () => {
         </>
       }
     >
-      <div>{<OrdersTable />}</div>
+      <div>
+        <OrdersTable />
+      </div>
     </ContentLayout>
   )
 }

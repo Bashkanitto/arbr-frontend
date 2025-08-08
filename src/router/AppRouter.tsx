@@ -19,7 +19,7 @@ const MyOrdersPage = lazy(() => import('@pages/MyOrdersPage/MyOrdersPage'))
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage/NotFoundPage'))
 const ProductPage = lazy(() => import('@pages/ProductPage/ProductPage'))
 const SearchPage = lazy(() => import('@pages/SearchPage/SearchPage'))
-const SecurityPage = lazy(() => import('@pages/SecurityPage/SecurityPage'))
+const UsersPage = lazy(() => import('@pages/UsersPage/UsersPage'))
 const PaymentRequestPage = lazy(() => import('@pages/PaymentRequestPage/PaymentRequestPage'))
 const VendorPage = lazy(() => import('@pages/VendorPage/VendorPage'))
 const WithdrawsPage = lazy(() => import('@pages/WithdrawsPage/WithdrawsPage'))
@@ -133,7 +133,7 @@ export const AppRouter = () => {
               </Route>
 
               <Route path={RoutePathList.users} element={<AuthProtect allowedRoles={['admin']} />}>
-                <Route path={RoutePathList.users} element={<SecurityPage />} />
+                <Route path={RoutePathList.users} element={<UsersPage />} />
               </Route>
               <Route path={RoutePathList.notfound} element={<NotFoundPage />} />
             </Route>
