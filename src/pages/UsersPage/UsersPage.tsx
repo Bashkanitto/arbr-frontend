@@ -1,10 +1,10 @@
 import { ContentLayout } from '@components/layouts/ContentLayout'
 import { ContentTopBar } from '@components/layouts/ContentTopBar'
 import { ContentUserInfo } from '@components/layouts/ContentUserInfo'
-import styles from './SecurityPage.module.scss'
-import { SecurityPageTable } from './SecurityPage/SecurityPageTable'
+import styles from './UsersPage.module.scss'
+import { UsersTable } from './UsersTable/UsersTable'
 
-const SecurityPage = () => {
+const UsersPage = () => {
   return (
     <ContentLayout
       className={styles['withdraws-page']}
@@ -16,10 +16,10 @@ const SecurityPage = () => {
       }
     >
       <div>
-        <SecurityPageTable />
+        <UsersTable />
       </div>
     </ContentLayout>
   )
 }
 
-export default SecurityPage
+export default UsersPage

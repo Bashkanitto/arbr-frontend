@@ -1,4 +1,5 @@
 // src/services/api/AccountsService.ts
+import { UserType } from '@shared/types/UserType'
 import { baseApi } from './base'
 
 export interface AccountType {
@@ -16,30 +17,25 @@ interface MetaType {
   total: number
 }
 
-export const fetchAllAccounts = async (
-  page: number = 1,
-  pageSize: number = 10
-): Promise<{ records: AccountType[]; meta: MetaType }> => {
+export const fetchAllAccounts = async (): Promise<{ records: UserType[]; meta: MetaType }> => {
   try {
     const response: any = await baseApi.get(
-      `/account?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+      `/account?pagination[pageSize]=600&sort[id]=desc`
     )
     return response
   } catch (error) {
-    console.error('Error fetching last confirmed accounts:', error)
-    throw new Error('Failed to fetch last confirmed accounts')
+    throw error
   }
 }
 
-export const changeAccount = async (id: number, status: string) => {
+export const patchAccount = async (id: number, status: string) => {
   try {
     const response: any = await baseApi.patch(`/account/${id}`, {
       status,
     })
     return response
   } catch (error) {
-    console.error('Error fetching last confirmed accounts:', error)
-    throw new Error('Failed to fetch last confirmed accounts')
+    throw error
   }
 }
 
@@ -50,7 +46,6 @@ export const deleteAccount = async (
     const response: any = await baseApi.delete(`/account/${id}`)
     return response
   } catch (error) {
-    console.error('Error fetching last confirmed accounts:', error)
-    throw new Error('Failed to fetch last confirmed accounts')
+    throw error
   }
 }

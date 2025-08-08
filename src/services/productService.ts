@@ -172,7 +172,7 @@ export const fetchOrders = async (page: number = 1, pageSize: number = 10) => {
 
 export const fetchAllOrders = async () => {
     const response: any = await baseApi.get(
-      '/order/admin?relations=user,cartItems.product&sort[id]=desc'
+      '/order/admin?relations=user,cartItems.product&sort[id]=desc&pagination[pageSize]=500'
     )
     return response
 }
