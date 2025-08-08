@@ -28,7 +28,6 @@ export const OrdersTable = () => {
         setProductData(sortedRecords)
       } catch (err) {
         setError('Failed to load products')
-        console.error(err)
         setProductData([])
       } finally {
         setLoading(false)
@@ -40,11 +39,12 @@ export const OrdersTable = () => {
   async function handleStatusChange(id: number, status: string) {
     try {
       await baseApi.patch(`/order/${id}`, { status })
-      const orderResponse: any = await fetchOrders(page, pageSize)
-      setProductData(orderResponse.data.records)
+      const response: any = await fetchAllOrders()
+      const sortedRecords = response.data.records.sort((a, b) => b.id - a.id) // ← по убыванию
+      setTotalPages(response.data.meta?.totalPages || Math.ceil(sortedRecords.length / pageSize))
+      setProductData(response.data.records)
       NotificationStore.addNotification('Заказ', 'Изменение статуса заказа успешна', 'success')
     } catch (err) {
-      console.error(err)
       NotificationStore.addNotification('Заказ', 'Произошла ошибка при изменении заказа', 'error')
     }
   }
