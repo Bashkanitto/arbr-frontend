@@ -165,7 +165,14 @@ export const sendCatalogList = async (file: File): Promise<any> => {
 // –––––––––––––––––- Получение список продуктов  –––––––––––––
 export const fetchOrders = async (page: number = 1, pageSize: number = 10) => {
     const response: any = await baseApi.get(
-      `/order/admin?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+      `/order/admin?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[id]=asc`
+    )
+    return response
+}
+
+export const fetchAllOrders = async () => {
+    const response: any = await baseApi.get(
+      '/order/admin?relations=user,cartItems.product&sort[id]=desc'
     )
     return response
 }

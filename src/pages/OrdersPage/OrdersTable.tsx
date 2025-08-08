@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
-import { useEffect, useState } from 'react'
-import { fetchOrders } from '@services/productService'
+import { useEffect, useMemo, useState } from 'react'
+import { fetchAllOrders, fetchOrders } from '@services/productService'
 import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
 import baseApi from '@services/base'
@@ -22,11 +22,10 @@ export const OrdersTable = () => {
       setLoading(true)
       setError(null)
       try {
-        const response: any = await fetchOrders(page, pageSize)
-        setTotalPages(
-          response.data.meta?.totalPages || Math.ceil(response.data.records.length / pageSize)
-        )
-        setProductData(response.data.records)
+        const response: any = await fetchAllOrders()
+        const sortedRecords = response.data.records.sort((a, b) => b.id - a.id) // ← по убыванию
+        setTotalPages(response.data.meta?.totalPages || Math.ceil(sortedRecords.length / pageSize))
+        setProductData(sortedRecords)
       } catch (err) {
         setError('Failed to load products')
         console.error(err)
@@ -36,7 +35,7 @@ export const OrdersTable = () => {
       }
     }
     loadOrders()
-  }, [page, pageSize])
+  }, [])
 
   async function handleStatusChange(id: number, status: string) {
     try {
@@ -49,9 +48,6 @@ export const OrdersTable = () => {
       NotificationStore.addNotification('Заказ', 'Произошла ошибка при изменении заказа', 'error')
     }
   }
-
-  if (loading) return <Skeleton />
-  if (error) return <div>Error: {error}</div>
 
   const statusOptions = [
     { value: 'waiting_for_approve', label: 'Ждет подтверждения' },
@@ -75,14 +71,24 @@ export const OrdersTable = () => {
     }
   }
 
-  const renderRow = () => {
-    const filteredData = statusFilter
-      ? productData.filter(item => item.status === statusFilter)
-      : productData
+  const filteredData = useMemo(() => {
+    return statusFilter ? productData.filter(item => item.status === statusFilter) : productData
+  }, [productData, statusFilter])
 
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / pageSize))
+    setPage(1)
+  }, [filteredData, pageSize])
+
+  if (loading) return <Skeleton />
+  if (error) return <div>Error: {error}</div>
+
+  const renderRow = () => {
     if (!Array.isArray(filteredData)) return null
 
-    return filteredData.map(item => (
+    const paginatedData = filteredData.slice((page - 1) * pageSize, page * pageSize)
+
+    return paginatedData.map(item => (
       <Table.Tr key={item.id}>
         <Table.Td>
           <a

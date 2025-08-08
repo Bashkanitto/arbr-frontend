@@ -47,7 +47,7 @@ export const MyOrdersTable = () => {
   async function handleStatusChange(id: number, status: string) {
     try {
       const response = await baseApi.patch(`/order/${id}`, { status })
-      const orderResponse: any = await fetchOrders(page, pageSize)
+      const orderResponse: any = await fetchMyOrders(page, pageSize, userEmail)
       setProductData(orderResponse.data.records)
 
       console.log(response)
