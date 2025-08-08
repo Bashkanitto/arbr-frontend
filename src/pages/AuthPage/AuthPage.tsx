@@ -30,10 +30,12 @@ const AuthPage = observer(() => {
         navigate('/managers')
       }
     } catch (error: any) {
-      if (error.status) {
+      console.log(error)
+      if (error.status === 500) {
         setError(((error as Error).message = 'Ошибка на сервере, попробуйте позже'))
       }
-      setError(((error as Error).message = 'Неправильные данные для входа'))
+      if (error.status === 404) setError(((error as Error).message = 'Нет такого пользователя'))
+      else setError(((error as Error).message = 'Неправильные данные для входа'))
     }
   }
   return (

@@ -42,8 +42,7 @@ export const login = async (identifier: string, password: string): Promise<Login
 
     return { accessToken, refreshToken }
   } catch (error) {
-    console.error('Unknown error type:', error)
-    throw new Error(`Login failed: Unknown error - ${error}`)
+    throw error
   }
 }
 

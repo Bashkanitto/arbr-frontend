@@ -174,7 +174,6 @@ class AuthStore {
         })
       }
     } catch (error: unknown) {
-      console.error('Login failed:', error)
       throw error
     } finally {
       runInAction(() => {
