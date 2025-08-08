@@ -24,8 +24,16 @@ const PasswordReset = observer(({ onNext, onBack }: PasswordResetProps) => {
     try {
       await sendOtpResetPassword(email)
       onNext()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (error: any) {
+      setError(error.message)
+      if (error.status == 400) {
+        onNext()
+        setError(
+          'Код восстановления уже отправлен на почту, пожалуйста подождите и попробуйте снова'
+        )
+      } else {
+        setError(error.response?.message || 'Не удалось отправить код. Проверьте адрес почты.')
+      }
     } finally {
       setLoading(false)
     }
