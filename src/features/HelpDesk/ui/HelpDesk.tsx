@@ -55,6 +55,7 @@ const HelpDeskModal: React.FC = () => {
         placeholder="Опишите вашу проблему здесь..."
         rows={4}
         style={{
+          outline: 'none',
           width: '100%',
           padding: '8px',
           marginBottom: '10px',

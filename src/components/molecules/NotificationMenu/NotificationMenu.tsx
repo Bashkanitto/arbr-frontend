@@ -14,7 +14,7 @@ export const NotificationMenu = observer(() => {
           &times;
         </button>
       </div>
-      <ul className={styles.item}>
+      <ul className={styles.list}>
         {notifications.map(notification => (
           <li key={notification.id}>
             <CalendarIcon />

@@ -23,11 +23,12 @@
 	}
 }
 
-.item {
+.list {
 	overflow-y: scroll;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
+	margin-bottom: 70px;
 	padding: 0;
 	list-style: none;
 
