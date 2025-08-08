@@ -4,11 +4,11 @@ import { fetchAllVendors } from '@services/productService'
 import Tender from '@entities/product/ui/Tender'
 import styles from './CatalogTable.module.scss'
 import { Skeleton } from '@mantine/core'
-import { UserType } from '@shared/types/Types'
 import { Box } from '@shared/ui/Box'
 import CatalogFilters from '../CatalogFilter/CatalogFilters'
 import AddCatalogModal from '../AddCatalogModal/AddCatalogModal'
 import AddProductModal from '../AddProductModal/AddProductModal'
+import { UserType } from '@shared/types/UserType'
 
 const CatalogTable = () => {
   const [filterPeriod, setFilterPeriod] = useState<'3_months' | '6_months' | '1_year'>('3_months')

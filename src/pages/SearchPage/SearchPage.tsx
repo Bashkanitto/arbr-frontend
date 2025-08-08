@@ -1,10 +1,10 @@
 import { Skeleton } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { UserType } from '@shared/types/Types'
 import { fetchAllVendors } from '@services/productService'
 import Tender from '@entities/product/ui/Tender'
 import SearchFilters from './SearchFilters/SearchFilters'
 import styles from './SearchPage.module.scss'
+import { UserType } from '@shared/types/UserType'
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('')

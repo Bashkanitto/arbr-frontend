@@ -6,7 +6,7 @@ import {
   logout as logoutApi,
   refreshToken as refreshTokenApi,
 } from '../services/authService.js'
-import { UserType } from '@shared/types/Types.js'
+import { UserType } from '@shared/types/UserType.js'
 
 class AuthStore {
   accessToken = Cookies.get('accessToken') || null

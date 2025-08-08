@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Cookies from 'js-cookie'
 import { baseApi } from './base'
-import { UserType } from '../shared/types/Types'
+import { UserType } from '@shared/types/UserType'
 
 interface LoginResponse {
   accessToken: string

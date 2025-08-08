@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { fetchProfile } from '@services/authService'
 import { fetchVendorById } from '@services/productService'
-import { UserType } from '@shared/types/Types'
 import AddCatalogModal from '../CatalogPage/AddCatalogModal/AddCatalogModal'
 import AddProductModal from '../CatalogPage/AddProductModal/AddProductModal'
 import CatalogFilters from '../CatalogPage/CatalogFilter/CatalogFilters'
 import styles from './VendorPage.module.scss'
+import { UserType } from '@shared/types/UserType'
 
 const VendorPage = () => {
   const [filterPeriod, setFilterPeriod] = useState<string | null>('3_months')
