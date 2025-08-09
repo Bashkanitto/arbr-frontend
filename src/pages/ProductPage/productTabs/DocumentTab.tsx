@@ -110,7 +110,11 @@ const DocumentTab = ({ product }) => {
           Отправить
         </BaseButton>
       </Modal>
-      <BaseButton variantColor="primary" onClick={() => setIsDocumentModalOpen(true)}>
+      <BaseButton
+        style={{ width: '100%' }}
+        variantColor="primary"
+        onClick={() => setIsDocumentModalOpen(true)}
+      >
         Добавить документ
       </BaseButton>
     </div>

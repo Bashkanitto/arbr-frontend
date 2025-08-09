@@ -154,7 +154,11 @@ const ProductEditModal: React.FC<Props> = ({ isOpen, setIsEditModalOpen, product
         value={product.KZTIN?.toString()}
         onChange={value => handleInputChange('KZTIN', value ?? 0)}
       />
-      <BaseButton variantColor="primary" onClick={handleEditProduct}>
+      <BaseButton
+        style={{ width: '100%', marginTop: 20 }}
+        variantColor="primary"
+        onClick={handleEditProduct}
+      >
         Сохранить
       </BaseButton>
     </Modal>

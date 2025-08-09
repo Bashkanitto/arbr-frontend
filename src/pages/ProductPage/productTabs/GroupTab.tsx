@@ -112,12 +112,31 @@ const GroupTab = ({ productId }) => {
   return (
     <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
       {productGroups.map(group => (
-        <div
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', marginTop: '10px' }}
-          key={group.id}
-        >
-          <div>{group.title}:</div>
-          <div style={{ justifySelf: 'flex-end' }}>
+        <div className="flex justify-between items-center">
+          <div
+            style={{
+              // display: 'flex',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              marginTop: '10px',
+            }}
+            key={group.id}
+          >
+            <p>{group.title}:</p>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {group.groupItems.map((subGroup: any) => (
+                <button
+                  className={styles.group}
+                  key={subGroup.id}
+                  onClick={() => console.log(group)}
+                >
+                  {subGroup.value}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ justifySelf: 'flex-end', display: 'flex' }}>
             <DeleteIcon onClick={() => handleDeleteGroup(group.id)} />
             <EditIcon
               onClick={() => {
@@ -133,16 +152,9 @@ const GroupTab = ({ productId }) => {
               }}
             />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            {group.groupItems.map((subGroup: any) => (
-              <button className={styles.group} key={subGroup.id} onClick={() => console.log(group)}>
-                {subGroup.value}
-              </button>
-            ))}
-          </div>
         </div>
       ))}
-      <BaseButton onClick={handleAddGroup}>Add</BaseButton>
+      <BaseButton onClick={handleAddGroup}>Добавить</BaseButton>
 
       {/* edit */}
       <Modal opened={isModalOpen} onClose={() => setIsModalOpen(false)}>
