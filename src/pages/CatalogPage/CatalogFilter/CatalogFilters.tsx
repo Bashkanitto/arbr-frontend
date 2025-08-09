@@ -12,17 +12,17 @@ const CatalogFilters = ({
   isAdmin?: true | false
   addCatalog: () => void
   addProduct: () => void
-  onFilterChange: (filter: '3_months' | '6_months' | '1_year') => void
+  onFilterChange: (filter: '' | '6_months' | '1_year') => void
   filterPeriod: string | null
 }) => {
   return (
     <div className={styles['catalog-header']}>
       <div className={styles['catalog-filter']}>
         <BaseButton
-          onClick={() => onFilterChange('3_months')}
-          variantColor={filterPeriod == '3_months' ? 'primary' : 'secondary'}
+          onClick={() => onFilterChange('')}
+          variantColor={filterPeriod == '' ? 'primary' : 'secondary'}
         >
-          За 3 месяца
+          Все
         </BaseButton>
         <BaseButton
           onClick={() => onFilterChange('6_months')}

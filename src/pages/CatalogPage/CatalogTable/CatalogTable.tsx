@@ -11,7 +11,7 @@ import AddProductModal from '../AddProductModal/AddProductModal'
 import { UserType } from '@shared/types/UserType'
 
 const CatalogTable = () => {
-  const [filterPeriod, setFilterPeriod] = useState<'3_months' | '6_months' | '1_year'>('3_months')
+  const [filterPeriod, setFilterPeriod] = useState<'' | '6_months' | '1_year'>('')
   const [isAddProductOpen, setIsAddProductOpen] = useState(false)
   const [isAddCatalogOpen, setIsAddCatalogOpen] = useState(false)
   const [vendors, setVendors] = useState<UserType[]>([])
@@ -20,7 +20,8 @@ const CatalogTable = () => {
 
   const calculateStartDate = useCallback((period: string): Date => {
     const date = new Date()
-    if (period === '3_months') date.setMonth(date.getMonth() - 3)
+    if (period === '') return new Date(0)
+    else if (period === '3_months') date.setMonth(date.getMonth() - 3)
     else if (period === '6_months') date.setMonth(date.getMonth() - 6)
     else if (period === '1_year') date.setFullYear(date.getFullYear() - 1)
     return date
