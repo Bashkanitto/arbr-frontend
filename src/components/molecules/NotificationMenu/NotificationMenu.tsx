@@ -5,6 +5,7 @@ import styles from './NotificationMenu.module.scss'
 
 export const NotificationMenu = observer(() => {
   const { notifications, isMenuOpen, closeMenu, clearNotifications } = notificationStore
+  const reversedNotifications = Array.from(notifications).reverse()
 
   return (
     <div className={`${styles.notificationMenu} ${isMenuOpen ? styles.open : styles.closed}`}>
@@ -15,7 +16,7 @@ export const NotificationMenu = observer(() => {
         </button>
       </div>
       <ul className={styles.list}>
-        {notifications.map(notification => (
+        {reversedNotifications.map(notification => (
           <li key={notification.id}>
             <CalendarIcon />
             <div>
