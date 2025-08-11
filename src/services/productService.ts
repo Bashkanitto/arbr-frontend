@@ -179,7 +179,7 @@ export const fetchAllOrders = async () => {
 
 export const fetchMyOrders = async (page: number = 1, pageSize: number = 10, email:string) => {
   const response: any = await baseApi.get(
-    `/order?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}&search[cartItems][vendorGroup][vendor][email]=${email}`
+    `/order?relations=user,cartItems.product&pagination[page]=${page}&pagination[pageSize]=${pageSize}&search[cartItems][vendorGroup][vendor][email]=${email}&sort[id]=desc`
   )
   return response
 }

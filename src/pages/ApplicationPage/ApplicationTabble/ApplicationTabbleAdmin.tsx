@@ -100,7 +100,9 @@ export const ApplicationTableAdmin = () => {
         <Table.Tr key={item.id}>
           <Table.Td>{item.product?.id}</Table.Td>
           <Table.Td>
-            <a href={`/product/${item.product?.id}`}>{item.product?.name}</a>
+            <a className="underline" href={`/product/${item.product?.id}`}>
+              {item.product?.name}
+            </a>
           </Table.Td>
           <Table.Td>{item.vendor.firstName}</Table.Td>
           <Table.Td>

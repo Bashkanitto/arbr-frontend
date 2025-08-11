@@ -64,14 +64,14 @@ const CatalogTable = () => {
 
   return (
     <Box className={styles['catalog-page']}>
-      {/* <p className={styles['catalog-title']}>Каталог</p> */}
-      {/* <p className={styles['catalog-description']}>Топ - {vendorData.length}</p> */}
       <CatalogFilters
         onFilterChange={setFilterPeriod}
         addCatalog={toggleAddCatalog}
         addProduct={toggleAddProduct}
         filterPeriod={filterPeriod}
       />
+
+      {/* Tenders */}
       <div className={styles['catalog-tenders']}>
         {loading
           ? Array.from({ length: 3 }).map((_, index) => (
@@ -87,6 +87,7 @@ const CatalogTable = () => {
               vendor => vendor.vendorGroups.length !== 0 && <Tender key={vendor.id} user={vendor} />
             )}
       </div>
+
       {isAddCatalogOpen && <AddCatalogModal isOpen={isAddCatalogOpen} onClose={toggleAddCatalog} />}
       {isAddProductOpen && <AddProductModal isOpen={isAddProductOpen} onClose={toggleAddProduct} />}
       {error && <p className={styles['error']}>{error}</p>}
