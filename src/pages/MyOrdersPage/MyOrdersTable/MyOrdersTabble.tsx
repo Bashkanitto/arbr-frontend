@@ -104,8 +104,10 @@ export const MyOrdersTable = () => {
 
     return filteredData.map(item => (
       <Table.Tr key={item.id}>
+        <Table.Td>{item.id}</Table.Td>
         <Table.Td>
           <a
+            className="underline"
             href={
               item.announcementNumber
                 ? `https://goszakup.gov.kz/ru/announce/index/${item.announcementNumber}?tab=lots`
@@ -174,6 +176,7 @@ export const MyOrdersTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
+              <Table.Th>ID</Table.Th>
               <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
               <Table.Th>Статус</Table.Th>

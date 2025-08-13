@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Select, Skeleton } from '@mantine/core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { fetchAllOrders, fetchOrders } from '@services/productService'
+import { fetchAllOrders } from '@services/productService'
 import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
 import baseApi from '@services/base'
@@ -122,8 +122,10 @@ export const OrdersTable = () => {
         <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
+              <Table.Th>ID</Table.Th>
               <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
+              <Table.Th>Трекер</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>
@@ -135,8 +137,10 @@ export const OrdersTable = () => {
           <Table.Tbody>
             {paginatedOrders.map(item => (
               <Table.Tr key={item.id}>
+                <Table.Td>{item.id}</Table.Td>
                 <Table.Td>
                   <a
+                    className="underline"
                     href={
                       item.announcementNumber
                         ? `https://goszakup.gov.kz/ru/announce/index/${item.announcementNumber}?tab=lots`
@@ -147,7 +151,8 @@ export const OrdersTable = () => {
                   </a>
                 </Table.Td>
                 <Table.Td>{item.user?.firstName ?? 'Неизвестно'}</Table.Td>
-                <Table.Td>
+                <Table.Td>{item.trackerUrl ?? '-'}</Table.Td>
+                <Table.Td style={{ width: '20%' }}>
                   {item.cartItems[0]?.product ? (
                     <a className="underline" href={`/product/${item.cartItems[0].product.id}`}>
                       {item.cartItems[0].product.name}

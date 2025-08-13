@@ -7,5 +7,6 @@ export interface OrderType {
   type: string
   deliveryAdress?: string
   amountPrice: number
+  trackerUrl:string
   status: string
 }
