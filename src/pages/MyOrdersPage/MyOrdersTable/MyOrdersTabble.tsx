@@ -5,9 +5,11 @@ import { Table } from '@shared/ui/Table'
 import styles from './MyOrdersTable.module.scss'
 import baseApi from '@services/base'
 import NotificationStore from '@features/notification/model/NotificationStore'
-import { fetchMyOrders, fetchOrders } from '@services/productService'
+import { fetchMyOrders } from '@services/productService'
 import { fetchProfile } from '@services/authService'
 import { Pagination } from '@shared/ui/Pagination/Pagination'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
 
 export const MyOrdersTable = () => {
   const [productData, setProductData] = useState<any[]>([])
@@ -128,8 +130,14 @@ export const MyOrdersTable = () => {
             'нет продукта'
           )}
         </Table.Td>
+
         <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
         <Table.Td>{item.deliveryAdress}</Table.Td>
+        <Table.Td>
+          {format(new Date(item.createdAt), 'dd MMMM, yyyy', {
+            locale: ru,
+          })}
+        </Table.Td>
         <Table.Td>{new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸</Table.Td>
         <Table.Td className="flex gap-4">
           <button
@@ -183,6 +191,7 @@ export const MyOrdersTable = () => {
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>
+              <Table.Th>Дата</Table.Th>
               <Table.Th>Цена</Table.Th>
               <Table.Th>Действие</Table.Th>
             </Table.Tr>

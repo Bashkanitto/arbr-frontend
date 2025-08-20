@@ -1,6 +1,7 @@
 export interface OrderType {
   id: number
   announcementNumber?: string
+  createdAt:string
   announcementNumberEcc?: string
   user?: { firstName?: string }
   cartItems: { product?: { id: number; name: string } }[]

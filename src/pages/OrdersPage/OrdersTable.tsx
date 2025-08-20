@@ -8,6 +8,8 @@ import baseApi from '@services/base'
 import NotificationStore from '@features/notification/model/NotificationStore'
 import { Pagination } from '@shared/ui/Pagination/Pagination'
 import { OrderType } from '@shared/types/OrdersType'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
 
 const STATUS_OPTIONS = [
   { value: 'waiting_for_approve', label: 'Ждет подтверждения' },
@@ -125,10 +127,10 @@ export const OrdersTable = () => {
               <Table.Th>ID</Table.Th>
               <Table.Th>Номер объявления</Table.Th>
               <Table.Th>Покупатель</Table.Th>
-              <Table.Th>Трекер</Table.Th>
               <Table.Th>Продукт</Table.Th>
               <Table.Th>Оплата</Table.Th>
               <Table.Th>Доставка</Table.Th>
+              <Table.Th>Дата</Table.Th>
               <Table.Th>Цена</Table.Th>
               <Table.Th>Действие</Table.Th>
             </Table.Tr>
@@ -151,7 +153,6 @@ export const OrdersTable = () => {
                   </a>
                 </Table.Td>
                 <Table.Td>{item.user?.firstName ?? 'Неизвестно'}</Table.Td>
-                <Table.Td>{item.trackerUrl ?? '-'}</Table.Td>
                 <Table.Td style={{ width: '20%' }}>
                   {item.cartItems[0]?.product ? (
                     <a className="underline" href={`/product/${item.cartItems[0].product.id}`}>
@@ -163,6 +164,11 @@ export const OrdersTable = () => {
                 </Table.Td>
                 <Table.Td>{getLocalizedPurchase(item.type)}</Table.Td>
                 <Table.Td>{item.deliveryAdress}</Table.Td>
+                <Table.Td>
+                  {format(new Date(item.createdAt), 'dd MMMM, yyyy', {
+                    locale: ru,
+                  })}
+                </Table.Td>
                 <Table.Td>{new Intl.NumberFormat('en-KZ').format(item.amountPrice)}₸</Table.Td>
                 <Table.Td>
                   <Select
