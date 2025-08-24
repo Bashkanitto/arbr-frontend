@@ -1,4 +1,4 @@
-name: Docker CI/CD
+name: Build & Deploy to ps.kz
 
 on:
   push:
@@ -6,51 +6,28 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: build docker image
+        run: docker build -t arbr-frontend:${{ github.sha }} .
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/phase-frontend
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to server
-        env:
-          HOST: ${{ secrets.SERVER_HOST }}
-          USERNAME: ${{ secrets.SERVER_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/phase-frontend
+      - name: Push to registry
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push arbr-frontend:${{ github.sha }}
 
-          ssh-keyscan $HOST >> ~/.ssh/known_hosts
-
-          ssh $USERNAME@$HOST <<EOF
-            cd ~/phase
-            echo "Pulling the latest Docker image"
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/phase-frontend
-            echo "Recreating the app container with Docker Compose"
-            sudo docker-compose -f docker-compose.dev.yaml up -d --no-deps front || true
-          EOF
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /phase
+            docker-compose pull
+            docker-compose up -d --no-deps arbr-frontend
