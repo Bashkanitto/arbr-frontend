@@ -3,13 +3,16 @@ import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 import { themeConfig } from '@shared/utils/theme.config'
 import { AppRouter } from '../router/AppRouter'
+import { domAnimation, LazyMotion } from 'framer-motion'
 
 const App = () => {
   return (
     <MantineProvider theme={themeConfig}>
-      <div className="app">
-        <AppRouter />
-      </div>
+      <LazyMotion features={domAnimation}>
+        <div className="app">
+          <AppRouter />
+        </div>
+      </LazyMotion>
     </MantineProvider>
   )
 }
