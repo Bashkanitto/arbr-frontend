@@ -40,6 +40,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd phaseFrontend
+            cd phase-frontend
             docker-compose pull ${{ secrets.DOCKER_USERNAME }}/arbr-frontend:latest
             docker-compose up -d arbr-frontend
