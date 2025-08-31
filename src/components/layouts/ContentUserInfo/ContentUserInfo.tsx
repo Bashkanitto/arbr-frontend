@@ -1,5 +1,5 @@
 import { useWindowScroll } from '@mantine/hooks'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { observer } from 'mobx-react-lite'
 import { NotificationIcon } from '@shared/icons/NotificationIcon'
 import { SignOutIcon } from '@shared/icons/SignOutIcon'
@@ -30,7 +30,7 @@ export const ContentUserInfo = observer(() => {
       {!userProfile ? (
         <Skeleton width={isScroll ? 85 : 447} height="100%" radius={30} />
       ) : (
-        <motion.div
+        <m.div
           className={`${styles['content-user-info']} border border-gray-200`}
           style={{
             width: isScroll ? 85 : 447,
@@ -72,7 +72,7 @@ export const ContentUserInfo = observer(() => {
           ) : (
             <Avatar />
           )}
-        </motion.div>
+        </m.div>
       )}
     </>
   )
