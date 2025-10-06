@@ -21,7 +21,7 @@ const ProductTabs = ({ product }: any) => {
         ))}
       </ul>
 
-      {activeTab === 'описание' && <DescriptionTab description={product.description} />}
+      {activeTab === 'Описание' && <DescriptionTab description={product.description} />}
       {activeTab === 'Документы' && <DocumentTab product={product} />}
       {activeTab === 'Группы' && <GroupTab productId={product.id} />}
     </div>
