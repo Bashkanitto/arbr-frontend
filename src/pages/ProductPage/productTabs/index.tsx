@@ -10,7 +10,7 @@ const ProductTabs = ({ product }: any) => {
   return (
     <div className={styles.tabs}>
       <ul>
-        {['описание', 'Документы', 'Группы'].map(tab => (
+        {['Описание', 'Документы', 'Группы'].map(tab => (
           <li
             key={tab}
             className={activeTab === tab ? styles.active : ''}
